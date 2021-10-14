@@ -1,5 +1,5 @@
 import { objAny } from "../../common/common-interface";
-const menuList: objAny = [
+const menuList: objAny[] = [
   { name: "首页", icon: "", id: "1", url: "/home" },
   {
     name: "内容管理",
