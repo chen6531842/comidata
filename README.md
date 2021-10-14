@@ -1,4 +1,4 @@
-# comidata
+# comi-data
 
 ## Project setup
 ```

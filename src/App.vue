@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import menuList from "./components/menu-list/menu-list";
+import menuList from "./components/menu-list/menu-list.vue";
 export default {
   name: "app",
   data() {
