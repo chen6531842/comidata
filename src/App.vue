@@ -1,19 +1,23 @@
 <template>
   <div id="app">
     <Layout class="app-Layout">
-      <Header class="app-header">Header</Header>
+      <Header class="app-header" v-show="sys.isLogin">
+        <wy-header v-if="sys.isLogin"></wy-header>
+      </Header>
       <Layout>
-        <Sider class="app-sider" hide-trigger>
-          <pi-menu-list></pi-menu-list>
+        <Sider class="app-sider" hide-trigger v-show="sys.isLogin">
+          <wy-menu-list v-if="sys.isLogin"></wy-menu-list>
         </Sider>
         <Content class="app-content"><router-view /></Content>
       </Layout>
-      <Footer>Footer</Footer>
+      <Footer v-show="sys.isLogin">Footer</Footer>
     </Layout>
   </div>
 </template>
 <script>
 import menuList from "./components/menu-list/menu-list.vue";
+import header from "./components/header/header.vue";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "app",
   data() {
@@ -22,9 +26,13 @@ export default {
       isCollapse: false,
     };
   },
+  computed: {
+    ...mapState(["sys"]),
+  },
   methods: {},
   components: {
-    "pi-menu-list": menuList,
+    "wy-menu-list": menuList,
+    "wy-header": header,
   },
 };
 </script>
