@@ -1,4 +1,3 @@
-
 // import Vue from "vue";
 import config from "./config";
 import common from "../common/common";

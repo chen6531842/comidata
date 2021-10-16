@@ -98,8 +98,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "../../common/common-interface";
+import { State, Mutation } from "vuex-class";
 @Component
 export default class Login extends Vue {
+  @State("sys") sys!: objAny;
+  @Mutation("SET_ISLOGIN") SET_ISLOGIN!: Function;
   private form: objAny = {
     user_name: "",
     password: "",
@@ -153,6 +156,9 @@ export default class Login extends Vue {
     });
   }
   public subData(): void {
+    // this.SET_ISLOGIN(true);
+    console.log(this.$common);
+    this.$common.save("loginData", this.form);
     this.$router.push("/home");
   }
 }

@@ -35,6 +35,8 @@ export default class MenuList extends Vue {
   private menuJson: objAny = {};
 
   public menuChange(key: string): void {
+    console.log(this.menuJson);
+    console.log(key);
     this.$router.push(this.menuJson[key]);
   }
   mounted(): void {

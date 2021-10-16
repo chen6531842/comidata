@@ -97,13 +97,13 @@ const common: objAny = {
   },
   parseParam(json: objAny): string {
     const params = Object.keys(json)
-      .map(function(key) {
+      .map(function (key) {
         return encodeURIComponent(key) + "=" + encodeURIComponent(json[key]);
       })
       .join("&");
     return params;
   },
-  thisTimes: function(type: string, dateObj?: objAny): string | number {
+  thisTimes: function (type: string, dateObj?: objAny): string | number {
     const d = dateObj || new Date();
     let y = d.getFullYear();
     let m = d.getMonth() + 1;
@@ -175,7 +175,7 @@ const common: objAny = {
     }
     return json;
   },
-  userDate: function(uData: Date, type?: string) {
+  userDate: function (uData: Date, type?: string) {
     const myDate = new Date(uData);
     const year = this.t(myDate.getFullYear());
     const month = this.t(myDate.getMonth() + 1);
@@ -212,7 +212,7 @@ const common: objAny = {
       return time;
     }
   },
-  
+
   debounce<Params extends object[]>(
     func: (...args: Params) => objAny,
     timeout: number
@@ -283,7 +283,7 @@ const common: objAny = {
       data.oInput.parentNode.removeChild(data.oInput);
       Vue.prototype.$Message.success("复制成功");
     }
-  }
+  },
 };
 
 export default common;

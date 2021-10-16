@@ -6,9 +6,9 @@ const menuList: objAny[] = [
     icon: "",
     id: "2",
     children: [
-      { name: "一键发布", icon: "", id: "2-1", url: "/content/release" },
-      { name: "视频列表", icon: "", id: "2-2", url: "/content/video" },
-      { name: "发现商机", icon: "", id: "2-3", url: "/content/opportunities" },
+      { name: "一键发布", icon: "", id: "2-0", url: "/content/release" },
+      { name: "视频列表", icon: "", id: "2-1", url: "/content/video" },
+      { name: "发现商机", icon: "", id: "2-2", url: "/content/opportunities" },
       {
         name: "商机关键字",
         icon: "",
@@ -24,7 +24,7 @@ const menuList: objAny[] = [
     id: "4",
     url: "/cooperate",
     children: [
-      { name: "星图达人", icon: "", id: "4-1", url: "/cooperate/xin-tu" },
+      { name: "星图达人", icon: "", id: "4-0", url: "/cooperate/xin-tu" },
     ],
   },
   {
@@ -33,7 +33,7 @@ const menuList: objAny[] = [
     id: "5",
     url: "/system",
     children: [
-      { name: "人员设置", icon: "", id: "5-1", url: "/system/xin-tu" },
+      { name: "人员设置", icon: "", id: "5-0", url: "/system/xin-tu" },
     ],
   },
   { name: "消息中心", icon: "", id: "6", url: "/message" },

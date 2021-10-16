@@ -17,7 +17,7 @@
 <script>
 import menuList from "./components/menu-list/menu-list.vue";
 import header from "./components/header/header.vue";
-import { mapMutations, mapState } from "vuex";
+import { mapState } from "vuex";
 export default {
   name: "app",
   data() {
@@ -59,5 +59,20 @@ body,
 }
 .app-content.ivu-layout-content {
   background-color: #f5f5f5;
+  padding: 10px;
+}
+.blue,
+.ivu-btn-text.blue,
+.form-tips.blue {
+  color: #2d8cf0;
+}
+.no-data {
+  text-align: center;
+}
+.form-tips {
+  font-size: 12px;
+  color: #999;
+  line-height: 18px;
+  margin-top: 5px;
 }
 </style>
