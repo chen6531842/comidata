@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { objAny } from "../../../common/common-interface";
+// import { objAny } from "../../../common/common-interface";
 import noData from "../../../components/no-data/no-data.vue";
 @Component({
   components: {

@@ -55,8 +55,8 @@ export default class TopContent extends Vue {
 </script>
 <style lang="less">
 .top-content-section {
-  .top-content {
-  }
+  // .top-content {
+  // }
   .ivu-form-item {
     margin-bottom: 0;
   }

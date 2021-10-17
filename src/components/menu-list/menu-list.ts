@@ -12,8 +12,8 @@ const menuList: objAny[] = [
       {
         name: "商机关键字",
         icon: "",
-        id: "2-4",
-        url: "/content/opportunities-keyword",
+        id: "2-3",
+        url: "/content/opportunities-key",
       },
     ],
   },

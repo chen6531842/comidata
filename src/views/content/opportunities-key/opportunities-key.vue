@@ -1,49 +1,46 @@
 <template>
-  <wy-sys-content title="视频列表" class="page-video">
+  <wy-sys-content title="视频列表" class="page-opportunities-key">
     <div class="form-box">
-      <div class="form-flex"><Button type="error">批量删除</Button></div>
-      <Form ref="formInline" :model="formInline" inline>
-        <FormItem label="">
-          <Select
-            v-model="formInline.target"
-            style="width: 180px"
-            placeholder="请选择搜索项"
-          >
-            <Option
-              :value="item.value"
-              v-for="(item, index) in targetList"
-              :key="index"
-              >{{ item.name }}</Option
-            >
-          </Select>
-        </FormItem>
-        <FormItem label="">
-          <Input
-            style="width: 240px"
-            v-model="formInline.name"
-            placeholder="请输入关键字"
-          ></Input>
-        </FormItem>
-        <FormItem label="">
-          <Button type="primary">搜索</Button>
-        </FormItem>
-      </Form>
+      <div class="form-flex">
+        <Button type="primary">新增关键字</Button>
+      </div>
     </div>
     <Table :columns="columns" :data="tableList">
-      <template slot-scope="{ row }" slot="account">
-        <div>抖音：asd,asd,{{ row.a }}</div>
-        <div>快手：asd,asd,asd</div>
+      <template slot-scope="{ row }" slot="time">
+        <a class="blue" style="margin-right: 20px" @click="queryModalShow(row)"
+          >查看</a
+        >
+        {{ row.time }}2010-10-010
       </template>
+
       <template slot-scope="{ row }" slot="action">
         <Button
-          type="text"
           class="blue"
+          type="text"
           size="small"
           style="margin-right: 5px"
           @click="showVideo(row)"
-          >查看视频</Button
+          >详情</Button
         >
-        <Button type="text" size="small" @click="removeVideo(row)">删除</Button>
+        <Button
+          class="blue"
+          type="text"
+          size="small"
+          style="margin-right: 5px"
+          @click="showVideo(row)"
+          >修改</Button
+        >
+        <Button
+          class="blue"
+          type="text"
+          size="small"
+          style="margin-right: 5px"
+          @click="showVideo(row)"
+          >复制</Button
+        >
+        <Button type="text" class="red" size="small" @click="removeVideo(row)"
+          >删除</Button
+        >
       </template>
     </Table>
     <wy-list-page
@@ -52,6 +49,7 @@
       :total="total"
       :index="formInline.pageIndex"
     ></wy-list-page>
+    <wy-query-modal ref="queryModal"></wy-query-modal>
   </wy-sys-content>
 </template>
 
@@ -60,52 +58,47 @@ import { Component, Vue } from "vue-property-decorator";
 import sysContent from "../../../components/sys-content/sys-content.vue";
 import listPage from "../../../components/list-page/list-page.vue";
 import { objAny } from "../../../common/common-interface";
+import queryModal from "./components/query.vue";
 @Component({
   components: {
     "wy-sys-content": sysContent,
     "wy-list-page": listPage,
+    "wy-query-modal": queryModal,
   },
 })
-export default class PageVideo extends Vue {
+export default class PageOpportunitiesKey extends Vue {
   private formInline: objAny = {
     target: "",
     name: "",
+    sex: "",
     pageIndex: 1,
     pageSize: 10,
   };
   private total = 0;
   private targetList: objAny[] = [];
+  private sexList: objAny[] = [];
   private columns: objAny[] = [
     {
-      type: "selection",
-      width: 60,
-      align: "center",
-    },
-    {
-      title: "视频",
-      key: "name",
+      title: "行业",
+      key: "userInfo",
       minWidth: 120,
     },
     {
-      title: "描述",
-      key: "age",
-      minWidth: 160,
+      title: "关联平台账户",
+      key: "userData",
+      minWidth: 120,
     },
     {
-      title: "平台/账户",
-      key: "age",
-      slot: "account",
+      title: "更新时间",
+      key: "info",
+      slot: "time",
       minWidth: 160,
     },
-    {
-      title: "发布时间",
-      key: "age",
-      minWidth: 140,
-    },
+
     {
       title: "操作",
       slot: "action",
-      minWidth: 120,
+      minWidth: 140,
     },
   ];
   private tableList: objAny[] = [{}];
@@ -122,6 +115,7 @@ export default class PageVideo extends Vue {
       },
     });
   }
+
   public queryClick(): void {
     this.formInline.pageIndex = 1;
     this.getTableList();
@@ -138,5 +132,13 @@ export default class PageVideo extends Vue {
   public getTableList(): void {
     console.log("???");
   }
+
+  public queryModalShow(item: objAny): void {
+    let queryModal: objAny = this.$refs.queryModal;
+    console.log(queryModal);
+    queryModal.open(item);
+  }
 }
 </script>
+
+<style lang="less"></style>

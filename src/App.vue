@@ -75,4 +75,13 @@ body,
   line-height: 18px;
   margin-top: 5px;
 }
+.form-box {
+  display: flex;
+  .form-flex {
+    flex: 1;
+  }
+}
+.red {
+  color: #ed4014;
+}
 </style>

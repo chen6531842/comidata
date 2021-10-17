@@ -31,7 +31,7 @@ const mutations = {
    * @param {*} state
    * @param {boolean} status
    */
-  SET_ISGETROUTER(state: objAny, status: boolean) {
+  SET_ISGETROUTER(state: objAny, status: boolean): void {
     state.isGetRouter = status;
   },
   /**
@@ -39,7 +39,7 @@ const mutations = {
    * @param {*} state
    * @param {objAny} data
    */
-  SET_USERINFO(state: objAny, data: objAny) {
+  SET_USERINFO(state: objAny, data: objAny): void {
     state.userInfo = data;
   },
 };

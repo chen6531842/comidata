@@ -12,7 +12,7 @@
           <Form
             ref="formInline"
             :model="formInline"
-            :rules="rule"
+            :rules="ruleValidate"
             :label-width="80"
           >
             <FormItem label="视频标题" prop="name">

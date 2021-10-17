@@ -4,6 +4,9 @@ import store from "../store/index";
 import login from "../views/login/login.vue";
 import home from "../views/home/home.vue";
 import release from "../views/content/release/release.vue";
+import video from "../views/content/video/video.vue";
+import opportunities from "../views/content/opportunities/opportunities.vue";
+import opportunitiesKey from "../views/content/opportunities-key/opportunities-key.vue";
 
 Vue.use(VueRouter);
 
@@ -23,6 +26,22 @@ const routes: Array<RouteConfig> = [
     name: "release",
     component: release,
   },
+  {
+    path: "/content/video",
+    name: "video",
+    component: video,
+  },
+  {
+    path: "/content/opportunities",
+    name: "opportunities",
+    component: opportunities,
+  },
+  {
+    path: "/content/opportunities-key",
+    name: "opportunitiesKey",
+    component: opportunitiesKey,
+  },
+
   {
     path: "/login",
     name: "login",
