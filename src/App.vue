@@ -81,7 +81,17 @@ body,
     flex: 1;
   }
 }
-.red {
+.red,
+.ivu-btn-text.red,
+.form-tips.red {
   color: #ed4014;
+}
+.text-center {
+  text-align: center;
+}
+.v-center {
+  display: flex;
+  align-items: center;
+  justify-items: center;
 }
 </style>

@@ -7,7 +7,9 @@ import release from "../views/content/release/release.vue";
 import video from "../views/content/video/video.vue";
 import opportunities from "../views/content/opportunities/opportunities.vue";
 import opportunitiesKey from "../views/content/opportunities-key/opportunities-key.vue";
-
+import auto from "../views/auto/auto.vue";
+import cooperate from "../views/cooperate/cooperate.vue";
+import user from "../views/system/user/user.vue";
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
@@ -40,6 +42,22 @@ const routes: Array<RouteConfig> = [
     path: "/content/opportunities-key",
     name: "opportunitiesKey",
     component: opportunitiesKey,
+  },
+
+  {
+    path: "/auto",
+    name: "auto",
+    component: auto,
+  },
+  {
+    path: "/cooperate/xin-tu",
+    name: "cooperate",
+    component: cooperate,
+  },
+  {
+    path: "/system/user",
+    name: "user",
+    component: user,
   },
 
   {

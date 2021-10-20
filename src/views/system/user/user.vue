@@ -1,20 +1,18 @@
 <template>
-  <wy-sys-content title="商家关键字" class="page-opportunities-key">
+  <wy-sys-content title="人员设置" class="page-user">
     <div class="form-box">
       <div class="form-flex">
         <Form>
           <FormItem prop="name">
-            <Button type="primary" @click="addModalShow">新增关键字</Button>
+            <Button type="primary" @click="addModalShow">新增人员</Button>
           </FormItem>
         </Form>
       </div>
     </div>
     <Table :columns="columns" :data="tableList">
-      <template slot-scope="{ row }" slot="time">
-        <a class="blue" style="margin-right: 20px" @click="queryModalShow(row)"
-          >查看</a
-        >
-        {{ row.time }}2010-10-010
+      <template slot-scope="{ row }" slot="status">
+        <div class="status-dian">已激活</div>
+        <Button type="text" size="small" @click="addModalShow">重新发送</Button>
       </template>
 
       <template slot-scope="{ row }" slot="action">
@@ -24,7 +22,7 @@
           size="small"
           style="margin-right: 5px"
           @click="detailsKey(row)"
-          >详情</Button
+          >更换超级管理员</Button
         >
         <Button
           class="blue"
@@ -33,14 +31,6 @@
           style="margin-right: 5px"
           @click="updataKey(row)"
           >修改</Button
-        >
-        <Button
-          class="blue"
-          type="text"
-          size="small"
-          style="margin-right: 5px"
-          @click="copy(row)"
-          >复制</Button
         >
         <Button type="text" class="red" size="small" @click="removeVideo(row)"
           >删除</Button
@@ -53,27 +43,24 @@
       :total="total"
       :index="formInline.pageIndex"
     ></wy-list-page>
-    <wy-query-modal ref="queryModal"></wy-query-modal>
     <wy-add-modal ref="addModal"></wy-add-modal>
   </wy-sys-content>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import sysContent from "../../../components/sys-content/sys-content.vue";
-import listPage from "../../../components/list-page/list-page.vue";
-import { objAny } from "../../../common/common-interface";
-import queryModal from "./components/query.vue";
+import sysContent from "@/components/sys-content/sys-content.vue";
+import listPage from "@/components/list-page/list-page.vue";
+import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
 @Component({
   components: {
     "wy-sys-content": sysContent,
     "wy-list-page": listPage,
-    "wy-query-modal": queryModal,
     "wy-add-modal": addModal,
   },
 })
-export default class PageOpportunitiesKey extends Vue {
+export default class PageSystemUser extends Vue {
   private formInline: objAny = {
     target: "",
     name: "",
@@ -86,22 +73,30 @@ export default class PageOpportunitiesKey extends Vue {
   private sexList: objAny[] = [];
   private columns: objAny[] = [
     {
-      title: "行业",
+      type: "selection",
+      width: 60,
+      align: "center",
+    },
+    {
+      title: "姓名",
       key: "userInfo",
       minWidth: 120,
     },
     {
-      title: "关联平台账户",
+      title: "邮箱",
       key: "userData",
       minWidth: 120,
     },
     {
-      title: "更新时间",
-      key: "info",
-      slot: "time",
-      minWidth: 160,
+      title: "手机号码",
+      key: "phone",
+      minWidth: 130,
     },
-
+    {
+      title: "角色",
+      key: "phone",
+      minWidth: 120,
+    },
     {
       title: "操作",
       slot: "action",
@@ -110,9 +105,6 @@ export default class PageOpportunitiesKey extends Vue {
   ];
   private tableList: objAny[] = [{}];
 
-  public showVideo(item: objAny): void {
-    console.log(item);
-  }
   public removeVideo(item: objAny): void {
     this.$Modal.confirm({
       title: "提示",
@@ -140,11 +132,6 @@ export default class PageOpportunitiesKey extends Vue {
     console.log("???");
   }
 
-  public queryModalShow(item: objAny): void {
-    let queryModal: objAny = this.$refs.queryModal;
-    console.log(queryModal);
-    queryModal.open(item);
-  }
   public addModalShow(): void {
     let addModal: objAny = this.$refs.addModal;
     addModal.open();
@@ -156,9 +143,6 @@ export default class PageOpportunitiesKey extends Vue {
   public detailsKey(item: objAny): void {
     let addModal: objAny = this.$refs.addModal;
     addModal.open(item);
-  }
-  public copy(item: objAny): void {
-    this.$Message.success(item);
   }
 }
 </script>

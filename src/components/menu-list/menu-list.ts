@@ -32,9 +32,7 @@ const menuList: objAny[] = [
     icon: "",
     id: "5",
     url: "/system",
-    children: [
-      { name: "人员设置", icon: "", id: "5-0", url: "/system/xin-tu" },
-    ],
+    children: [{ name: "人员设置", icon: "", id: "5-0", url: "/system/user" }],
   },
   { name: "消息中心", icon: "", id: "6", url: "/message" },
 ];

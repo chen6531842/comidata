@@ -1,46 +1,34 @@
 <template>
-  <wy-sys-content title="商家关键字" class="page-opportunities-key">
+  <wy-sys-content title="接入授权" class="page-auto">
     <div class="form-box">
       <div class="form-flex">
-        <Form>
+        <Form inline>
           <FormItem prop="name">
-            <Button type="primary" @click="addModalShow">新增关键字</Button>
+            <Button type="primary" @click="addModalShow">新增授权</Button>
+          </FormItem>
+          <FormItem prop="name">
+            <Button type="success" @click="addModalShow">同步数据</Button>
+          </FormItem>
+          <FormItem prop="name">
+            <div class="btn-tips">
+              点击按钮可同步当前账号下详细统计数据，每隔一小时可同步一次
+            </div>
           </FormItem>
         </Form>
       </div>
     </div>
     <Table :columns="columns" :data="tableList">
-      <template slot-scope="{ row }" slot="time">
-        <a class="blue" style="margin-right: 20px" @click="queryModalShow(row)"
-          >查看</a
-        >
-        {{ row.time }}2010-10-010
+      <template slot-scope="{ row }" slot="fans">
+        <a class="blue">10</a>
       </template>
-
       <template slot-scope="{ row }" slot="action">
         <Button
           class="blue"
           type="text"
           size="small"
           style="margin-right: 5px"
-          @click="detailsKey(row)"
-          >详情</Button
-        >
-        <Button
-          class="blue"
-          type="text"
-          size="small"
-          style="margin-right: 5px"
           @click="updataKey(row)"
-          >修改</Button
-        >
-        <Button
-          class="blue"
-          type="text"
-          size="small"
-          style="margin-right: 5px"
-          @click="copy(row)"
-          >复制</Button
+          >重新授权</Button
         >
         <Button type="text" class="red" size="small" @click="removeVideo(row)"
           >删除</Button
@@ -53,27 +41,24 @@
       :total="total"
       :index="formInline.pageIndex"
     ></wy-list-page>
-    <wy-query-modal ref="queryModal"></wy-query-modal>
     <wy-add-modal ref="addModal"></wy-add-modal>
   </wy-sys-content>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import sysContent from "../../../components/sys-content/sys-content.vue";
-import listPage from "../../../components/list-page/list-page.vue";
-import { objAny } from "../../../common/common-interface";
-import queryModal from "./components/query.vue";
+import sysContent from "@/components/sys-content/sys-content.vue";
+import listPage from "@/components/list-page/list-page.vue";
+import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
 @Component({
   components: {
     "wy-sys-content": sysContent,
     "wy-list-page": listPage,
-    "wy-query-modal": queryModal,
     "wy-add-modal": addModal,
   },
 })
-export default class PageOpportunitiesKey extends Vue {
+export default class PageAuto extends Vue {
   private formInline: objAny = {
     target: "",
     name: "",
@@ -86,22 +71,45 @@ export default class PageOpportunitiesKey extends Vue {
   private sexList: objAny[] = [];
   private columns: objAny[] = [
     {
-      title: "行业",
+      title: "头像",
+      key: "headimg",
+      minWidth: 120,
+    },
+    {
+      title: "昵称",
+      key: "name",
+      minWidth: 120,
+    },
+    {
+      title: "平台",
       key: "userInfo",
       minWidth: 120,
     },
     {
-      title: "关联平台账户",
-      key: "userData",
+      title: "粉丝数",
+      slot: "fans",
       minWidth: 120,
     },
     {
-      title: "更新时间",
-      key: "info",
-      slot: "time",
+      title: "发布量",
+      key: "userInfo",
+      minWidth: 120,
+    },
+    {
+      title: "播放量",
+      key: "userInfo",
+      minWidth: 120,
+    },
+    {
+      title: "评论量",
+      key: "userInfo",
+      minWidth: 120,
+    },
+    {
+      title: "授权时间",
+      key: "userInfo",
       minWidth: 160,
     },
-
     {
       title: "操作",
       slot: "action",
@@ -110,9 +118,6 @@ export default class PageOpportunitiesKey extends Vue {
   ];
   private tableList: objAny[] = [{}];
 
-  public showVideo(item: objAny): void {
-    console.log(item);
-  }
   public removeVideo(item: objAny): void {
     this.$Modal.confirm({
       title: "提示",
@@ -140,11 +145,6 @@ export default class PageOpportunitiesKey extends Vue {
     console.log("???");
   }
 
-  public queryModalShow(item: objAny): void {
-    let queryModal: objAny = this.$refs.queryModal;
-    console.log(queryModal);
-    queryModal.open(item);
-  }
   public addModalShow(): void {
     let addModal: objAny = this.$refs.addModal;
     addModal.open();
@@ -153,14 +153,14 @@ export default class PageOpportunitiesKey extends Vue {
     let addModal: objAny = this.$refs.addModal;
     addModal.open(item);
   }
-  public detailsKey(item: objAny): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open(item);
-  }
-  public copy(item: objAny): void {
-    this.$Message.success(item);
-  }
 }
 </script>
 
-<style lang="less"></style>
+<style lang="less">
+.page-auto {
+  .btn-tips {
+    font-size: 14px;
+    color: #999;
+  }
+}
+</style>
