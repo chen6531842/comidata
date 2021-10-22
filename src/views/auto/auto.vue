@@ -19,7 +19,7 @@
     </div>
     <Table :columns="columns" :data="tableList">
       <template slot-scope="{ row }" slot="fans">
-        <a class="blue">10</a>
+        <a class="blue">10{{ row.a }}</a>
       </template>
       <template slot-scope="{ row }" slot="action">
         <Button
@@ -144,14 +144,14 @@ export default class PageAuto extends Vue {
   public getTableList(): void {
     console.log("???");
   }
-
+  $refs!: {
+    addModal: HTMLFormElement;
+  };
   public addModalShow(): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open();
+    this.$refs.addModal.open();
   }
   public updataKey(item: objAny): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open(item);
+    this.$refs.addModal.open(item);
   }
 }
 </script>

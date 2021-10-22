@@ -55,7 +55,7 @@
                 <li class="platform-item">
                   <div class="platform-title">
                     <img
-                      src="../../../assets/img/msg.png"
+                      src="../../../assets/img/logo-1.jpg"
                       class="title-icon"
                       alt=""
                     />
@@ -68,7 +68,7 @@
                 <li class="platform-item">
                   <div class="platform-title">
                     <img
-                      src="../../../assets/img/msg.png"
+                      src="../../../assets/img/logo-2.jpg"
                       class="title-icon"
                       alt=""
                     />

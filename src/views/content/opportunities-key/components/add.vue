@@ -85,6 +85,13 @@
           </Col>
         </Row>
       </wy-block-content>
+
+      <FormItem style="margin-top: 20px" class="text-center">
+        <Button type="primary">提交</Button>
+        <Button style="margin-left: 8px" @click="modalShow = false"
+          >取消</Button
+        >
+      </FormItem>
     </Form>
   </Modal>
 </template>

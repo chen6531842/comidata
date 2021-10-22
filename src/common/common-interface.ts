@@ -29,6 +29,13 @@ export interface numberCallback {
 export interface stringCallback {
   (name?: string): void;
 }
+
+export interface fn {
+  (): string | number;
+}
+export interface refs {
+  validate: HTMLFormElement;
+}
 // export interface arrStr {
 //   string;
 // }

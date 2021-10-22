@@ -1,7 +1,7 @@
 <template>
   <div class="page-home">
     <Row>
-      <Col :span="18">
+      <Col :span="16">
         <section class="section-box">
           <div class="incomplete-box">
             <div class="incomplete-flex">
@@ -31,7 +31,7 @@
         <wy-chance-data></wy-chance-data>
         <wy-top-comtent></wy-top-comtent>
       </Col>
-      <Col :span="6" style="padding-left: 10px">
+      <Col :span="8" style="padding-left: 10px">
         <wy-advertisement></wy-advertisement>
         <wy-zi-xun></wy-zi-xun>
       </Col>
@@ -92,6 +92,9 @@ export default class Home extends Vue {}
     .title-flex {
       flex: 1;
       text-align: right;
+      .ivu-form-item-content {
+        text-align: left;
+      }
     }
   }
 }

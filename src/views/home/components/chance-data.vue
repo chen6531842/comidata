@@ -15,7 +15,11 @@
             ></DatePicker>
           </FormItem>
           <FormItem label="指标" :label-width="50">
-            <Select v-model="formInline.target" style="width: 180px">
+            <Select
+              v-model="formInline.target"
+              style="width: 180px"
+              placeholder="请选择"
+            >
               <Option
                 :value="item.value"
                 v-for="(item, index) in targetList"
@@ -30,13 +34,14 @@
         </Form>
       </div>
     </div>
-    <div class="chance-echart"></div>
+    <div class="chance-echart" ref="chanceEchart"></div>
   </section>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "../../../common/common-interface";
+import * as echarts from "echarts";
 @Component({
   components: {},
 })
@@ -49,6 +54,49 @@ export default class ChanceData extends Vue {
   };
   private targetList: objAny[] = [];
   private time: string[] = [];
+  private myChart: objAny = {};
+
+  $refs!: {
+    chanceEchart: HTMLFormElement;
+  };
+  public echartShow(): void {
+    let option: objAny = {
+      tooltip: {
+        trigger: "axis",
+      },
+      xAxis: {
+        type: "category",
+        data: [
+          "2020-10-01",
+          "2020-10-02",
+          "2020-10-03",
+          "2020-10-04",
+          "2020-10-05",
+          "2020-10-06",
+          "2020-10-07",
+        ],
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          name: "商机数量",
+          data: [150, 230, 224, 218, 135, 147, 260],
+          type: "line",
+        },
+      ],
+    };
+    this.myChart = echarts.init(this.$refs.chanceEchart);
+    this.myChart.setOption(option, true);
+  }
+
+  mounted(): void {
+    console.log(echarts);
+    this.$nextTick(() => {
+      this.echartShow();
+    });
+  }
 }
 </script>
 <style lang="less">

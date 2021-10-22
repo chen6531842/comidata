@@ -11,7 +11,7 @@
     </div>
     <Table :columns="columns" :data="tableList">
       <template slot-scope="{ row }" slot="status">
-        <div class="status-dian">已激活</div>
+        <div class="status-dian">已激活{{ row.a }}</div>
         <Button type="text" size="small" @click="addModalShow">重新发送</Button>
       </template>
 
@@ -131,18 +131,17 @@ export default class PageSystemUser extends Vue {
   public getTableList(): void {
     console.log("???");
   }
-
+  $refs!: {
+    addModal: HTMLFormElement;
+  };
   public addModalShow(): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open();
+    this.$refs.addModal.open();
   }
   public updataKey(item: objAny): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open(item);
+    this.$refs.addModal.open(item);
   }
   public detailsKey(item: objAny): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open(item);
+    this.$refs.addModal.open(item);
   }
 }
 </script>

@@ -139,23 +139,21 @@ export default class PageOpportunitiesKey extends Vue {
   public getTableList(): void {
     console.log("???");
   }
-
+  $refs!: {
+    queryModal: HTMLFormElement;
+    addModal: HTMLFormElement;
+  };
   public queryModalShow(item: objAny): void {
-    let queryModal: objAny = this.$refs.queryModal;
-    console.log(queryModal);
-    queryModal.open(item);
+    this.$refs.queryModal.open(item);
   }
   public addModalShow(): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open();
+    this.$refs.addModal.open();
   }
   public updataKey(item: objAny): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open(item);
+    this.$refs.addModal.open(item);
   }
   public detailsKey(item: objAny): void {
-    let addModal: objAny = this.$refs.addModal;
-    addModal.open(item);
+    this.$refs.addModal.open(item);
   }
   public copy(item: objAny): void {
     this.$Message.success(item);

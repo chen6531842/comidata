@@ -4,7 +4,7 @@
     class="user-add"
     :title="title"
     :footer-hide="true"
-    :width="1000"
+    :width="800"
   >
     <Form
       ref="formValidate"
@@ -32,8 +32,8 @@
         </Select>
         <Button type="text" siam="small">新增角色</Button>
       </FormItem>
-
-      <wy-block-content title="关联平台账户">
+      <FormItem label="关联平台账户">
+        <!-- <wy-block-content title="关联平台账户"> -->
         <Row>
           <Col :span="14" class="select">
             <Input
@@ -42,6 +42,7 @@
             />
           </Col>
         </Row>
+
         <Row class="acc-box-row">
           <Col :span="14" class="select">
             <wy-block-content title="平台账户" :border="true">
@@ -71,10 +72,13 @@
             </wy-block-content>
           </Col>
         </Row>
-      </wy-block-content>
+        <!-- </wy-block-content> -->
+      </FormItem>
       <FormItem>
-        <Button type="primary">Submit</Button>
-        <Button style="margin-left: 8px">Reset</Button>
+        <Button type="primary">提交</Button>
+        <Button style="margin-left: 8px" @click="modalShow = false"
+          >取消</Button
+        >
       </FormItem>
     </Form>
   </Modal>

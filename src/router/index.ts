@@ -10,6 +10,7 @@ import opportunitiesKey from "../views/content/opportunities-key/opportunities-k
 import auto from "../views/auto/auto.vue";
 import cooperate from "../views/cooperate/cooperate.vue";
 import user from "../views/system/user/user.vue";
+import message from "../views/message/message.vue";
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
@@ -58,6 +59,11 @@ const routes: Array<RouteConfig> = [
     path: "/system/user",
     name: "user",
     component: user,
+  },
+  {
+    path: "/message",
+    name: "message",
+    component: message,
   },
 
   {

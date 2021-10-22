@@ -97,12 +97,12 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { objAny } from "../../common/common-interface";
+import { objAny, fn } from "../../common/common-interface";
 import { State, Mutation } from "vuex-class";
 @Component
 export default class Login extends Vue {
   @State("sys") sys!: objAny;
-  @Mutation("SET_ISLOGIN") SET_ISLOGIN!: Function;
+  @Mutation("SET_ISLOGIN") SET_ISLOGIN!: fn;
   private form: objAny = {
     user_name: "",
     password: "",
@@ -147,9 +147,12 @@ export default class Login extends Vue {
       }
     }, 1000);
   }
+
+  $refs!: {
+    formValidate: HTMLFormElement; //写法1 - 推荐
+  };
   public handleSubmit(): void {
-    let formValidate: objAny = this.$refs.formValidate;
-    formValidate.validate((valid: boolean) => {
+    this.$refs.formValidate.validate((valid: boolean) => {
       if (valid) {
         this.subData();
       }

@@ -8,7 +8,10 @@
   >
     <ul class="auto-list">
       <li class="auto-item" v-for="(item, index) in autoList" :key="index">
-        <div class="auto-icon"></div>
+        <div class="auto-icon">
+          <img v-if="item.type == 1" src="../../../assets/img/logo-1.jpg" />
+          <img v-if="item.type == 2" src="../../../assets/img/logo-2.jpg" />
+        </div>
         <div class="auto-name">{{ item.name }}</div>
         <div class="auto-btn">
           <Button>立即授权</Button>
@@ -65,13 +68,17 @@ export default class Auto extends Vue {
     box-sizing: border-box;
     padding-top: 25px;
     margin-left: 20px;
-
+    list-style: none;
     .auto-icon {
       width: 50px;
       height: 50px;
       display: inline-block;
       vertical-align: top;
       background-color: #f5f5f5;
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
     .auto-name {
       font-size: 15px;
