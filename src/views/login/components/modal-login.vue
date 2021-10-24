@@ -1,0 +1,335 @@
+<template>
+  <Modal
+    class="login-modal-content"
+    v-model="modalShow"
+    :footer-hide="true"
+    :width="348"
+  >
+    <!-- :title=" -->
+    <div class="login-modal-title">
+      <span v-if="loginType == 1">登录</span>
+      <span v-else-if="loginType == 2">手机注册</span>
+      <span v-else>忘记密码</span>
+    </div>
+    <div class="type-list" v-if="loginType != 3">
+      <div class="login-type active">
+        手机登录
+        <span class="border"></span>
+      </div>
+    </div>
+
+    <Form
+      ref="formValidate"
+      :model="form"
+      :rules="ruleValidate"
+      :label-width="0"
+    >
+      <template v-if="loginType == 1 || loginType == 2">
+        <FormItem prop="phone">
+          <div class="login-form">
+            <div class="login-icon">手机号码</div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.phone" placeholder="请输入用户名"></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem prop="code">
+          <div class="login-form">
+            <div class="login-icon"></div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.code" placeholder="验证码"></Input>
+              </div>
+              <div
+                class="login-code"
+                :class="isCode ? 'disable' : ''"
+                @click="getCode"
+              >
+                {{ codeText }}
+              </div>
+            </div>
+          </div>
+        </FormItem>
+      </template>
+      <template v-else>
+        <FormItem prop="pawPhone">
+          <div class="login-form">
+            <div class="login-icon"></div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.pawPhone" placeholder="手机号码"></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem prop="paw">
+          <div class="login-form">
+            <div class="login-icon"></div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.paw" placeholder="新密码"></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem prop="pawNew">
+          <div class="login-form">
+            <div class="login-icon"></div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.pawNew" placeholder="密码确认"></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem prop="pawCode">
+          <div class="login-form">
+            <div class="login-icon"></div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.pawCode" placeholder="验证码"></Input>
+              </div>
+              <div
+                class="login-code"
+                :class="isCode ? 'disable' : ''"
+                @click="getCode"
+              >
+                {{ codeText }}
+              </div>
+            </div>
+          </div>
+        </FormItem>
+      </template>
+      <div class="login-tips" v-if="loginType == 1">
+        登录即表明同意 <a href="" target="_blank">服务协议</a> 和
+        <a href="" target="_blank">隐私条款</a>
+      </div>
+      <div class="login-tips" v-else>
+        <Checkbox v-model="single"></Checkbox>我已阅读并同意
+        <a href="" target="_blank">服务协议</a> 和
+        <a href="" target="_blank">隐私条款</a>
+      </div>
+
+      <div class="sub-btn">
+        <Button
+          v-if="loginType == 3"
+          type="primary"
+          size="large"
+          long
+          @click="handleSubmit"
+          >重置</Button
+        >
+        <Button v-else type="primary" size="large" long @click="handleSubmit"
+          >登录</Button
+        >
+        <div class="sub-small">
+          <div class="sub-small-flex">
+            <div
+              class="small-name"
+              @click="loginType = 2"
+              v-if="loginType == 1"
+            >
+              注册
+            </div>
+            <div class="small-name" @click="loginType = 1" v-else>登录</div>
+          </div>
+          <div class="sub-small-flex text-right">
+            <div
+              class="small-name"
+              @click="loginType = 3"
+              v-if="loginType == 1 || loginType == 2"
+            >
+              忘记密码
+            </div>
+            <div class="small-name" @click="loginType = 2" v-else>注册</div>
+          </div>
+        </div>
+      </div>
+    </Form>
+  </Modal>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import { objAny, fn, fnOne } from "@/common/common-interface";
+import { State, Mutation } from "vuex-class";
+@Component({
+  components: {},
+})
+export default class LoginModal extends Vue {
+  private modalShow = false;
+  @State("sys") sys!: objAny;
+  @Mutation("SET_ISLOGIN") SET_ISLOGIN!: fn;
+  private single = true;
+  private form: objAny = {
+    phone: "",
+    code: "",
+    pawCode: "",
+    pawPhone: "",
+    paw: "",
+    pawNew: "",
+  };
+
+  private ruleValidate: objAny = {
+    phone: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
+    pawPhone: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
+    code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+    pawCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+    paw: [{ required: true, message: "请输入密码", trigger: "blur" }],
+    pawNew: [{ required: true, validator: this.validatePass, trigger: "blur" }],
+  };
+  private passwordShow = false;
+  private formShow = false;
+  private isRegister = false;
+  private codeText = "获取验证码";
+  private isCode = false;
+  private time = 60;
+  private timer = 0;
+
+  private title = "";
+  private loginType = 1; // 1 登录  2 注册  3 忘记密码
+
+  public validatePass(rule: objAny, value: string, callback: fnOne): void {
+    if (value === "") {
+      callback("" + new Error("请输入密码"));
+    } else if (value !== this.form.pawNew) {
+      callback(new Error("两次密码输入不一至，请重新输入！") + "");
+    } else {
+      callback();
+    }
+  }
+  public open(type: number): void {
+    this.modalShow = true;
+    this.loginType = type;
+  }
+
+  public getCode(): void {
+    if (!this.isCode) {
+      this.isCode = true;
+      this.time = 5;
+      this.codeText = this.time + "s";
+      this.getCodeTime();
+    }
+  }
+  public getCodeTime(): void {
+    this.timer = setTimeout(() => {
+      this.time--;
+      if (this.time <= 0) {
+        this.isCode = false;
+        this.codeText = "再次获取";
+      } else {
+        this.codeText = this.time + "s";
+        this.getCodeTime();
+      }
+    }, 1000);
+  }
+
+  $refs!: {
+    formValidate: HTMLFormElement; //写法1 - 推荐
+  };
+  public handleSubmit(): void {
+    this.$refs.formValidate.validate((valid: boolean) => {
+      if (valid) {
+        this.subData();
+      }
+    });
+  }
+  public subData(): void {
+    // this.SET_ISLOGIN(true);
+    console.log(this.$common);
+    this.$common.save("loginData", this.form);
+    this.$router.push("/home");
+  }
+}
+</script>
+<style lang="less">
+.login-modal-content {
+  .ivu-modal-body {
+    padding: 40px;
+  }
+  .login-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  .type-list {
+    .login-type {
+      display: inline-block;
+      margin-right: 40px;
+      font-size: 16px;
+      color: #333333;
+      .border {
+        height: 2px;
+        margin-top: 4px;
+        display: block;
+      }
+    }
+    .login-type.active {
+      color: rgb(47, 136, 255);
+      .border {
+        background: rgb(47, 136, 255);
+      }
+    }
+  }
+  .login-form {
+    margin-top: 14px;
+    .login-icon {
+      color: #c1c1c1;
+      font-size: 12px;
+      line-height: 20px;
+      height: 20px;
+    }
+    .login-box {
+      display: flex;
+      border-bottom: 1px solid #f3f6fa;
+      .login-flex {
+        flex: 1;
+        .ivu-input {
+          border: none;
+          padding-left: 0;
+        }
+      }
+    }
+    .login-code {
+      color: #2f88ff;
+      font-size: 14px;
+    }
+  }
+  .ivu-form-item {
+    margin-bottom: 0;
+  }
+  .login-tips {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #999999;
+    line-height: 17px;
+    a {
+      font-size: 12px;
+      color: #333;
+      text-decoration: none;
+    }
+  }
+  .sub-btn {
+    margin-top: 40px;
+
+    .sub-small {
+      display: flex;
+      line-height: 24px;
+      font-size: 12px;
+      color: #c1c1c1;
+      line-height: 20px;
+      margin-top: 4px;
+      .sub-small-flex {
+        flex: 1;
+        .small-name {
+          display: inline-block;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+</style>

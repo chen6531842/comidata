@@ -1,178 +1,150 @@
 <template>
   <div class="page-login">
-    <div class="login-content">
-      <h1 class="title">COMIDATA 全网营销辅助平台</h1>
-      <h5 class="small-title">一体化账号管理 全方位数据服务</h5>
-      <div class="btn-box" v-if="!formShow">
-        <Button type="primary" @click="loginShow">登录</Button>
-        <Button @click="isRegisterShow">注册</Button>
+    <div class="login-header">
+      <div class="header-logo">
+        <img src="./img/comidata_logo.png" alt="" />
       </div>
-      <div
-        class="login-form-box"
-        :class="formShow ? 'login-form-show' : 'login-form-hide'"
-        v-show="formShow"
-      >
-        <Form
-          ref="formValidate"
-          :model="form"
-          :rules="ruleValidate"
-          :label-width="0"
-        >
-          <FormItem prop="user_name">
-            <div class="login-form">
-              <div class="login-icon">
-                <Icon type="md-person" />
-              </div>
-              <div class="login-flex">
-                <Input
-                  v-model="form.user_name"
-                  placeholder="请输入用户名"
-                ></Input>
-                <!-- <input type="text" v-model="form.user_name" /> -->
-              </div>
-            </div>
-          </FormItem>
-          <FormItem prop="password">
-            <div class="login-form">
-              <div class="login-icon">
-                <Icon type="ios-key" />
-              </div>
-              <div class="login-flex">
-                <Input
-                  :type="passwordShow ? 'text' : 'password'"
-                  v-model="form.password"
-                  placeholder="请输入密码"
-                ></Input>
-              </div>
-              <div
-                class="login-icon pass"
-                @click="passwordShow = !passwordShow"
-              >
-                <Icon type="ios-eye" v-if="!passwordShow" />
-                <Icon type="ios-eye-off" v-else />
-              </div>
-            </div>
-          </FormItem>
-          <FormItem prop="code" v-if="isRegister">
-            <div class="login-form">
-              <div class="login-icon">
-                <Icon type="ios-mail" />
-              </div>
-              <div class="login-flex">
-                <input type="text" v-model="form.code" />
-              </div>
-              <div
-                class="login-code"
-                :class="isCode ? 'disable' : ''"
-                @click="getCode"
-              >
-                {{ codeText }}
-              </div>
-            </div>
-          </FormItem>
-          <div class="sub-btn">
-            <Button type="primary" size="large" long @click="handleSubmit"
-              >登录</Button
-            >
-            <div class="sub-small">
-              <div class="sub-small-flex">
-                <div
-                  class="small-name"
-                  @click="isRegisterShow"
-                  v-if="!isRegister"
-                >
-                  注册
-                </div>
-                <div class="small-name" @click="loginShow" v-else>登录</div>
-              </div>
-              <div class="sub-small-flex text-right">
-                <div class="small-name" @click="formShow = false">取消</div>
-              </div>
-            </div>
-          </div>
-        </Form>
+      <div class="header-tab">
+        <div class="header-tab-item active">首页</div>
+        <div class="header-tab-item">帮助中心</div>
       </div>
     </div>
+    <!-- <div class="login-video"> -->
+    <wy-video type="1"></wy-video>
+    <!-- <video width="100%" height="100%" controls autoplay class="video">
+        <source src="../../assets/2-1.mp4" type="video/mp4" />
+        您的浏览器不支持 video 标签。
+      </video> -->
+    <!-- </div> -->
+    <div class="login-content-box">
+      <div class="login-content-box-1">
+        <div class="login-content">
+          <h1 class="title">COMIDATA 全网营销辅助平台</h1>
+          <h5 class="small-title">一体化账号管理 全方位数据服务</h5>
+          <div class="btn-box">
+            <Button size="large" type="primary" @click="openLogin">登录</Button>
+            <Button size="large" @click="openRegister">注册</Button>
+          </div>
+        </div>
+      </div>
+      <wy-login-content-box-2></wy-login-content-box-2>
+      <div class="login-footer">
+        ©2021 COMDATA 粤ICP备2021126334号 版权所有 震撼者科技深圳有限公司
+      </div>
+    </div>
+    <wy-modal-Login ref="modalLogin"></wy-modal-Login>
   </div>
 </template>
 <script lang="ts">
+import modalLogin from "./components/modal-login.vue";
+import loginContentBox from "./components/login-content-box-2.vue";
+import videoBox from "./components/video.vue";
 import { Component, Vue } from "vue-property-decorator";
 import { objAny, fn } from "../../common/common-interface";
 import { State, Mutation } from "vuex-class";
-@Component
+@Component({
+  components: {
+    "wy-modal-Login": modalLogin,
+    "wy-login-content-box-2": loginContentBox,
+    "wy-video": videoBox,
+  },
+})
 export default class Login extends Vue {
-  @State("sys") sys!: objAny;
-  @Mutation("SET_ISLOGIN") SET_ISLOGIN!: fn;
-  private form: objAny = {
-    user_name: "",
-    password: "",
-  };
-  private ruleValidate: objAny = {
-    user_name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-  };
-  private passwordShow = false;
-  private formShow = false;
-  private isRegister = false;
-  private codeText = "获取验证码";
-  private isCode = false;
-  private time = 60;
-  private timer = 0;
-
-  public loginShow(): void {
-    this.formShow = true;
-    this.isRegister = false;
-  }
-  public isRegisterShow(): void {
-    this.formShow = true;
-    this.isRegister = true;
-  }
-  public getCode(): void {
-    if (!this.isCode) {
-      this.isCode = true;
-      this.time = 5;
-      this.codeText = this.time + "s";
-      this.getCodeTime();
-    }
-  }
-  public getCodeTime(): void {
-    this.timer = setTimeout(() => {
-      this.time--;
-      if (this.time <= 0) {
-        this.isCode = false;
-        this.codeText = "再次获取";
-      } else {
-        this.codeText = this.time + "s";
-        this.getCodeTime();
-      }
-    }, 1000);
-  }
-
   $refs!: {
-    formValidate: HTMLFormElement; //写法1 - 推荐
+    modalLogin: HTMLFormElement; //写法1 - 推荐
   };
-  public handleSubmit(): void {
-    this.$refs.formValidate.validate((valid: boolean) => {
-      if (valid) {
-        this.subData();
-      }
-    });
+  public openLogin(): void {
+    this.$refs.modalLogin.open(1);
   }
-  public subData(): void {
-    // this.SET_ISLOGIN(true);
-    console.log(this.$common);
-    this.$common.save("loginData", this.form);
-    this.$router.push("/home");
+  public openRegister(): void {
+    this.$refs.modalLogin.open(2);
   }
 }
 </script>
 <style lang="less">
 .page-login {
   height: 100%;
-  background-image: url("../../assets/img/bg.jpg");
-  background-size: 100% 100%;
+  // background-image: url("../../assets/img/bg.jpg");
+  // background-size: 100% 100%;
   position: relative;
+  .login-header {
+    position: absolute;
+    height: 64px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 6;
+    padding: 0 50px;
+    box-sizing: border-box;
+    .header-logo {
+      display: inline-block;
+      width: 106px;
 
+      vertical-align: top;
+      img {
+        height: 64px;
+      }
+    }
+    .header-tab {
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 30px;
+      line-height: 64px;
+      width: 300px;
+      .header-tab-item {
+        padding: 0 20px;
+        font-size: 14px;
+        color: #fff;
+        margin-right: 20px;
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+      }
+      .header-tab-item.active::before {
+        content: "";
+        width: 30px;
+        height: 3px;
+        background-color: #fff;
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        margin-left: -15px;
+      }
+    }
+  }
+  .login-video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    .video {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      object-fit: fill;
+    }
+  }
+  .login-content-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 5;
+    // overflow: auto;
+    .login-content-box-1 {
+      width: 100%;
+      height: 100%;
+    }
+    .login-content-box-2 {
+      position: relative;
+      background-color: #fff;
+    }
+  }
   .login-content {
     position: absolute;
     left: 50%;
@@ -181,21 +153,26 @@ export default class Login extends Vue {
     color: #fff;
     padding: 50px 0;
     .title {
-      line-height: 80px;
-      font-size: 46px;
+      font-size: 64px;
+      font-weight: 600;
+      line-height: 90px;
+      margin-bottom: 12px;
     }
     .small-title {
+      letter-spacing: 20px;
       font-size: 16px;
+      line-height: 24px;
+
       text-align: center;
       font-weight: normal;
-      letter-spacing: 15px;
+
       margin-top: 10px;
     }
     .btn-box {
       text-align: center;
       margin-top: 30px;
       .ivu-btn {
-        width: 100px;
+        width: 140px;
         border-radius: 20px;
         margin-right: 20px;
       }
@@ -205,71 +182,20 @@ export default class Login extends Vue {
         color: #fff;
       }
     }
-    .login-form-box {
-      margin: auto;
-      margin-top: 30px;
-      width: 300px;
-      .login-form {
-        display: flex;
-        height: 40px;
-        line-height: 40px;
-        background-color: #fff;
-        border-radius: 10px;
-        color: #999;
-        margin-bottom: 5px;
-        .login-icon {
-          width: 50px;
-          text-align: center;
-          font-size: 20px;
-        }
-        .login-icon.pass {
-          cursor: pointer;
-        }
-        .login-flex {
-          flex: 1;
-          input {
-            width: 100%;
-            height: 40px;
-            border: none;
-            background: transparent;
-          }
-        }
-        .login-code {
-          width: 100px;
-          text-align: center;
-          background-color: #2d8cf0;
-          color: #fff;
-          border-top-right-radius: 10px;
-          border-bottom-right-radius: 10px;
-          font-size: 14px;
-          cursor: pointer;
-        }
-        .login-code.disable {
-          background-color: #ccc;
-        }
-      }
-      .sub-small {
-        margin-top: 10px;
-        color: #999;
-        line-height: 20px;
-        display: flex;
-        .text-right {
-          text-align: right;
-        }
-        .sub-small-flex {
-          flex: 1;
-          .small-name {
-            cursor: pointer;
-          }
-        }
-      }
-    }
   }
   .login-form-show {
     animation: loginTop 0.3s forwards;
   }
   .login-form-hide {
     animation: loginBottom 0.3s forwards;
+  }
+  .login-footer {
+    background-color: #000;
+    font-size: 14px;
+    height: 64px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.55);
+    padding: 22px 0;
   }
 }
 
@@ -292,5 +218,43 @@ export default class Login extends Vue {
     transform: translateY(200px);
     opacity: 0;
   }
+}
+video::-webkit-media-controls-fullscreen-button {
+  display: none;
+}
+//播放按钮
+video::-webkit-media-controls-play-button {
+  display: none;
+}
+//进度条
+video::-webkit-media-controls-timeline {
+  display: none;
+}
+//观看的当前时间
+video::-webkit-media-controls-current-time-display {
+  display: none;
+}
+//剩余时间
+video::-webkit-media-controls-time-remaining-display {
+  display: none;
+}
+//音量按钮
+video::-webkit-media-controls-mute-button {
+  display: none;
+}
+video::-webkit-media-controls-toggle-closed-captions-button {
+  display: none;
+}
+//音量的控制条
+video::-webkit-media-controls-volume-slider {
+  display: none;
+}
+//所有控件
+video::-webkit-media-controls-enclosure {
+  display: none;
+}
+//所有控件
+video::-webkit-media-controls-controls {
+  display: none;
 }
 </style>

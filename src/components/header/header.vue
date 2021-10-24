@@ -45,6 +45,9 @@ export default class Header extends Vue {
       content: "<p>确定要退出登录吗？</p>",
       onOk: () => {
         this.$router.push("/login");
+        setTimeout(() => {
+          window.location.reload();
+        });
       },
     });
   }

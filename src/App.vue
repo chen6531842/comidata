@@ -8,9 +8,14 @@
         <Sider class="app-sider" hide-trigger v-show="sys.isLogin">
           <wy-menu-list v-if="sys.isLogin"></wy-menu-list>
         </Sider>
-        <Content class="app-content"><router-view /></Content>
+        <Content class="app-content" :class="!sys.isLogin ? 'pd0' : ''"
+          ><router-view
+        /></Content>
       </Layout>
-      <Footer v-show="sys.isLogin">Footer</Footer>
+      <Footer v-if="sys.isLogin" class="app-footer"
+        >©2021 COMDATA 粤ICP备2021126334号 版权所有
+        震撼者科技深圳有限公司</Footer
+      >
     </Layout>
   </div>
 </template>
@@ -61,6 +66,9 @@ body,
   background-color: #f5f5f5;
   padding: 10px;
 }
+.app-content.ivu-layout-content.pd0 {
+  padding: 0;
+}
 .blue,
 .ivu-btn-text.blue,
 .form-tips.blue {
@@ -93,5 +101,17 @@ body,
   display: flex;
   align-items: center;
   justify-items: center;
+}
+.text-right {
+  text-align: right;
+}
+.app-footer.ivu-layout-footer {
+  background-color: #f5f5f5;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
+  padding: 0;
+  text-align: center;
+  color: #999;
 }
 </style>

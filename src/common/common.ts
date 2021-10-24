@@ -4,7 +4,7 @@
  * @Date: 2020-05-21 13:59:26
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-10-13 11:49:10
+ * @LastEditTime: 2021-10-23 09:29:11
  */
 import Vue from "vue";
 import { objAny } from "../common/common-interface";
@@ -16,7 +16,7 @@ const common: objAny = {
    * @param str 数据
    * @param type 本地数据类型,没有  sessionStorage 有 localStorage
    */
-  save(item: string, str: string | object, type?: number): void {
+  save(item: string, str: string | objAny, type?: number): void {
     const typeData: number = type || 0;
     if (typeof str == "object") {
       str = JSON.stringify(str);
