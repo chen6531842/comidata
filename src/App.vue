@@ -22,7 +22,8 @@
 <script>
 import menuList from "./components/menu-list/menu-list.vue";
 import header from "./components/header/header.vue";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
+import common from "@/common/common";
 export default {
   name: "app",
   data() {
@@ -34,10 +35,17 @@ export default {
   computed: {
     ...mapState(["sys"]),
   },
-  methods: {},
+  methods: {
+    ...mapMutations(["SET_WINONRESIZE", "SET_TODATE"]),
+  },
   components: {
     "wy-menu-list": menuList,
     "wy-header": header,
+  },
+  mounted() {
+    window.onresize = common.debounce(() => {
+      this.SET_WINONRESIZE(true);
+    }, 200);
   },
 };
 </script>

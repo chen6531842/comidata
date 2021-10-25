@@ -151,7 +151,7 @@ export default class LoginContentBox2 extends Vue {}
     align-items: center;
     justify-content: center;
     img {
-      height: 100%;
+      height: 80%;
     }
   }
   .item-text {

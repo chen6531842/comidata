@@ -4,7 +4,7 @@
  * @Date: 2020-05-21 13:59:26
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-10-23 09:29:11
+ * @LastEditTime: 2021-10-25 10:25:03
  */
 import Vue from "vue";
 import { objAny } from "../common/common-interface";
@@ -283,6 +283,21 @@ const common: objAny = {
       data.oInput.parentNode.removeChild(data.oInput);
       Vue.prototype.$Message.success("复制成功");
     }
+  },
+  getClientHeight(): number {
+    let clientHeight = 0;
+    if (document.body.clientHeight && document.documentElement.clientHeight) {
+      clientHeight =
+        document.body.clientHeight < document.documentElement.clientHeight
+          ? document.body.clientHeight
+          : document.documentElement.clientHeight;
+    } else {
+      clientHeight =
+        document.body.clientHeight > document.documentElement.clientHeight
+          ? document.body.clientHeight
+          : document.documentElement.clientHeight;
+    }
+    return clientHeight;
   },
 };
 

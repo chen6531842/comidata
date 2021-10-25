@@ -1,8 +1,8 @@
 <template>
-  <div class="page-login">
-    <div class="login-header">
+  <div class="page-login" @scroll="pageScroll">
+    <div class="login-header" :class="headerBg ? 'bg' : ''">
       <div class="header-logo">
-        <img src="./img/comidata_logo.png" alt="" />
+        <img src="../../assets/img/comidata_logo.png" alt="" />
       </div>
       <div class="header-tab">
         <div class="header-tab-item active">首页</div>
@@ -10,7 +10,7 @@
       </div>
     </div>
     <!-- <div class="login-video"> -->
-    <wy-video type="1"></wy-video>
+    <wy-video></wy-video>
     <!-- <video width="100%" height="100%" controls autoplay class="video">
         <source src="../../assets/2-1.mp4" type="video/mp4" />
         您的浏览器不支持 video 标签。
@@ -39,9 +39,10 @@
 import modalLogin from "./components/modal-login.vue";
 import loginContentBox from "./components/login-content-box-2.vue";
 import videoBox from "./components/video.vue";
-import { Component, Vue } from "vue-property-decorator";
-import { objAny, fn } from "../../common/common-interface";
-import { State, Mutation } from "vuex-class";
+import { Component, Vue, Watch } from "vue-property-decorator";
+import { fnOneBoolean, objAny } from "../../common/common-interface";
+import { Mutation, State } from "vuex-class";
+import common from "@/common/common";
 @Component({
   components: {
     "wy-modal-Login": modalLogin,
@@ -50,25 +51,51 @@ import { State, Mutation } from "vuex-class";
   },
 })
 export default class Login extends Vue {
+  @State("sys") sys!: objAny;
+  @Mutation("SET_ISLOGIN") SET_ISLOGIN!: fnOneBoolean;
+  private winHeight = 0;
+  private headerBg = false;
   $refs!: {
     modalLogin: HTMLFormElement; //写法1 - 推荐
   };
+  @Watch("sys.winOnresize")
+  getVisible(): void {
+    this.winHeight = common.getClientHeight();
+    console.log(this.winHeight);
+  }
+
   public openLogin(): void {
     this.$refs.modalLogin.open(1);
   }
   public openRegister(): void {
     this.$refs.modalLogin.open(2);
   }
+  public pageScroll(e: any): void {
+    let scrollTop = e.target.scrollTop;
+    if (scrollTop > this.winHeight - 10) {
+      this.headerBg = true;
+    } else {
+      this.headerBg = false;
+    }
+  }
+  mounted(): void {
+    this.SET_ISLOGIN(false);
+    this.$nextTick(() => {
+      this.winHeight = common.getClientHeight();
+      console.log(this.winHeight);
+    });
+  }
 }
 </script>
 <style lang="less">
 .page-login {
   height: 100%;
+  overflow-y: auto;
   // background-image: url("../../assets/img/bg.jpg");
   // background-size: 100% 100%;
   position: relative;
   .login-header {
-    position: absolute;
+    position: fixed;
     height: 64px;
     left: 0;
     top: 0;
@@ -76,6 +103,7 @@ export default class Login extends Vue {
     z-index: 6;
     padding: 0 50px;
     box-sizing: border-box;
+    transition: 0.8s all;
     .header-logo {
       display: inline-block;
       width: 106px;
@@ -112,6 +140,9 @@ export default class Login extends Vue {
       }
     }
   }
+  .login-header.bg {
+    background-color: #000;
+  }
   .login-video {
     position: absolute;
     width: 100%;
@@ -143,6 +174,7 @@ export default class Login extends Vue {
     .login-content-box-2 {
       position: relative;
       background-color: #fff;
+      padding-bottom: 50px;
     }
   }
   .login-content {

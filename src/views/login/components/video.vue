@@ -1,7 +1,14 @@
 <template>
   <!-- autoplay -->
   <div class="login-video">
-    <video ref="voideData" width="100%" height="100%" controls class="video">
+    <video
+      ref="voideData"
+      muted
+      width="100%"
+      height="100%"
+      controls
+      class="video"
+    >
       <source
         :src="videoSrc"
         type="video/mp4"
@@ -12,14 +19,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { objAny } from "@/common/common-interface";
+import { Component, Vue } from "vue-property-decorator";
+
+// import { objAny } from "@/common/common-interface";
 @Component({
   components: {},
 })
 export default class LoginVideo extends Vue {
   // @Prop({ default: "1" }) private type!: string;
   private type = 0;
+
   private videoSrc = "";
   private videoSrcArr: string[] = [
     "https://lf3-static.bytednsdoc.com/obj/eden-cn/jiheh7nulwbfphj/account_center/1.mp4",
@@ -65,6 +74,8 @@ export default class LoginVideo extends Vue {
   payFn(type: number): void {
     this.type = type;
     this.$refs.voideData.src = this.videoSrcArr[type];
+    console.log(this.$refs.voideData);
+    console.log(this.$refs.voideData.src);
     this.$refs.voideData.play();
   }
   mounted(): void {

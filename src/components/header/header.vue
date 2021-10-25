@@ -1,7 +1,9 @@
 <template>
   <div class="header-content">
     <div class="header-content-flex">
-      <div class="logo"></div>
+      <div class="logo">
+        <img src="../../assets/img/comidata_logo.png" alt="" />
+      </div>
       <div class="title">全网营销运营辅助平台</div>
     </div>
     <div class="header-right">

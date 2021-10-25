@@ -4,7 +4,7 @@
  * @Date: 2020-01-09 14:43:21
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-10-24 18:45:12
+ * @LastEditTime: 2021-10-25 10:04:59
  */
 
 // 对象 { 'a' : 'str' }
@@ -34,7 +34,10 @@ export interface fn {
   (): string | number;
 }
 export interface fnOne {
-  (str?:string): string | number;
+  (str?: string): string | number;
+}
+export interface fnOneBoolean {
+  (state?: boolean): boolean;
 }
 export interface refs {
   validate: HTMLFormElement;
