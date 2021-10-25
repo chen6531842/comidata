@@ -31,7 +31,7 @@
         <wy-chance-data></wy-chance-data>
         <wy-top-comtent></wy-top-comtent>
       </Col>
-      <Col :span="8" style="padding-left: 10px">
+      <Col :span="8" class="right-content-col">
         <wy-advertisement></wy-advertisement>
         <wy-zi-xun></wy-zi-xun>
       </Col>
@@ -57,11 +57,12 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Home extends Vue {}
 </script>
 <style lang="less">
+@import "../../style/var.less";
 .page-home {
   .section-box {
     background-color: #fff;
     border-radius: 4px;
-    margin-top: 10px;
+    margin-top: @interval;
     padding: 10px 20px;
     .ivu-steps-main {
       min-height: 30px;
@@ -96,6 +97,9 @@ export default class Home extends Vue {}
         text-align: left;
       }
     }
+  }
+  .right-content-col {
+    padding-left: @interval;
   }
 }
 </style>

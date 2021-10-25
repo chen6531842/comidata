@@ -143,6 +143,12 @@ export default class LoginContentBox2 extends Vue {}
     cursor: pointer;
     margin: 0 15px;
   }
+  .item-title {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    line-height: 24px;
+  }
   .item-logo {
     height: 69.5px;
     margin-top: 25px;
@@ -151,7 +157,7 @@ export default class LoginContentBox2 extends Vue {}
     align-items: center;
     justify-content: center;
     img {
-      height: 80%;
+      height: 50%;
     }
   }
   .item-text {

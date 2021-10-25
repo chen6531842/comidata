@@ -13,6 +13,19 @@
       <div class="right-icon v-center">
         <img class="img" src="../../assets/img/msg.png" alt="" />
       </div>
+      <!-- <div class="v-center language">
+        <Dropdown>
+          <a href="javascript:void(0)">
+            简体中文
+            <Icon type="ios-arrow-down"></Icon>
+          </a>
+          <DropdownMenu slot="list">
+            <DropdownItem>简体中文</DropdownItem>
+            <DropdownItem>英文</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div> -->
+      <div class="split-oversea"></div>
       <Poptip placement="bottom" width="200">
         <div class="user-info">
           <div class="user-img v-center">
@@ -21,7 +34,7 @@
 
           <div class="user-flex">
             <div class="name">123</div>
-            <div class="id">ID: 54555</div>
+            <div class="id">ID: 54555222</div>
           </div>
           <div class="v-center">
             <Icon type="md-arrow-dropdown" />
@@ -60,11 +73,13 @@ export default class Header extends Vue {
   display: flex;
   .header-content-flex {
     flex: 1;
+    padding: 7px 0;
+    line-height: normal;
     .logo {
       display: inline-block;
       vertical-align: top;
-      height: 64px;
-      width: 120px;
+      height: 50px;
+      width: 82px;
       img {
         width: 100%;
         height: 100%;
@@ -75,12 +90,12 @@ export default class Header extends Vue {
       vertical-align: top;
       height: 32px;
       line-height: 32px;
-      margin-top: 14px;
       color: #fff;
-      font-size: 20px;
       border-left: 1px solid #999;
-      margin-left: 10px;
       padding-left: 20px;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 9px 0 9px 16px;
     }
   }
   .header-right {
@@ -100,7 +115,7 @@ export default class Header extends Vue {
     }
     .user-info {
       display: flex;
-      padding: 0 20px;
+      padding: 0 0 0 20px;
       cursor: pointer;
       .user-img {
         width: 32px;
@@ -115,7 +130,7 @@ export default class Header extends Vue {
         }
       }
       .user-flex {
-        font-size: 14px;
+        font-size: 12px;
         line-height: 16px;
         padding-left: 10px;
         margin-right: 10px;
@@ -138,6 +153,19 @@ export default class Header extends Vue {
     }
     .poptip-li:first-child {
       border: none;
+    }
+  }
+  .split-oversea {
+    height: 24px;
+    width: 1px;
+    background-color: #b9bec4;
+    margin: 4px 12px;
+  }
+  .language {
+    font-size: 12px;
+    margin: 0 12px;
+    a {
+      color: #b9bec4;
     }
   }
 }

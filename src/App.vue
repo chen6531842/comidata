@@ -5,7 +5,7 @@
         <wy-header v-if="sys.isLogin"></wy-header>
       </Header>
       <Layout>
-        <Sider class="app-sider" hide-trigger v-show="sys.isLogin">
+        <Sider :width="240" class="app-sider" hide-trigger v-show="sys.isLogin">
           <wy-menu-list v-if="sys.isLogin"></wy-menu-list>
         </Sider>
         <Content class="app-content" :class="!sys.isLogin ? 'pd0' : ''"
@@ -50,6 +50,7 @@ export default {
 };
 </script>
 <style lang="less">
+@import "./style/var.less";
 html,
 body,
 #app {
@@ -60,19 +61,21 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #333;
+  min-width: 1366px;
 }
 .app-Layout {
   height: 100%;
 }
 .app-header.ivu-layout-header {
   background-color: #1d1e26;
+  padding: 0 24px;
 }
 .app-sider.ivu-layout-sider {
   background-color: #fff;
 }
 .app-content.ivu-layout-content {
-  background-color: #f5f5f5;
-  padding: 10px;
+  background-color: #f8f9fa;
+  padding: @interval;
 }
 .app-content.ivu-layout-content.pd0 {
   padding: 0;

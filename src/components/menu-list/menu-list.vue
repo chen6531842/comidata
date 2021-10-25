@@ -1,5 +1,5 @@
 <template>
-  <Menu :theme="theme2" width="auto" @on-select="menuChange">
+  <Menu :accordion="true" :theme="theme2" width="auto" @on-select="menuChange">
     <template v-for="(item, index) in menuList">
       <MenuItem
         :name="item.id"
