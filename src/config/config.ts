@@ -1,7 +1,7 @@
 import { objAny } from "../common/common-interface";
 let configData = {
   loginUrl: null,
-  ajaxHost: "", // 接口公用的一段
+  ajaxHost: "/api", // 接口公用的一段
   apiStatus: 200,
   host: "",
   footText: "",

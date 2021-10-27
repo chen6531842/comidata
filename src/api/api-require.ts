@@ -85,8 +85,7 @@ export const postHeaders = function (data: objAny): objAny {
     "Content-Type": "application/json;charset=UTF-8",
   };
   if (loginData && loginData.accessToken) {
-    headers["access_token"] = loginData.accessToken;
-    headers["Authorization"] = "Bearer " + loginData.accessToken;
+    headers["Authorization"] = loginData.token;
   }
   if (data) {
     headers = Object.assign(headers, data);
@@ -198,6 +197,13 @@ export const request = function (
         }
       })
       .catch(async (error: objAny) => {
+        // resolve({
+        //   code: 200,
+        //   payload: {
+        //     token:
+        //       "U8OndzJmTYEXiJQMbLc41kZ2ZsV572D3S7KJjWXBavLHM3agdBdZ80u67h3gA5Sx",
+        //   },
+        // });
         if (configData && configData.errorCallBack) {
           configData.errorCallBack();
         } else {

@@ -5,6 +5,7 @@ const state = {
   isLogin: false,
   winOnresize: false, // 窗口变化
   isGetRouter: false,
+  loginData: null,
 };
 
 const getters = {};
@@ -39,8 +40,8 @@ const mutations = {
    * @param {*} state
    * @param {objAny} data
    */
-  SET_USERINFO(state: objAny, data: objAny): void {
-    state.userInfo = data;
+  SET_LOGINDATA(state: objAny, data: objAny): void {
+    state.loginData = data;
   },
 };
 
@@ -56,7 +57,7 @@ const actions = {
     if (loginData) {
       commit("SET_ISGETROUTER", true);
       commit("SET_ISLOGIN", true);
-      commit("SET_USERINFO", loginData);
+      commit("SET_LOGINDATA", loginData);
       const toUrl = obj.to.fullPath;
       // const ret = await getPermission({ roleId: loginData.rolePkId });
       // if (ret.status === configData.apiStatus) {
@@ -73,7 +74,6 @@ const actions = {
       //   commit("SET_MENULIST", data);
       //   commit("SET_ROUTERLIST", data);
       // }
-      console.log(toUrl);
       obj.next &&
         obj.next({
           path: toUrl,

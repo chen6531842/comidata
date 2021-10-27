@@ -92,7 +92,6 @@ export default class ChanceData extends Vue {
   }
 
   mounted(): void {
-    console.log(echarts);
     this.$nextTick(() => {
       this.echartShow();
     });

@@ -13,18 +13,20 @@
       <div class="right-icon v-center">
         <img class="img" src="../../assets/img/msg.png" alt="" />
       </div>
-      <div class="v-center language" @on-click="languageClick">
-        <Dropdown>
+      <div class="v-center language">
+        <Dropdown @on-click="languageClick">
           <a href="javascript:void(0)">
-            简体中文
+            {{ languageName }}
             <Icon type="ios-arrow-down"></Icon>
           </a>
-          <DropdownItem
-            v-for="(item, index) in $config.languageList"
-            :key="index"
-            :name="item.value"
-            >{{ item.name }}</DropdownItem
-          >
+          <DropdownMenu slot="list">
+            <DropdownItem
+              v-for="(item, index) in $config.languageList"
+              :key="index"
+              :name="item.value"
+              >{{ item.name }}</DropdownItem
+            >
+          </DropdownMenu>
         </Dropdown>
       </div>
       <div class="split-oversea"></div>
@@ -73,10 +75,11 @@ export default class Header extends Vue {
     this.getLanguageName(value);
   }
   public getLanguageName(key: string): void {
-    this.$config.languageList = key;
-    this.languageName = this.$config.languageList.filter(
+    this.$config.languageKey = key;
+    let languageList = this.$config.languageList.filter(
       (item: objAny) => item.value == key
-    )[0].name;
+    );
+    this.languageName = languageList[0].name;
   }
   mounted(): void {
     this.getLanguageName(this.$config.languageKey);

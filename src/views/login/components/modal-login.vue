@@ -27,7 +27,7 @@
       <template v-if="loginType == 1">
         <FormItem prop="mobile">
           <div class="login-form">
-            <div class="login-icon">手机号码</div>
+            <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
                 <Input v-model="form.mobile" placeholder="请输入用户名"></Input>
@@ -35,9 +35,9 @@
             </div>
           </div>
         </FormItem>
-        <FormItem prop="mobile">
+        <FormItem prop="password">
           <div class="login-form">
-            <div class="login-icon">密码</div>
+            <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
                 <Input v-model="form.password" placeholder="请输入密码"></Input>
@@ -49,7 +49,7 @@
       <template v-else-if="loginType == 2">
         <FormItem prop="mobile">
           <div class="login-form">
-            <div class="login-icon">手机号码</div>
+            <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
                 <Input
@@ -135,12 +135,12 @@
             </div>
           </div>
         </FormItem>
-        <FormItem prop="pawCode">
+        <FormItem prop="code">
           <div class="login-form">
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.pawCode" placeholder="验证码"></Input>
+                <Input v-model="form.code" placeholder="验证码"></Input>
               </div>
               <div
                 class="login-code"
@@ -183,9 +183,9 @@
           @click="handleSubmit"
           >重置</Button
         >
-        <Button v-else type="primary" size="large" long @click="handleSubmit"
-          >登录</Button
-        >
+        <Button v-else type="primary" size="large" long @click="handleSubmit">{{
+          loginType == 1 ? "登录" : "注册"
+        }}</Button>
         <div class="sub-small">
           <div class="sub-small-flex">
             <div
@@ -217,7 +217,14 @@
 import { Component, Vue } from "vue-property-decorator";
 import { objAny, fn, fnOne } from "@/common/common-interface";
 import { State, Mutation } from "vuex-class";
-import { getRegisterCode } from "@/api/api-user";
+import {
+  getRegisterCode,
+  submitRegister,
+  submitLogin,
+  getSendFindPwdCodeCode,
+  resetPwd,
+} from "@/api/api-user";
+import regular from "@/common/regular";
 @Component({
   components: {},
 })
@@ -232,11 +239,10 @@ export default class LoginModal extends Vue {
     pawCode: "",
     password: "",
     password_confirmation: "",
-    pawNew: "",
   };
 
   private ruleValidate: objAny = {
-    mobile: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
+    mobile: [{ required: true, validator: regular.phone, trigger: "blur" }],
     code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
     pawCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
     password: [{ required: true, message: "请输入密码", trigger: "blur" }],
@@ -244,9 +250,6 @@ export default class LoginModal extends Vue {
       { required: true, validator: this.validatePass, trigger: "blur" },
     ],
   };
-  private passwordShow = false;
-  private formShow = false;
-  private isRegister = false;
   private codeText = "获取验证码";
   private isCode = false;
   private time = 60;
@@ -257,9 +260,9 @@ export default class LoginModal extends Vue {
 
   public validatePass(rule: objAny, value: string, callback: fnOne): void {
     if (value === "") {
-      callback("" + new Error("请输入密码"));
+      callback("请输入密码");
     } else if (value !== this.form.password) {
-      callback(new Error("两次密码输入不一至，请重新输入！") + "");
+      callback("两次密码输入不一至，请重新输入！");
     } else {
       callback();
     }
@@ -271,15 +274,22 @@ export default class LoginModal extends Vue {
 
   async getCode(): Promise<void> {
     if (!this.isCode) {
-      let ret = await getRegisterCode({
-        mobile: this.form.mobile,
-      });
-      console.log(ret);
-      // console.log(ret)
-      // this.isCode = true;
-      // this.time = 5;
-      // this.codeText = this.time + "s";
-      // this.getCodeTime();
+      let ret;
+      if (this.loginType == 2) {
+        ret = await getRegisterCode({
+          mobile: this.form.mobile,
+        });
+      } else if (this.loginType == 3) {
+        ret = await getSendFindPwdCodeCode({
+          mobile: this.form.mobile,
+        });
+      }
+      if (ret.code == 200) {
+        this.isCode = true;
+        this.time = 60;
+        this.codeText = this.time + "s";
+        this.getCodeTime();
+      }
     }
   }
   public getCodeTime(): void {
@@ -294,6 +304,13 @@ export default class LoginModal extends Vue {
       }
     }, 1000);
   }
+  public resetForm(): void {
+    this.form.mobile = "";
+    this.form.code = "";
+    this.form.pawCode = "";
+    this.form.password = "";
+    this.form.password_confirmation = "";
+  }
 
   $refs!: {
     formValidate: HTMLFormElement; //写法1 - 推荐
@@ -301,15 +318,62 @@ export default class LoginModal extends Vue {
   public handleSubmit(): void {
     this.$refs.formValidate.validate((valid: boolean) => {
       if (valid) {
-        this.subData();
+        if (this.loginType == 1) {
+          this.subLogin();
+        } else if (this.loginType == 2) {
+          // 注册
+          if (!this.single) {
+            this.$Message.error("请勾选服务协议 和 隐私条款");
+          } else {
+            this.subRegister();
+          }
+        } else {
+          // 找回密码
+          if (!this.single) {
+            this.$Message.error("请勾选服务协议 和 隐私条款");
+          } else {
+            this.subResetPwd();
+          }
+        }
       }
     });
   }
-  public subData(): void {
+  async subLogin(): Promise<void> {
     // this.SET_ISLOGIN(true);
-    console.log(this.$common);
-    this.$common.save("loginData", this.form);
-    this.$router.push("/home");
+    let ret = await submitLogin({
+      mobile: this.form.mobile,
+      password: this.form.password,
+    });
+    if (ret.code == 200) {
+      this.$common.save("loginData", ret.payload);
+      this.$router.push("/home");
+    }
+  }
+  async subRegister(): Promise<void> {
+    let ret = await submitRegister({
+      mobile: this.form.mobile,
+      password: this.form.password,
+      password_confirmation: this.form.password_confirmation,
+      code: this.form.code,
+    });
+    if (ret.code == 200) {
+      this.$Message.success("注册成功,请登录");
+      this.loginType = 1;
+      this.resetForm();
+    }
+  }
+  async subResetPwd(): Promise<void> {
+    let ret = await resetPwd({
+      mobile: this.form.mobile,
+      password: this.form.password,
+      password_confirmation: this.form.password_confirmation,
+      code: this.form.code,
+    });
+    if (ret.code == 200) {
+      this.$Message.success("重置成功,请登录");
+      this.loginType = 1;
+      this.resetForm();
+    }
   }
 }
 </script>
