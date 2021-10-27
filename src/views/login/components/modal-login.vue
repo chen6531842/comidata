@@ -24,13 +24,61 @@
       :rules="ruleValidate"
       :label-width="0"
     >
-      <template v-if="loginType == 1 || loginType == 2">
-        <FormItem prop="phone">
+      <template v-if="loginType == 1">
+        <FormItem prop="mobile">
           <div class="login-form">
             <div class="login-icon">手机号码</div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.phone" placeholder="请输入用户名"></Input>
+                <Input v-model="form.mobile" placeholder="请输入用户名"></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem prop="mobile">
+          <div class="login-form">
+            <div class="login-icon">密码</div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.password" placeholder="请输入密码"></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+      </template>
+      <template v-else-if="loginType == 2">
+        <FormItem prop="mobile">
+          <div class="login-form">
+            <div class="login-icon">手机号码</div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input
+                  v-model="form.mobile"
+                  placeholder="请输入手机号码"
+                ></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem prop="password">
+          <div class="login-form">
+            <div class="login-icon"></div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input v-model="form.password" placeholder="请输入密码"></Input>
+              </div>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem prop="password_confirmation">
+          <div class="login-form">
+            <div class="login-icon"></div>
+            <div class="login-box">
+              <div class="login-flex">
+                <Input
+                  v-model="form.password_confirmation"
+                  placeholder="请输入确认密码"
+                ></Input>
               </div>
             </div>
           </div>
@@ -54,32 +102,35 @@
         </FormItem>
       </template>
       <template v-else>
-        <FormItem prop="pawPhone">
+        <FormItem prop="mobile">
           <div class="login-form">
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.pawPhone" placeholder="手机号码"></Input>
+                <Input v-model="form.mobile" placeholder="手机号码"></Input>
               </div>
             </div>
           </div>
         </FormItem>
-        <FormItem prop="paw">
+        <FormItem prop="password">
           <div class="login-form">
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.paw" placeholder="新密码"></Input>
+                <Input v-model="form.password" placeholder="新密码"></Input>
               </div>
             </div>
           </div>
         </FormItem>
-        <FormItem prop="pawNew">
+        <FormItem prop="password_confirmation">
           <div class="login-form">
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.pawNew" placeholder="密码确认"></Input>
+                <Input
+                  v-model="form.password_confirmation"
+                  placeholder="密码确认"
+                ></Input>
               </div>
             </div>
           </div>
@@ -103,13 +154,24 @@
         </FormItem>
       </template>
       <div class="login-tips" v-if="loginType == 1">
-        登录即表明同意 <a href="" target="_blank">服务协议</a> 和
-        <a href="" target="_blank">隐私条款</a>
+        登录即表明同意
+        <a :href="$config.host + '/user-agreement.html'" target="_blank"
+          >服务协议</a
+        >
+        和
+        <a :href="$config.host + '/privacy-policy.html'" target="_blank"
+          >隐私条款</a
+        >
       </div>
       <div class="login-tips" v-else>
         <Checkbox v-model="single"></Checkbox>我已阅读并同意
-        <a href="" target="_blank">服务协议</a> 和
-        <a href="" target="_blank">隐私条款</a>
+        <a :href="$config.host + '/user-agreement.html'" target="_blank"
+          >服务协议</a
+        >
+        和
+        <a :href="$config.host + '/privacy-policy.html'" target="_blank"
+          >隐私条款</a
+        >
       </div>
 
       <div class="sub-btn">
@@ -164,21 +226,22 @@ export default class LoginModal extends Vue {
   @Mutation("SET_ISLOGIN") SET_ISLOGIN!: fn;
   private single = true;
   private form: objAny = {
-    phone: "",
+    mobile: "",
     code: "",
     pawCode: "",
-    pawPhone: "",
-    paw: "",
+    password: "",
+    password_confirmation: "",
     pawNew: "",
   };
 
   private ruleValidate: objAny = {
-    phone: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
-    pawPhone: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
+    mobile: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
     code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
     pawCode: [{ required: true, message: "请输入验证码", trigger: "blur" }],
-    paw: [{ required: true, message: "请输入密码", trigger: "blur" }],
-    pawNew: [{ required: true, validator: this.validatePass, trigger: "blur" }],
+    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+    password_confirmation: [
+      { required: true, validator: this.validatePass, trigger: "blur" },
+    ],
   };
   private passwordShow = false;
   private formShow = false;
@@ -194,7 +257,7 @@ export default class LoginModal extends Vue {
   public validatePass(rule: objAny, value: string, callback: fnOne): void {
     if (value === "") {
       callback("" + new Error("请输入密码"));
-    } else if (value !== this.form.pawNew) {
+    } else if (value !== this.form.password) {
       callback(new Error("两次密码输入不一至，请重新输入！") + "");
     } else {
       callback();

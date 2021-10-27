@@ -4,7 +4,7 @@
  * @Date: 2020-05-22 13:50:58
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-09-09 16:07:36
+ * @LastEditTime: 2021-10-27 10:53:01
  */
 const path = require("path");
 
@@ -38,7 +38,7 @@ module.exports = {
     proxy: "http://10.0.110.86/",
     // proxy: "http://10.0.110.86/",
     // proxy: "https://opr.saas.smartpevc.com/",
-    port: 8085,
+    port: 8087,
     host: "0.0.0.0"
     // proxy: 'http://sys.saas-test.smartpevc.com'
   },

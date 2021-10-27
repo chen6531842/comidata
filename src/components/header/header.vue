@@ -13,18 +13,20 @@
       <div class="right-icon v-center">
         <img class="img" src="../../assets/img/msg.png" alt="" />
       </div>
-      <!-- <div class="v-center language">
+      <div class="v-center language" @on-click="languageClick">
         <Dropdown>
           <a href="javascript:void(0)">
             简体中文
             <Icon type="ios-arrow-down"></Icon>
           </a>
-          <DropdownMenu slot="list">
-            <DropdownItem>简体中文</DropdownItem>
-            <DropdownItem>英文</DropdownItem>
-          </DropdownMenu>
+          <DropdownItem
+            v-for="(item, index) in $config.languageList"
+            :key="index"
+            :name="item.value"
+            >{{ item.name }}</DropdownItem
+          >
         </Dropdown>
-      </div> -->
+      </div>
       <div class="split-oversea"></div>
       <Poptip placement="bottom" width="200">
         <div class="user-info">
@@ -51,9 +53,10 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import { objAny } from "../../common/common-interface";
+import { objAny } from "../../common/common-interface";
 @Component
 export default class Header extends Vue {
+  private languageName = "";
   public out(): void {
     this.$Modal.confirm({
       title: "提示",
@@ -65,6 +68,18 @@ export default class Header extends Vue {
         });
       },
     });
+  }
+  public languageClick(value: string): void {
+    this.getLanguageName(value);
+  }
+  public getLanguageName(key: string): void {
+    this.$config.languageList = key;
+    this.languageName = this.$config.languageList.filter(
+      (item: objAny) => item.value == key
+    )[0].name;
+  }
+  mounted(): void {
+    this.getLanguageName(this.$config.languageKey);
   }
 }
 </script>

@@ -1,21 +1,36 @@
 <template>
   <div class="page-login" @scroll="pageScroll">
     <div class="login-header" :class="headerBg ? 'bg' : ''">
-      <div class="header-logo">
-        <img src="../../assets/img/comidata_logo.png" alt="" />
+      <div class="login-header-flex">
+        <div class="header-logo">
+          <img src="../../assets/img/comidata_logo.png" alt="" />
+        </div>
+        <div class="header-tab">
+          <div class="header-tab-item active">首页</div>
+          <div class="header-tab-item">帮助中心</div>
+        </div>
       </div>
-      <div class="header-tab">
-        <div class="header-tab-item active">首页</div>
-        <div class="header-tab-item">帮助中心</div>
+      <!-- <div class="login-header-right"> -->
+      <div class="v-center language">
+        <Dropdown @on-click="languageClick">
+          <a href="javascript:void(0)">
+            {{ languageName }}
+            <Icon type="ios-arrow-down"></Icon>
+          </a>
+          <DropdownMenu slot="list">
+            <DropdownItem
+              v-for="(item, index) in $config.languageList"
+              :key="index"
+              :name="item.value"
+              >{{ item.name }}</DropdownItem
+            >
+          </DropdownMenu>
+        </Dropdown>
       </div>
+      <!-- </div> -->
     </div>
-    <!-- <div class="login-video"> -->
     <wy-video></wy-video>
-    <!-- <video width="100%" height="100%" controls autoplay class="video">
-        <source src="../../assets/2-1.mp4" type="video/mp4" />
-        您的浏览器不支持 video 标签。
-      </video> -->
-    <!-- </div> -->
+
     <div class="login-content-box">
       <div class="login-content-box-1">
         <div class="login-content">
@@ -55,6 +70,7 @@ export default class Login extends Vue {
   @Mutation("SET_ISLOGIN") SET_ISLOGIN!: fnOneBoolean;
   private winHeight = 0;
   private headerBg = false;
+  private languageName = "";
   $refs!: {
     modalLogin: HTMLFormElement; //写法1 - 推荐
   };
@@ -78,12 +94,23 @@ export default class Login extends Vue {
       this.headerBg = false;
     }
   }
+  public languageClick(value: string): void {
+    this.getLanguageName(value);
+  }
+  public getLanguageName(key: string): void {
+    this.$config.languageKey = key;
+    console.log(this.$config.languageList);
+    this.languageName = this.$config.languageList.filter(
+      (item: objAny) => item.value == key
+    )[0].name;
+  }
   mounted(): void {
     this.SET_ISLOGIN(false);
     this.$nextTick(() => {
       this.winHeight = common.getClientHeight();
       console.log(this.winHeight);
     });
+    this.getLanguageName(this.$config.languageKey);
   }
 }
 </script>
@@ -104,6 +131,14 @@ export default class Login extends Vue {
     padding: 0 50px;
     box-sizing: border-box;
     transition: 0.8s all;
+    display: flex;
+    .login-header-flex {
+      flex: 1;
+    }
+    .language a {
+      color: #fff;
+      font-size: 14px;
+    }
     .header-logo {
       display: inline-block;
       width: 106px;
