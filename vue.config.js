@@ -4,7 +4,7 @@
  * @Date: 2020-05-22 13:50:58
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-10-27 10:53:01
+ * @LastEditTime: 2021-10-27 13:51:00
  */
 const path = require("path");
 
@@ -28,35 +28,35 @@ module.exports = {
       template: "public/index.html", // 模板来源
       filename: "index.html", // 在 dist/index.html 的输出
       title: "COMIDATA", // 当使用 title 选项时,在 template 中使用：<title><%= htmlWebpackPlugin.options.title %></title>
-      chunks: ["chunk-vendors", "chunk-common", "index"] // 在这个页面中包含的块，默认情况下会包含,提取出来的通用 chunk 和 vendor chunk
-    }
+      chunks: ["chunk-vendors", "chunk-common", "index"], // 在这个页面中包含的块，默认情况下会包含,提取出来的通用 chunk 和 vendor chunk
+    },
   },
   devServer: {
     //  proxy: "http://192.168.12.223",
     // proxy: "http://licz-test.zq.smartpevc.com:8083",
     // proxy: "http://47.115.147.82/",
-    proxy: "http://10.0.110.86/",
+    proxy: "https://comidata.com/",
     // proxy: "http://10.0.110.86/",
     // proxy: "https://opr.saas.smartpevc.com/",
     port: 8087,
-    host: "0.0.0.0"
+    host: "0.0.0.0",
     // proxy: 'http://sys.saas-test.smartpevc.com'
   },
 
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     //修改文件引入自定义路径
     config.resolve.alias.set("@", resolve("src"));
     config.module
       .rule("eslint")
       .use("eslint-loader")
       .loader("eslint-loader")
-      .tap(options => {
+      .tap((options) => {
         options.fix = true;
         return options;
       });
   },
-  configureWebpack: config => {
+  configureWebpack: (config) => {
     // 保持类名不被压缩
     config.optimization.minimizer[0].options.terserOptions.keep_fnames = true;
-  }
+  },
 };

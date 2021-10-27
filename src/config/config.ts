@@ -1,8 +1,8 @@
 import { objAny } from "../common/common-interface";
 let configData = {
   loginUrl: null,
-  ajaxHost: "/api/serv", // 接口公用的一段
-  apiStatus: 0,
+  ajaxHost: "", // 接口公用的一段
+  apiStatus: 200,
   host: "",
   footText: "",
   formSize: "small", // 全局按钮表单的大小

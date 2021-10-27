@@ -217,6 +217,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { objAny, fn, fnOne } from "@/common/common-interface";
 import { State, Mutation } from "vuex-class";
+import { getRegisterCode } from "@/api/api-user";
 @Component({
   components: {},
 })
@@ -268,12 +269,17 @@ export default class LoginModal extends Vue {
     this.loginType = type;
   }
 
-  public getCode(): void {
+  async getCode(): Promise<void> {
     if (!this.isCode) {
-      this.isCode = true;
-      this.time = 5;
-      this.codeText = this.time + "s";
-      this.getCodeTime();
+      let ret = await getRegisterCode({
+        mobile: this.form.mobile,
+      });
+      console.log(ret);
+      // console.log(ret)
+      // this.isCode = true;
+      // this.time = 5;
+      // this.codeText = this.time + "s";
+      // this.getCodeTime();
     }
   }
   public getCodeTime(): void {
