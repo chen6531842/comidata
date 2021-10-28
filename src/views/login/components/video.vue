@@ -1,7 +1,12 @@
 <template>
   <!-- autoplay -->
   <div class="login-video">
-    <video
+    <img
+      style="width: 100%; height: 100%"
+      src="../../../assets/login/4.jpg"
+      alt=""
+    />
+    <!-- <video
       ref="voideData"
       muted
       width="100%"
@@ -14,7 +19,7 @@
         type="video/mp4"
         poster="../../../assets/video/back.png"
       />
-    </video>
+    </video> -->
   </div>
 </template>
 

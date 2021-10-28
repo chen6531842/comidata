@@ -44,7 +44,7 @@
       </div>
       <wy-login-content-box-2></wy-login-content-box-2>
       <div class="login-footer">
-        <a href="https://beian.miit.gov.cn/">
+        <a href="https://beian.miit.gov.cn/" target="_blank">
           ©2021 COMDATA 粤ICP备2021126334号 版权所有 震撼者科技深圳有限公司</a
         >
       </div>
@@ -90,7 +90,7 @@ export default class Login extends Vue {
   }
   public pageScroll(e: any): void {
     let scrollTop = e.target.scrollTop;
-    if (scrollTop > this.winHeight - 10) {
+    if (scrollTop > this.winHeight - 60) {
       this.headerBg = true;
     } else {
       this.headerBg = false;

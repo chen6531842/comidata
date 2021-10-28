@@ -200,9 +200,15 @@
           @click="handleSubmit"
           >重置</Button
         >
-        <Button v-else type="primary" size="large" long @click="handleSubmit">{{
-          loginType == 1 ? "登录" : "注册"
-        }}</Button>
+        <Button
+          v-else
+          type="primary"
+          :loading="loading"
+          size="large"
+          long
+          @click="handleSubmit"
+          >{{ loginType == 1 ? "登录" : "注册" }}</Button
+        >
         <div class="sub-small">
           <div class="sub-small-flex">
             <div
@@ -212,7 +218,14 @@
             >
               注册
             </div>
-            <div class="small-name" @click="loginType = 1" v-else>登录</div>
+            <div
+              class="small-name"
+              :loading="loading"
+              @click="loginType = 1"
+              v-else
+            >
+              登录
+            </div>
           </div>
           <div class="sub-small-flex text-right">
             <div
@@ -222,7 +235,14 @@
             >
               忘记密码
             </div>
-            <div class="small-name" @click="loginType = 2" v-else>注册</div>
+            <div
+              class="small-name"
+              :loading="loading"
+              @click="loginType = 2"
+              v-else
+            >
+              注册
+            </div>
           </div>
         </div>
       </div>
@@ -274,6 +294,7 @@ export default class LoginModal extends Vue {
 
   private title = "";
   private loginType = 1; // 1 登录  2 注册  3 忘记密码
+  private loading = false;
 
   public validatePass(rule: objAny, value: string, callback: fnOne): void {
     if (value === "") {
@@ -357,6 +378,7 @@ export default class LoginModal extends Vue {
   }
   async subLogin(): Promise<void> {
     // this.SET_ISLOGIN(true);
+    this.loading = true;
     let ret = await submitLogin({
       mobile: this.form.mobile,
       password: this.form.password,
@@ -365,8 +387,10 @@ export default class LoginModal extends Vue {
       this.$common.save("loginData", ret.payload);
       this.$router.push("/home");
     }
+    this.loading = false;
   }
   async subRegister(): Promise<void> {
+    this.loading = true;
     let ret = await submitRegister({
       mobile: this.form.mobile,
       password: this.form.password,
@@ -378,8 +402,10 @@ export default class LoginModal extends Vue {
       this.loginType = 1;
       this.resetForm();
     }
+    this.loading = false;
   }
   async subResetPwd(): Promise<void> {
+    this.loading = true;
     let ret = await resetPwd({
       mobile: this.form.mobile,
       password: this.form.password,
@@ -391,6 +417,7 @@ export default class LoginModal extends Vue {
       this.loginType = 1;
       this.resetForm();
     }
+    this.loading = false;
   }
 }
 </script>

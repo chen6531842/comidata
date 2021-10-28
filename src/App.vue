@@ -13,7 +13,7 @@
         /></Content>
       </Layout>
       <Footer v-if="sys.isLogin" class="app-footer">
-        <a href="https://beian.miit.gov.cn/"
+        <a href="https://beian.miit.gov.cn/" target="_blank"
           >©2021 COMDATA 粤ICP备2021126334号 版权所有 震撼者科技深圳有限公司</a
         ></Footer
       >
