@@ -7,7 +7,7 @@
  * @LastEditTime: 2021-10-27 22:48:13
  */
 // import i18n from "@/config/i18n";
-import { objAny } from "@/common/common-interface";
+import { objAny, fnOne } from "@/common/common-interface";
 const regular: objAny = {
   towNumber: /^(\d+|\d+\.\d{1,2})$/, // 数值最多保留两位小数
   phone: /^1[3456789]\d{9}$/, // 手机
@@ -117,7 +117,7 @@ const validate: objAny = {
   //     }
   //   }
   // },
-  phone(rule: objAny, value: string, callback: regCallback) {
+  phone(rule: objAny, value: string, callback: fnOne) {
     const reg = regular.phone;
     if (
       (rule.type === "valueNull" && value === "") ||
@@ -125,11 +125,11 @@ const validate: objAny = {
     ) {
       callback();
     } else if (value === "") {
-      callback(new Error("请输入手机号码"));
+      callback("请输入手机号码");
     } else if (value.length != 11) {
-      callback(new Error("请输入11位的手机号码"));
+      callback("请输入11位的手机号码");
     } else if (!reg.test(value)) {
-      callback(new Error("手机号码的格式不正确，请重新输入"));
+      callback("手机号码的格式不正确，请重新输入");
     } else {
       callback();
     }

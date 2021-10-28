@@ -30,7 +30,10 @@
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.mobile" placeholder="请输入用户名"></Input>
+                <Input
+                  v-model="form.mobile"
+                  placeholder="请输入手机号码"
+                ></Input>
               </div>
             </div>
           </div>
@@ -40,7 +43,11 @@
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.password" placeholder="请输入密码"></Input>
+                <Input
+                  v-model="form.password"
+                  type="password"
+                  placeholder="请输入密码"
+                ></Input>
               </div>
             </div>
           </div>
@@ -65,7 +72,11 @@
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.password" placeholder="请输入密码"></Input>
+                <Input
+                  v-model="form.password"
+                  type="password"
+                  placeholder="请输入密码"
+                ></Input>
               </div>
             </div>
           </div>
@@ -76,6 +87,7 @@
             <div class="login-box">
               <div class="login-flex">
                 <Input
+                  type="password"
                   v-model="form.password_confirmation"
                   placeholder="请输入确认密码"
                 ></Input>
@@ -117,7 +129,11 @@
             <div class="login-icon"></div>
             <div class="login-box">
               <div class="login-flex">
-                <Input v-model="form.password" placeholder="新密码"></Input>
+                <Input
+                  v-model="form.password"
+                  type="password"
+                  placeholder="新密码"
+                ></Input>
               </div>
             </div>
           </div>
@@ -128,6 +144,7 @@
             <div class="login-box">
               <div class="login-flex">
                 <Input
+                  type="password"
                   v-model="form.password_confirmation"
                   placeholder="密码确认"
                 ></Input>
