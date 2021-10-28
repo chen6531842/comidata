@@ -44,7 +44,9 @@
       </div>
       <wy-login-content-box-2></wy-login-content-box-2>
       <div class="login-footer">
-        ©2021 COMDATA 粤ICP备2021126334号 版权所有 震撼者科技深圳有限公司
+        <a href="https://beian.miit.gov.cn/">
+          ©2021 COMDATA 粤ICP备2021126334号 版权所有 震撼者科技深圳有限公司</a
+        >
       </div>
     </div>
     <wy-modal-Login ref="modalLogin"></wy-modal-Login>
@@ -263,6 +265,9 @@ export default class Login extends Vue {
     text-align: center;
     color: rgba(255, 255, 255, 0.55);
     padding: 22px 0;
+    a {
+      color: rgba(255, 255, 255, 0.55);
+    }
   }
 }
 
