@@ -222,10 +222,11 @@ export default class Login extends Vue {
     color: #fff;
     padding: 50px 0;
     .title {
-      font-size: 64px;
+      font-size: 57px;
       font-weight: 600;
       line-height: 90px;
       margin-bottom: 12px;
+      text-align: center;
     }
     .small-title {
       letter-spacing: 20px;
