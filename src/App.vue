@@ -25,6 +25,7 @@ import menuList from "./components/menu-list/menu-list.vue";
 import header from "./components/header/header.vue";
 import { mapState, mapMutations } from "vuex";
 import common from "@/common/common";
+// import { objAny } from "./common/common-interface";
 export default {
   name: "app",
   data() {

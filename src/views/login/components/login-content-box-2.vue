@@ -89,7 +89,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { objAny, fn } from "@/common/common-interface";
+// import { objAny, fn } from "@/common/common-interface";
 @Component({
   components: {},
 })

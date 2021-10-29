@@ -4,7 +4,7 @@
  * @Date: 2020-05-21 13:59:26
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-10-25 10:25:03
+ * @LastEditTime: 2021-10-29 14:43:04
  */
 import Vue from "vue";
 import { objAny } from "../common/common-interface";
@@ -213,7 +213,7 @@ const common: objAny = {
     }
   },
 
-  debounce<Params extends object[]>(
+  debounce<Params extends objAny[]>(
     func: (...args: Params) => objAny,
     timeout: number
   ): (...args: Params) => void {

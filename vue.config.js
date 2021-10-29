@@ -4,7 +4,7 @@
  * @Date: 2020-05-22 13:50:58
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-10-27 13:51:00
+ * @LastEditTime: 2021-10-29 11:09:54
  */
 const path = require("path");
 
@@ -27,7 +27,7 @@ module.exports = {
       entry: "src/main.ts", // page 的入口,每个“page”应该有一个对应的 JavaScript 入口文件
       template: "public/index.html", // 模板来源
       filename: "index.html", // 在 dist/index.html 的输出
-      title: "COMIDATA", // 当使用 title 选项时,在 template 中使用：<title><%= htmlWebpackPlugin.options.title %></title>
+      title: "Comidata全网领先的视频管理系统", // 当使用 title 选项时,在 template 中使用：<title><%= htmlWebpackPlugin.options.title %></title>
       chunks: ["chunk-vendors", "chunk-common", "index"], // 在这个页面中包含的块，默认情况下会包含,提取出来的通用 chunk 和 vendor chunk
     },
   },

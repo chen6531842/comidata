@@ -312,7 +312,7 @@ export default class LoginModal extends Vue {
 
   async getCode(): Promise<void> {
     if (!this.isCode) {
-      let ret;
+      let ret: objAny = {};
       if (this.loginType == 2) {
         ret = await getRegisterCode({
           mobile: this.form.mobile,

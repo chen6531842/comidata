@@ -51,7 +51,7 @@ const actions = {
    * @param {*} { commit, state }
    * @param {objAny} obj
    */
-  async getRouter({ commit }: objAny, obj: objAny) {
+  async getRouter({ commit }: objAny, obj: objAny): Promise<void> {
     const loginData: objAny = common.get("loginData");
     const win: objAny = window;
     if (loginData) {

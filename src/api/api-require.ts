@@ -98,19 +98,19 @@ export const request = function (
   url: string,
   params: objAny,
   configData?: objAny
-) {
+): Promise<objAny> {
   if (url.indexOf("http") === -1 && url.indexOf(myConfig.ajaxHost) === -1) {
     const ajaxHost: string = myConfig.ajaxHost;
     url = ajaxHost + url;
   }
 
-  let config: objAny | number | string;
+  // let config: objAny | number | string;
   let header: objAny = {};
   let method: AxiosRequestConfig["method"] = "POST";
   if (configData) {
-    if (configData.config) {
-      config = configData.config;
-    }
+    // if (configData.config) {
+    //   config = configData.config;
+    // }
     if (configData.method === "get") {
       url = url + "?" + common.parseParam(params);
       params = {};
@@ -151,9 +151,9 @@ export const request = function (
     }
   }
   const headers = postHeaders(header);
-  if (!headers) {
-    return;
-  }
+  // if (!headers) {
+  //   return;
+  // }
 
   return new Promise<any>((resolve, reject) => {// eslint-disable-line
     const options: AxiosRequestConfig = {

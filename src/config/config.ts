@@ -7,14 +7,14 @@ let configData = {
   footText: "",
   formSize: "small", // 全局按钮表单的大小
   pickerOptions: {
-    disabledDate(time: objAny) {
+    disabledDate(time: objAny): boolean {
       return (
         time.getTime() > new Date(new Date().toLocaleDateString()).getTime()
       );
     },
   },
   pickerOptionsMin: {
-    disabledDate(time: objAny) {
+    disabledDate(time: objAny): boolean {
       return (
         time.getTime() < new Date(new Date().toLocaleDateString()).getTime()
       );
