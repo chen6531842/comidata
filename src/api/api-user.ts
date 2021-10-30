@@ -41,3 +41,42 @@ export const resetPwd = (
 ): Promise<objAny> => {
   return request("/login/resetPwd", data, config);
 };
+
+//  退出系统
+export const logOut = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/login/logOut", data, config);
+};
+//   角色列表
+export const getRoleList = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/role", data, config);
+};
+//   角色详情
+export const getRoleDetails = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "getStr";
+  return request("/role", data, config);
+};
+//   新增/编辑角色
+export const addRole = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/role", data, config);
+};
+//   所有的权限信息
+export const getRoleRights = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("role/rights", data, config);
+};

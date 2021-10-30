@@ -115,6 +115,14 @@ export const request = function (
       url = url + "?" + common.parseParam(params);
       params = {};
       method = "GET";
+    } else if (configData.method === "getStr") {
+      let srt = "";
+      for (const i in params) {
+        srt = srt + "/" + params[i];
+      }
+      url = url + srt;
+      params = {};
+      method = "GET";
     } else if (configData.method === "postStr") {
       url = url + "?" + common.parseParam(params);
       params = {};

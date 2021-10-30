@@ -56,6 +56,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "../../common/common-interface";
+import { logOut } from "@/api/api-user";
 @Component
 export default class Header extends Vue {
   private languageName = "";
@@ -64,12 +65,18 @@ export default class Header extends Vue {
       title: "提示",
       content: "<p>确定要退出登录吗？</p>",
       onOk: () => {
-        this.$router.push("/login");
-        setTimeout(() => {
-          window.location.reload();
-        });
+        this.logOut();
       },
     });
+  }
+  async logOut(): Promise<void> {
+    let ret = await logOut({});
+    if (ret.code == 200) {
+      this.$router.push("/login");
+      setTimeout(() => {
+        window.location.reload();
+      });
+    }
   }
   public languageClick(value: string): void {
     this.getLanguageName(value);

@@ -83,11 +83,11 @@ export default class LoginVideo extends Vue {
     console.log(this.$refs.voideData.src);
     this.$refs.voideData.play();
   }
-  mounted(): void {
-    this.$nextTick(() => {
-      this.init();
-    });
-  }
+  // mounted(): void {
+  //   this.$nextTick(() => {
+  //     this.init();
+  //   });
+  // }
 }
 </script>
 <style lang="less"></style>

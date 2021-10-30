@@ -53,6 +53,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
+import { getRoleList } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -79,14 +80,14 @@ export default class PageSystemUser extends Vue {
     },
     {
       title: "姓名",
-      key: "userInfo",
+      key: "name",
       minWidth: 120,
     },
-    {
-      title: "邮箱",
-      key: "userData",
-      minWidth: 120,
-    },
+    // {
+    //   title: "邮箱",
+    //   key: "userData",
+    //   minWidth: 120,
+    // },
     {
       title: "手机号码",
       key: "phone",
@@ -128,8 +129,11 @@ export default class PageSystemUser extends Vue {
     this.getTableList();
   }
 
-  public getTableList(): void {
-    console.log("???");
+  async getTableList(): Promise<void> {
+    let ret = await getRoleList({});
+    if (ret.code == 200) {
+      this.tableList = ret.payload;
+    }
   }
   $refs!: {
     addModal: HTMLFormElement;
@@ -143,6 +147,9 @@ export default class PageSystemUser extends Vue {
   public detailsKey(item: objAny): void {
     this.$refs.addModal.open(item);
   }
+  // mounted(): void {
+  //   this.getTableList();
+  // }
 }
 </script>
 
