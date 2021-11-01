@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="./favicon.ico">
+    <title>授权</title>
+    <meta name="keywords" content="comidata平台,短视频多账号管理系统,多平台多账号同步_内容,抖音,快手,西瓜,哔哩哔哩,youtube,twitter,dailymotion,Instagram">
+    <meta name="description" content="comidata平台,全网领先的视频管理系统、致力于让你高效管理抖音,快手,西瓜,哔哩哔哩,youtube,twitter,dailymotion,Instagram">
+  </head>
+  <body>
+    <div id="text">正在授权</div>
+
+    <script>
+      window.onload = function(){
+        let url = query('url');
+        // console.log(url)
+        if(url){
+          setTimeout(function(){
+            window.location.href = url;
+          },2000)
+          
+        }else{
+          // console.log(window.location.href)
+          window.parent.autoCallBack(window.location.href);
+        }
+      }
+      var query = function (name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ''])[1].replace(/\+/g, '%20')) || ''
+      }
+    </script>
+  </body>
+</html>

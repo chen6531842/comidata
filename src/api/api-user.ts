@@ -113,3 +113,12 @@ export const getUserDetails = (
   config.method = "getStr";
   return request("/user", data, config);
 };
+
+//   快手授权
+export const getKsAuth = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/ks/auth/connectFullUrl", data, config);
+};

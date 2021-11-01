@@ -51,6 +51,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
+
 @Component({
   components: {
     "wy-sys-content": sysContent,

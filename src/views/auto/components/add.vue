@@ -14,10 +14,11 @@
         </div>
         <div class="auto-name">{{ item.name }}</div>
         <div class="auto-btn">
-          <Button>立即授权</Button>
+          <Button @click="autoClick(item)">立即授权</Button>
         </div>
       </li>
     </ul>
+    <wy-auto-iframe ref="autoIframe" @success="autoSuccess"></wy-auto-iframe>
   </Modal>
 </template>
 
@@ -26,10 +27,13 @@ import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
 import blockContent from "@/components/block-content/block-content.vue";
 import noData from "@/components/no-data/no-data.vue";
+import { getKsAuth } from "@/api/api-user";
+import autoIframe from "@/components/auto-iframe/auto-iframe.vue";
 @Component({
   components: {
     "wy-block-content": blockContent,
     "wy-no-data": noData,
+    "wy-auto-iframe": autoIframe,
   },
 })
 export default class Auto extends Vue {
@@ -49,6 +53,25 @@ export default class Auto extends Vue {
   private title = "新增授权";
   public open(): void {
     this.modalShow = true;
+  }
+  public autoClick(item: objAny): void {
+    if (item.type == 2) {
+      this.getKsAuth();
+    }
+  }
+  public autoSuccess(): void {
+    console.log("成功");
+  }
+  $refs!: {
+    autoIframe: HTMLFormElement;
+  };
+  async getKsAuth(): Promise<void> {
+    let ret = await getKsAuth({
+      redirectUrl: "http://192.168.0.100:8087/auth.html",
+    });
+    if (ret.code == 200) {
+      this.$refs.autoIframe.open(ret.payload.url);
+    }
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Date: 2020-05-21 13:59:26
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-10-29 14:43:04
+ * @LastEditTime: 2021-11-01 21:51:48
  */
 import Vue from "vue";
 import { objAny } from "../common/common-interface";
@@ -225,9 +225,10 @@ const common: objAny = {
       }, timeout);
     };
   },
-  request(paras: string): string {
+
+  request(paras: string, strUrl?: string): string {
     const win: objAny = window;
-    const url = decodeURIComponent(win.location.href);
+    const url = decodeURIComponent(strUrl ? strUrl : win.location.href);
     const paraString = url
       .substring(url.indexOf("?") + 1, url.length)
       .split("&");
