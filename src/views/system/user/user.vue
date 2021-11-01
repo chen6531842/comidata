@@ -10,9 +10,19 @@
       </div>
     </div>
     <Table :columns="columns" :data="tableList">
-      <template slot-scope="{ row }" slot="status">
-        <div class="status-dian">已激活{{ row.a }}</div>
-        <Button type="text" size="small" @click="addModalShow">重新发送</Button>
+      <template slot-scope="{ row }" slot="is_active">
+        <div class="status-dian" v-if="row.is_active">已激活</div>
+        <Button
+          type="text"
+          class="blue"
+          v-else
+          size="small"
+          @click="addModalShow"
+          >重新发送</Button
+        >
+      </template>
+      <template slot-scope="{ row }" slot="role_names">
+        {{ row.role_names ? row.role_names.join(",") : "" }}
       </template>
 
       <template slot-scope="{ row }" slot="action">
@@ -29,7 +39,7 @@
           type="text"
           size="small"
           style="margin-right: 5px"
-          @click="updataKey(row)"
+          @click="updataUser(row)"
           >修改</Button
         >
         <Button type="text" class="red" size="small" @click="removeVideo(row)"
@@ -53,7 +63,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
-import { getRoleList } from "@/api/api-user";
+import { getUserList } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -79,23 +89,30 @@ export default class PageSystemUser extends Vue {
       align: "center",
     },
     {
-      title: "姓名",
+      title: "full_name",
       key: "name",
       minWidth: 120,
     },
     // {
     //   title: "邮箱",
-    //   key: "userData",
+    //   key: "email",
     //   minWidth: 120,
     // },
     {
       title: "手机号码",
-      key: "phone",
+      key: "name",
       minWidth: 130,
     },
     {
       title: "角色",
-      key: "phone",
+      key: "role_names",
+      slot: "role_names",
+      minWidth: 120,
+    },
+    {
+      title: "是否激活",
+      key: "is_active",
+      slot: "is_active",
       minWidth: 120,
     },
     {
@@ -104,7 +121,7 @@ export default class PageSystemUser extends Vue {
       minWidth: 140,
     },
   ];
-  private tableList: objAny[] = [{}];
+  private tableList: objAny[] = [];
 
   public removeVideo(item: objAny): void {
     this.$Modal.confirm({
@@ -130,9 +147,10 @@ export default class PageSystemUser extends Vue {
   }
 
   async getTableList(): Promise<void> {
-    let ret = await getRoleList({});
+    let ret = await getUserList({});
     if (ret.code == 200) {
-      this.tableList = ret.payload;
+      this.tableList = ret.payload.data;
+      this.total = ret.payload.total;
     }
   }
   $refs!: {
@@ -141,15 +159,15 @@ export default class PageSystemUser extends Vue {
   public addModalShow(): void {
     this.$refs.addModal.open();
   }
-  public updataKey(item: objAny): void {
+  public updataUser(item: objAny): void {
     this.$refs.addModal.open(item);
   }
   public detailsKey(item: objAny): void {
     this.$refs.addModal.open(item);
   }
-  // mounted(): void {
-  //   this.getTableList();
-  // }
+  mounted(): void {
+    this.getTableList();
+  }
 }
 </script>
 

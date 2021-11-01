@@ -80,11 +80,11 @@ axios.interceptors.response.use(
 
 export const postHeaders = function (data: objAny): objAny {
   const state: any = store.state; // eslint-disable-line
-  const loginData: objAny = state.sys.userInfo;
+  const loginData: objAny = state.sys.loginData;
   let headers: objAny = {
     "Content-Type": "application/json;charset=UTF-8",
   };
-  if (loginData && loginData.accessToken) {
+  if (loginData && loginData.token) {
     headers["Authorization"] = loginData.token;
   }
   if (data) {

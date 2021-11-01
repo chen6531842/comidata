@@ -24,7 +24,7 @@
       <div class="role-item-content">
         <div class="role-item-title">
           <span class="title">管理员</span>
-          <a class="blue updata-click">编辑角色权限</a>
+          <a class="blue updata-click" @click="updataRole">编辑角色权限</a>
         </div>
         <div class="role-item-table" v-if="roleData.rights">
           <div
@@ -33,21 +33,24 @@
             :key="index"
           >
             <div class="item-auto">{{ item.name }}</div>
-            <template v-for="(child, i) in item.childrens">
-              <div
-                class="item-auto-list"
-                v-if="child.is_checked"
-                :key="index + '-' + i"
-              >
-                <div class="item-auto-item">{{ child.name }}</div>
-              </div>
-            </template>
+
+            <div class="item-auto-list">
+              <template v-for="(child, i) in item.childrens">
+                <div
+                  class="item-auto-item"
+                  v-if="child.is_checked"
+                  :key="index + '-' + i"
+                >
+                  {{ child.name }}
+                </div>
+              </template>
+            </div>
           </div>
         </div>
       </div>
     </section>
     <wy-no-data v-if="tableList.length == 0"></wy-no-data>
-    <wy-add-modal ref="addModal"></wy-add-modal>
+    <wy-add-modal ref="addModal" @success="getTableList"></wy-add-modal>
   </wy-sys-content>
 </template>
 
@@ -76,15 +79,23 @@ export default class PageSystemRole extends Vue {
   private selectId = "";
   private roleData: objAny = {};
   private tableList: objAny[] = [];
+  private loading = false;
 
   async getTableList(): Promise<void> {
+    this.loading = true;
     let ret = await getRoleList({});
     if (ret.code == 200) {
       this.tableList = ret.payload;
-      if (this.tableList.length > 0 && this.selectId == "") {
-        this.selectId = this.tableList[0].id;
+      if (this.tableList.length > 0) {
+        if (this.selectId == "") {
+          this.selectId = this.tableList[0].id;
+        }
         this.getDetails();
+      } else {
+        this.loading = false;
       }
+    } else {
+      this.loading = false;
     }
   }
   $refs!: {
@@ -93,14 +104,17 @@ export default class PageSystemRole extends Vue {
   public addModalShow(): void {
     this.$refs.addModal.open();
   }
-  public updataKey(item: objAny): void {
-    this.$refs.addModal.open(item);
+  public updataRole(): void {
+    if (!this.loading) {
+      this.$refs.addModal.open(this.roleData);
+    }
   }
   async getDetails(): Promise<void> {
     let ret = await getRoleDetails({ id: this.selectId });
     if (ret.code == 200) {
       this.roleData = ret.payload;
     }
+    this.loading = false;
   }
   public roleClick(item: objAny): void {
     this.selectId = item.id;

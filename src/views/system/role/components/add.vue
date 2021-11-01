@@ -13,9 +13,23 @@
       :label-width="120"
     >
       <FormItem label="角色名称" prop="name">
-        <Input v-model="formInline.name" placeholder="请输入姓名"></Input>
-        <div class="form-tips">些角色为默认角色，名称不可修改</div>
+        <Input
+          v-model="formInline.name"
+          :maxlength="10"
+          placeholder="请输入姓名"
+        ></Input>
+        <!-- <div class="form-tips">角色为默认角色，名称不可修改</div> -->
       </FormItem>
+      <FormItem label="描述" prop="description">
+        <Input
+          type="textarea"
+          v-model="formInline.description"
+          placeholder="请输入描述"
+          :maxlength="100"
+          :show-word-limit="true"
+        ></Input>
+      </FormItem>
+
       <FormItem label="角色权限" prop="rightsStr">
         <Input
           v-model="formInline.rightsStr"
@@ -25,7 +39,7 @@
         <div class="role-item-table">
           <div
             class="item-table-row"
-            v-for="(item, index) in allAutoList"
+            v-for="(item, index) in autoListShow"
             :key="index"
           >
             <div class="item-auto">
@@ -53,7 +67,7 @@
       </FormItem>
 
       <FormItem>
-        <Button :loading="loading" type="primary" @click="submitClick"
+        <Button :loading="loading" type="primary" @click="handleSubmit"
           >提交</Button
         >
         <Button style="margin-left: 8px" @click="modalShow = false"
@@ -86,19 +100,14 @@ export default class PageUserRole extends Vue {
     rightsStr: "",
   };
   private loading = false;
-  private rule: objAny = {};
-  private allAutoList: objAny[] = [
-    {
-      name: "内容管理",
-      is_checked: false,
-      childrens: [
-        { name: "内容管理", is_checked: false },
-        { name: "内容管理", is_checked: false },
-        { name: "内容管理", is_checked: false },
-        { name: "内容管理", is_checked: false },
-      ],
-    },
-  ];
+  private rule: objAny = {
+    name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+    description: [
+      { required: true, message: "请输入角色描述", trigger: "blur" },
+    ],
+    rightsStr: [{ required: true, message: "请选择权限", trigger: "change" }],
+  };
+  private allAutoList: objAny[] = [];
   private autoListShow: objAny[] = [];
 
   private title = "新增权限";
@@ -112,8 +121,12 @@ export default class PageUserRole extends Vue {
         this.autoListShow = JSON.parse(JSON.stringify(this.allAutoList));
       }
       this.formInline.id = "";
+      this.formInline.name = "";
+      this.formInline.description = "";
     } else {
       this.autoListShow = JSON.parse(JSON.stringify(item.rights));
+      this.formInline.name = item.name;
+      this.formInline.description = item.description;
       this.formInline.id = item.id;
     }
   }
@@ -122,6 +135,7 @@ export default class PageUserRole extends Vue {
     let ret = await getRoleRights({});
     if (ret.code == 200) {
       this.allAutoList = ret.payload;
+      this.autoListShow = JSON.parse(JSON.stringify(this.allAutoList));
     }
   }
   public itemChange(data: objAny): void {
@@ -130,6 +144,7 @@ export default class PageUserRole extends Vue {
         item.is_checked = data.is_checked;
       });
     }
+    this.getRights();
   }
   public childChange(item: objAny, child: objAny): void {
     if (child.is_checked && !item.is_checked) {
@@ -144,11 +159,21 @@ export default class PageUserRole extends Vue {
     if (!isSelect && item.is_checked) {
       item.is_checked = false;
     }
+    this.getRights();
   }
   $refs!: {
     formValidate: HTMLFormElement; //写法1 - 推荐
   };
   public handleSubmit(): void {
+    let rights: number[] = this.getRights();
+    this.formInline.rights = rights;
+    this.$refs.formValidate.validate((valid: boolean) => {
+      if (valid) {
+        this.submitData();
+      }
+    });
+  }
+  public getRights(): number[] {
     let rights: number[] = [];
     this.autoListShow.map((item: objAny) => {
       if (item.is_checked) {
@@ -157,17 +182,13 @@ export default class PageUserRole extends Vue {
       if (item.childrens && item.childrens.length > 0) {
         item.childrens.map((child: objAny) => {
           if (child.is_checked) {
-            rights.push(item.id);
+            rights.push(child.id);
           }
         });
       }
     });
     this.formInline.rightsStr = rights.join(",");
-    this.$refs.formValidate.validate((valid: boolean) => {
-      if (valid) {
-        this.submitData();
-      }
-    });
+    return rights;
   }
   async submitData(): Promise<void> {
     this.loading = true;
@@ -183,6 +204,7 @@ export default class PageUserRole extends Vue {
     if (ret.code == 200) {
       this.$Message.success("操作成功");
       this.$emit("success");
+      this.modalShow = false;
     }
     this.loading = false;
   }

@@ -197,6 +197,7 @@
           type="primary"
           size="large"
           long
+          :loading="loading"
           @click="handleSubmit"
           >重置</Button
         >
@@ -313,20 +314,22 @@ export default class LoginModal extends Vue {
   async getCode(): Promise<void> {
     if (!this.isCode) {
       let ret: objAny = {};
-      if (this.loginType == 2) {
-        ret = await getRegisterCode({
-          mobile: this.form.mobile,
-        });
-      } else if (this.loginType == 3) {
-        ret = await getSendFindPwdCodeCode({
-          mobile: this.form.mobile,
-        });
-      }
-      if (ret.code == 200) {
-        this.isCode = true;
-        this.time = 60;
-        this.codeText = this.time + "s";
-        this.getCodeTime();
+      if (this.form.mobile.length == 11) {
+        if (this.loginType == 2) {
+          ret = await getRegisterCode({
+            mobile: this.form.mobile,
+          });
+        } else if (this.loginType == 3) {
+          ret = await getSendFindPwdCodeCode({
+            mobile: this.form.mobile,
+          });
+        }
+        if (ret.code == 200) {
+          this.isCode = true;
+          this.time = 60;
+          this.codeText = this.time + "s";
+          this.getCodeTime();
+        }
       }
     }
   }
@@ -418,6 +421,17 @@ export default class LoginModal extends Vue {
       this.resetForm();
     }
     this.loading = false;
+  }
+  mounted(): void {
+    document.onkeydown = (event) => {
+      if (event.keyCode === 13 && !this.loading) {
+        this.handleSubmit();
+        return false;
+      }
+    };
+  }
+  destroyed(): void {
+    document.onkeydown = null;
   }
 }
 </script>

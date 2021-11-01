@@ -31,6 +31,7 @@ export const getSendFindPwdCodeCode = (
   data: objAny = {},
   config: objAny = {}
 ): Promise<objAny> => {
+  config.method = "get";
   return request("/login/sendFindPwdCode", data, config);
 };
 
@@ -78,5 +79,37 @@ export const getRoleRights = (
   config: objAny = {}
 ): Promise<objAny> => {
   config.method = "get";
-  return request("role/rights", data, config);
+  return request("/role/rights", data, config);
+};
+//   用户新增用的所有角色
+export const getAllRole = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/user/roles", data, config);
+};
+//   用户新增用的所有平台账户
+export const getAllAccounts = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/user/accounts", data, config);
+};
+//   用户列表
+export const getUserList = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/user", data, config);
+};
+//   用户详情
+export const getUserDetails = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "getStr";
+  return request("/user", data, config);
 };

@@ -12,30 +12,30 @@
       :rules="rule"
       :label-width="120"
     >
-      <FormItem label="姓名" prop="name">
-        <Input v-model="formInline.name" placeholder="请输入姓名"></Input>
+      <FormItem label="姓名" prop="full_name">
+        <Input v-model="formInline.full_name" placeholder="请输入姓名"></Input>
       </FormItem>
       <FormItem label="手机号码" prop="phone">
         <Input v-model="formInline.phone" placeholder="请输入手机号码"></Input>
         <div class="form-tips">
-          用些手机号码登录后，即可完成激活，激活后不可修改
+          用此手机号码登录后，即可完成激活，激活后不可修改
         </div>
       </FormItem>
       <FormItem label="选择角色" prop="city">
         <Select v-model="formInline.role" placeholder="请选择选择角色">
           <Option
-            :value="item.roleId"
+            :value="item.id"
             v-for="(item, index) in roleList"
             :key="index"
-            >{{ item.roleName }}</Option
+            >{{ item.name }}</Option
           >
         </Select>
-        <Button type="text" siam="small">新增角色</Button>
+        <Button type="text" siam="small" @click="addRight">新增角色</Button>
       </FormItem>
       <FormItem label="关联平台账户">
         <!-- <wy-block-content title="关联平台账户"> -->
         <Row>
-          <Col :span="14" class="select">
+          <Col :span="12" class="select">
             <Input
               prefix="ios-search"
               placeholder="输入要搜索的应用名称或者ID"
@@ -44,22 +44,22 @@
         </Row>
 
         <Row class="acc-box-row">
-          <Col :span="14" class="select">
+          <Col :span="12" class="select">
             <wy-block-content title="平台账户" :border="true">
               <div class="acc-content">
                 <Checkbox v-model="all">全选</Checkbox>
-                <CheckboxGroup v-model="formInline.account">
+                <CheckboxGroup v-model="formInline.platform_accounts_ids">
                   <Checkbox
-                    :label="item.value"
+                    :label="item.id"
                     v-for="(item, index) in accountList"
                     :key="index"
-                    >{{ item.name }}</Checkbox
+                    >{{ item.nick_name }}{{ item.platform_type_name }}</Checkbox
                   >
                 </CheckboxGroup>
               </div>
             </wy-block-content>
           </Col>
-          <Col :span="10">
+          <Col :span="12">
             <wy-block-content title="" :border="true">
               <div class="select-box" slot="block-title">
                 <div class="select-box-title">
@@ -81,6 +81,7 @@
         >
       </FormItem>
     </Form>
+    <wy-add-role ref="addModal" @success="getAllRole"></wy-add-role>
   </Modal>
 </template>
 
@@ -89,43 +90,74 @@ import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
 import blockContent from "@/components/block-content/block-content.vue";
 import noData from "@/components/no-data/no-data.vue";
+import { getAllAccounts, getAllRole, getUserDetails } from "@/api/api-user";
+import addRole from "@/views/system/role/components/add.vue";
 @Component({
   components: {
     "wy-block-content": blockContent,
     "wy-no-data": noData,
+    "wy-add-role": addRole,
   },
 })
 export default class PageUserAdd extends Vue {
   private modalShow = false;
   private formInline: objAny = {
-    name: "",
+    id: "",
+    full_name: "",
     phone: "",
     role: "",
     category: [],
-    account: [],
+    platform_accounts_ids: [],
     desc: "",
   };
   private all = false;
   private rule: objAny = {};
-  private roleList: objAny[] = [
-    { roleName: "餐饮", roleId: 1 },
-    { roleName: "汽车", roleId: 2 },
-    { roleName: "健康食品", roleId: 3 },
-    { roleName: "教育培训", roleId: 4 },
-    { roleName: "金融", roleId: 5 },
-  ];
+  private roleList: objAny[] = [];
   private accountList: objAny[] = [
     { name: "a", value: 1 },
     { name: "d", value: 2 },
   ];
 
   private title = "新增人员";
-  public open(): void {
+  public open(item?: objAny): void {
     this.modalShow = true;
+    this.getAllRole();
+    this.getAllAccounts();
+    if (item) {
+      console.log(item);
+      this.formInline.id = item.id;
+      this.formInline.full_name = item.full_name;
+      this.formInline.phone = item.name;
+      this.getUserDetails();
+    }
   }
 
+  async getUserDetails(): Promise<void> {
+    let ret = await getUserDetails({
+      id: this.formInline.id,
+    });
+    if (ret.code == 200) {
+      let data: objAny = ret.payload;
+      this.formInline.platform_accounts_ids = data.platform_accounts_ids;
+    }
+  }
+  async getAllRole(): Promise<void> {
+    let ret = await getAllRole({});
+    if (ret.code == 200) {
+      this.roleList = ret.payload;
+    }
+  }
+  async getAllAccounts(): Promise<void> {
+    let ret = await getAllAccounts({});
+    if (ret.code == 200) {
+      this.accountList = ret.payload;
+    }
+  }
+  $refs!: {
+    addModal: HTMLFormElement;
+  };
   public addRight(): void {
-    console.log("?");
+    this.$refs.addModal.open();
   }
 }
 </script>
