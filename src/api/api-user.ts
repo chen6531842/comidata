@@ -113,3 +113,44 @@ export const getUserDetails = (
   config.method = "getStr";
   return request("/user", data, config);
 };
+//   用户添加、修改
+export const addUser = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/user", data, config);
+};
+
+//  用户一键发布所有的平台
+export const platformAccounts = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/video/platformAccounts", data, config);
+};
+
+//  上传图片或者视频
+export const uploadFile = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "formData";
+  return request("/video/upload", data, config);
+};
+//  一键发布视频
+export const subPlatformVideo = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/video", data, config);
+};
+//  用户一键发布所有的平台
+export const getVideoList = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/video", data, config);
+};

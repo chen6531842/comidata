@@ -31,8 +31,15 @@
     </div>
     <Table :columns="columns" :data="tableList">
       <template slot-scope="{ row }" slot="account">
-        <div>抖音：asd,asd,{{ row.a }}</div>
-        <div>快手：asd,asd,asd</div>
+        <video :src="row.video_url"></video>
+      </template>
+      <template slot-scope="{ row }" slot="account">
+        <div v-for="(item, index) in row.video_publish_accounts" :key="index">
+          {{ index }}:
+          <span v-for="(child, i) in item" :key="index + '-' + i"
+            >{{ child.nick_name }}({{ child.status_name }})</span
+          >
+        </div>
       </template>
       <template slot-scope="{ row }" slot="action">
         <Button
@@ -57,9 +64,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import sysContent from "../../../components/sys-content/sys-content.vue";
-import listPage from "../../../components/list-page/list-page.vue";
-import { objAny } from "../../../common/common-interface";
+import sysContent from "@/components/sys-content/sys-content.vue";
+import listPage from "@/components/list-page/list-page.vue";
+import { objAny } from "@/common/common-interface";
+import { getVideoList } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -83,17 +91,18 @@ export default class PageVideo extends Vue {
     },
     {
       title: "视频",
-      key: "name",
+      key: "video_url",
+      slot: "video",
       minWidth: 120,
     },
     {
       title: "描述",
-      key: "age",
+      key: "description",
       minWidth: 160,
     },
     {
       title: "平台/账户",
-      key: "age",
+      key: "video_publish_accounts",
       slot: "account",
       minWidth: 160,
     },
@@ -135,8 +144,15 @@ export default class PageVideo extends Vue {
     this.getTableList();
   }
 
-  public getTableList(): void {
-    console.log("???");
+  async getTableList(): Promise<void> {
+    let ret = await getVideoList({});
+    if (ret.code == 200) {
+      this.tableList = ret.payload.data;
+      this.total = ret.payload.total;
+    }
+  }
+  mounted(): void {
+    this.getTableList();
   }
 }
 </script>

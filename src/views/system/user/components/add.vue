@@ -15,8 +15,8 @@
       <FormItem label="姓名" prop="full_name">
         <Input v-model="formInline.full_name" placeholder="请输入姓名"></Input>
       </FormItem>
-      <FormItem label="手机号码" prop="phone">
-        <Input v-model="formInline.phone" placeholder="请输入手机号码"></Input>
+      <FormItem label="手机号码" prop="mobile">
+        <Input v-model="formInline.mobile" placeholder="请输入手机号码"></Input>
         <div class="form-tips">
           用此手机号码登录后，即可完成激活，激活后不可修改
         </div>
@@ -75,7 +75,9 @@
         <!-- </wy-block-content> -->
       </FormItem>
       <FormItem>
-        <Button type="primary">提交</Button>
+        <Button type="primary" @click="handleSubmit" :loading="loading"
+          >提交</Button
+        >
         <Button style="margin-left: 8px" @click="modalShow = false"
           >取消</Button
         >
@@ -90,8 +92,14 @@ import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
 import blockContent from "@/components/block-content/block-content.vue";
 import noData from "@/components/no-data/no-data.vue";
-import { getAllAccounts, getAllRole, getUserDetails } from "@/api/api-user";
+import {
+  getAllAccounts,
+  getAllRole,
+  getUserDetails,
+  addUser,
+} from "@/api/api-user";
 import addRole from "@/views/system/role/components/add.vue";
+import regular from "@/common/regular";
 @Component({
   components: {
     "wy-block-content": blockContent,
@@ -101,22 +109,24 @@ import addRole from "@/views/system/role/components/add.vue";
 })
 export default class PageUserAdd extends Vue {
   private modalShow = false;
+  private loading = false;
+
   private formInline: objAny = {
     id: "",
     full_name: "",
-    phone: "",
+    mobile: "",
     role: "",
     category: [],
     platform_accounts_ids: [],
-    desc: "",
   };
   private all = false;
-  private rule: objAny = {};
+  private rule: objAny = {
+    full_name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+    mobile: [{ required: true, validator: regular.phone, trigger: "blur" }],
+    role: [{ required: true, message: "请选择角色", trigger: "change" }],
+  };
   private roleList: objAny[] = [];
-  private accountList: objAny[] = [
-    { name: "a", value: 1 },
-    { name: "d", value: 2 },
-  ];
+  private accountList: objAny[] = [];
 
   private title = "新增人员";
   public open(item?: objAny): void {
@@ -127,7 +137,7 @@ export default class PageUserAdd extends Vue {
       console.log(item);
       this.formInline.id = item.id;
       this.formInline.full_name = item.full_name;
-      this.formInline.phone = item.name;
+      this.formInline.mobile = item.name;
       this.getUserDetails();
     }
   }
@@ -154,8 +164,26 @@ export default class PageUserAdd extends Vue {
     }
   }
   $refs!: {
+    formValidate: HTMLFormElement; //写法1 - 推荐
     addModal: HTMLFormElement;
   };
+  public handleSubmit(): void {
+    this.$refs.formValidate.validate((valid: boolean) => {
+      if (valid) {
+        this.addUser();
+      }
+    });
+  }
+  async addUser(): Promise<void> {
+    this.loading = true;
+    let ret = await addUser(this.formInline);
+    if (ret.code == 200) {
+      this.modalShow = false;
+      this.$emit("success");
+      this.$Message.success("操作成功");
+    }
+    this.loading = false;
+  }
   public addRight(): void {
     this.$refs.addModal.open();
   }
