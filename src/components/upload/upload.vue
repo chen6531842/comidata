@@ -1,6 +1,6 @@
 <template>
   <Upload
-    multiple
+    ref="upload"
     :type="type"
     :action="action"
     :headers="headers"
@@ -10,15 +10,35 @@
     :before-upload="beforeUpload"
     :on-error="error"
     :default-file-list="defaultList"
+    :show-upload-list="false"
   >
     <slot></slot>
-    <!-- <div class="Upload-text">点击或者拖拽上传视频</div> -->
+
+    <template v-if="type == 'select'">
+      <div class="img-box" v-for="(item, index) in uploadList" :key="index">
+        <template v-if="item.status === 'finished'">
+          <img :src="item.url" />
+        </template>
+        <template v-else>
+          <Progress
+            v-if="item.showProgress"
+            :percent="item.percentage"
+            hide-info
+          ></Progress>
+        </template>
+      </div>
+      <div class="img-box">
+        <Icon type="ios-camera" size="20"></Icon>
+      </div>
+    </template>
+
+    <!--:format="format" <div class="Upload-text">点击或者拖拽上传视频</div> -->
   </Upload>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { postHeaders } from "@/api/api-require";
 import { objAny } from "@/common/common-interface";
+import { State } from "vuex-class";
 @Component
 export default class WyUpload extends Vue {
   @Prop({ default: "select" }) private type!: string;
@@ -30,14 +50,21 @@ export default class WyUpload extends Vue {
     },
   })
   private data!: objAny;
-
+  @State("sys") sys!: objAny;
   private headers: objAny = {};
   private uploadData: objAny = {};
   private defaultList: objAny[] = [];
+  private uploadList: objAny[] = [];
+  private format: string[] = [];
 
   public uploadSuccess(response: objAny, file: objAny): void {
     if (response.code == 200) {
-      this.defaultList = [file];
+      // this.defaultList = [file];
+      if (this.uploadList.length > 1) {
+        this.uploadList.splice(0, 1);
+      }
+      // console.log(this.uploadList);
+      file.url = this.$config.imgShow + response.payload.file_path;
       this.$emit("success", response.payload);
     } else {
       this.$Notice.error({
@@ -69,11 +96,29 @@ export default class WyUpload extends Vue {
       return false;
     }
   }
+  $refs!: {
+    upload: HTMLFormElement; //写法1 - 推荐
+  };
   mounted(): void {
     this.uploadData = JSON.parse(JSON.stringify(this.data));
     this.uploadData.type = this.uploadType;
-    this.headers = postHeaders({});
+    this.format =
+      this.uploadType == 1 ? this.$config.imgType : this.$config.videoType;
+    this.headers.Authorization = this.sys.loginData.token;
+
+    this.uploadList = this.$refs.upload.fileList;
   }
 }
 </script>
-<style lang="less"></style>
+<style lang="less">
+.img-box {
+  width: 58px;
+  height: 58px;
+  line-height: 58px;
+  border: 1px dashed #dcdee2;
+  text-align: center;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 10px;
+}
+</style>

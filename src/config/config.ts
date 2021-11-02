@@ -4,6 +4,7 @@ let configData = {
   ajaxHost: "/api", // 接口公用的一段
   apiStatus: 200,
   host: "",
+  imgShow: "/",
   footText: "",
   formSize: "small", // 全局按钮表单的大小
   pickerOptions: {

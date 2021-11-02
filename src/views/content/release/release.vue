@@ -95,7 +95,7 @@
                 type="select"
                 @success="uploadImgSuccess"
               >
-                <div
+                <!-- <div
                   style="
                     width: 58px;
                     height: 58px;
@@ -105,7 +105,7 @@
                   "
                 >
                   <Icon type="ios-camera" size="20"></Icon>
-                </div>
+                </div> -->
               </wy-upload>
             </FormItem>
             <FormItem>
