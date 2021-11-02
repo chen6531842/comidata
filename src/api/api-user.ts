@@ -143,14 +143,21 @@ export const subPlatformVideo = (
   data: objAny = {},
   config: objAny = {}
 ): Promise<objAny> => {
-  config.method = "get";
   return request("/video", data, config);
 };
-//  用户一键发布所有的平台
+//  获取视频列表
 export const getVideoList = (
   data: objAny = {},
   config: objAny = {}
 ): Promise<objAny> => {
   config.method = "get";
   return request("/video", data, config);
+};
+//   快手授权
+export const getKsAuth = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/ks/auth/connectFullUrl", data, config);
 };

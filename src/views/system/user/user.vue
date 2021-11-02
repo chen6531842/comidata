@@ -9,7 +9,7 @@
         </Form>
       </div>
     </div>
-    <Table :columns="columns" :data="tableList">
+    <Table :columns="columns" :data="tableList" :loading="loading">
       <template slot-scope="{ row }" slot="is_active">
         <div class="status-dian" v-if="row.is_active">已激活</div>
         <Button
@@ -79,6 +79,7 @@ export default class PageSystemUser extends Vue {
     pageIndex: 1,
     pageSize: 10,
   };
+  private loading = false;
   private total = 0;
   private targetList: objAny[] = [];
   private sexList: objAny[] = [];
@@ -147,11 +148,13 @@ export default class PageSystemUser extends Vue {
   }
 
   async getTableList(): Promise<void> {
+    this.loading = true;
     let ret = await getUserList({});
     if (ret.code == 200) {
       this.tableList = ret.payload.data;
       this.total = ret.payload.total;
     }
+    this.loading = false;
   }
   $refs!: {
     addModal: HTMLFormElement;
