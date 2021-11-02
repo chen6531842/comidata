@@ -10,47 +10,47 @@
       <Row>
         <Col :span="12">
           <Form
-            ref="formInline"
+            ref="formValidate"
             :model="formInline"
             :rules="ruleValidate"
             :label-width="80"
           >
-            <FormItem label="视频标题" prop="name">
+            <FormItem label="视频标题" prop="title">
               <Input
-                v-model="formInline.name"
+                v-model="formInline.title"
                 placeholder="请填写视频标题"
               ></Input>
               <div class="form-tips blue">
                 系统将自动检测是否包含抖音、快手平台的违禁词
               </div>
             </FormItem>
-            <FormItem label="视频备注" prop="name">
+            <FormItem label="视频备注" prop="description">
               <Input
-                v-model="formInline.name"
+                v-model="formInline.description"
                 placeholder="请填写视频备注"
               ></Input>
               <div class="form-tips">
                 添加此次发布的备注信息，仅自己可见，不会发布到APP
               </div>
             </FormItem>
-            <FormItem label="发布方式" prop="gender">
-              <RadioGroup v-model="formInline.sataus">
+            <FormItem label="发布方式" prop="publish_method">
+              <RadioGroup v-model="formInline.publish_method">
                 <Radio label="1">立即发布</Radio>
                 <Radio label="2">定时发布</Radio>
               </RadioGroup>
             </FormItem>
             <FormItem
               label="发布时间"
-              prop="gender"
-              v-if="formInline.sataus == '2'"
+              prop="planed_publish_date"
+              v-if="formInline.publish_method == '2'"
             >
               <DatePicker
                 type="date"
                 placeholder="请选择发布时间"
-                v-model="formInline.date"
+                v-model="formInline.planed_publish_date"
               ></DatePicker>
             </FormItem>
-            <FormItem label="发布平台" prop="gender">
+            <FormItem label="发布平台" prop="platform_account_ids">
               <ul class="platform-ul">
                 <li class="platform-item">
                   <div class="platform-title">
@@ -81,29 +81,32 @@
               </ul>
               <div class="form-tips">一次可以发布到多个平台</div>
             </FormItem>
-            <FormItem label="发布方式" prop="gender">
-              <Upload
-                multiple
-                type="drag"
-                action="//jsonplaceholder.typicode.com/posts/"
-              >
+            <FormItem label="上传视频" prop="video_file_path">
+              <wy-upload :uploadType="2" type="drag" @success="uploadSuccess">
                 <div class="Upload-text">点击或者拖拽上传视频</div>
-              </Upload>
+              </wy-upload>
             </FormItem>
-            <div class="other-config">
+            <!-- <div class="other-config">
               <div class="other-config-name">以下配置仅针对快手</div>
-            </div>
-            <FormItem label="视频封面" prop="gender">
-              <Upload
-                multiple
-                type="drag"
-                action="//jsonplaceholder.typicode.com/posts/"
-                style="display: inline-block; width: 58px"
+            </div> -->
+            <FormItem label="视频封面" prop="cover_file_path">
+              <wy-upload
+                :uploadType="1"
+                type="select"
+                @success="uploadImgSuccess"
               >
-                <div style="width: 58px; height: 58px; line-height: 58px">
+                <div
+                  style="
+                    width: 58px;
+                    height: 58px;
+                    line-height: 58px;
+                    border: 1px dashed #dcdee2;
+                    text-align: center;
+                  "
+                >
                   <Icon type="ios-camera" size="20"></Icon>
                 </div>
-              </Upload>
+              </wy-upload>
             </FormItem>
             <FormItem>
               <Button>取消</Button>
@@ -119,26 +122,91 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import sysContent from "../../../components/sys-content/sys-content.vue";
-import { objAny } from "../../../common/common-interface";
+import sysContent from "@/components/sys-content/sys-content.vue";
+import { objAny } from "@/common/common-interface";
+import { subPlatformVideo, getAllAccounts } from "@/api/api-user";
+import upload from "@/components/upload/upload.vue";
 @Component({
   components: {
     "wy-sys-content": sysContent,
+    "wy-upload": upload,
   },
 })
 export default class ContentRelease extends Vue {
   private formInline: objAny = {
-    sataus: "",
-    checkbox: false,
-    startTime: "",
-    endTime: "",
-    date: "",
+    title: "",
+    description: "",
+    publish_method: 1,
+    planed_publish_date: "",
+    platform_account_ids: [],
+    cover_file_path: "",
+    video_file_path: "",
   };
   private ruleValidate: objAny = {
-    name: [
-      { required: true, message: "The name cannot be empty", trigger: "blur" },
+    title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+    publish_method: [
+      { required: true, message: "请选择发布方式", trigger: "change" },
+    ],
+    cover_file_path: [
+      { required: true, message: "请上传封面图片", trigger: "change" },
+    ],
+    video_file_path: [
+      { required: true, message: "请上传视频", trigger: "change" },
+    ],
+    planed_publish_date: [
+      {
+        required: true,
+        type: "date",
+        message: "请选择时间",
+        trigger: "change",
+      },
+    ],
+    platform_account_ids: [
+      {
+        required: true,
+        type: "array",
+        min: 1,
+        message: "请选择发布平台",
+        trigger: "change",
+      },
     ],
   };
+  private accountsList: objAny[] = [];
+
+  async getAllAccounts(): Promise<void> {
+    let ret = await getAllAccounts({});
+    if (ret.code == 200) {
+      this.accountsList = ret.payload;
+    }
+  }
+  $refs!: {
+    formValidate: HTMLFormElement; //写法1 - 推荐
+  };
+  public handleSubmit(): void {
+    this.$refs.formValidate.validate((valid: boolean) => {
+      if (valid) {
+        this.subPlatformVideo();
+      }
+    });
+  }
+  async subPlatformVideo(): Promise<void> {
+    let ret = await subPlatformVideo(this.formInline);
+    if (ret.code == 200) {
+      this.$Modal.success({
+        title: "发布成功",
+      });
+    }
+  }
+  public uploadSuccess(data: objAny): void {
+    this.formInline.video_file_path = data.file_path;
+  }
+  public uploadImgSuccess(data: objAny): void {
+    this.formInline.cover_file_path = data.file_path;
+  }
+
+  mounted(): void {
+    this.getAllAccounts();
+  }
 }
 </script>
 <style lang="less">

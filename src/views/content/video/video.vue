@@ -145,7 +145,9 @@ export default class PageVideo extends Vue {
   }
 
   async getTableList(): Promise<void> {
-    let ret = await getVideoList({});
+    let ret = await getVideoList({
+      index: 1,
+    });
     if (ret.code == 200) {
       this.tableList = ret.payload.data;
       this.total = ret.payload.total;

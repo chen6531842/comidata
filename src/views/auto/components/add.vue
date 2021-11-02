@@ -66,8 +66,9 @@ export default class Auto extends Vue {
     autoIframe: HTMLFormElement;
   };
   async getKsAuth(): Promise<void> {
+    let url = window.location.origin;
     let ret = await getKsAuth({
-      redirectUrl: "http://192.168.0.100:8087/auth.html",
+      redirectUrl: url + this.$config.host + "/auth.html",
     });
     if (ret.code == 200) {
       this.$refs.autoIframe.open(ret.payload.url);
