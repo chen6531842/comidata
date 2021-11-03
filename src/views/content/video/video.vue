@@ -117,7 +117,7 @@ export default class PageVideo extends Vue {
       minWidth: 120,
     },
   ];
-  private tableList: objAny[] = [{}];
+  private tableList: objAny[] = [];
 
   public showVideo(item: objAny): void {
     console.log(item);

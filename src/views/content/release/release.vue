@@ -52,30 +52,32 @@
             </FormItem>
             <FormItem label="发布平台" prop="platform_account_ids">
               <ul class="platform-ul">
-                <li class="platform-item">
-                  <div class="platform-title">
-                    <img
-                      src="../../../assets/img/logo-1.jpg"
-                      class="title-icon"
-                      alt=""
-                    />
-                    抖音
-                  </div>
-                  <div class="platform-info">
-                    <div class="bind blue">立即绑定</div>
-                  </div>
-                </li>
-                <li class="platform-item">
+                <li
+                  class="platform-item"
+                  v-for="(item, index) in accountsList"
+                  :key="index"
+                >
                   <div class="platform-title">
                     <img
                       src="../../../assets/img/logo-2.jpg"
                       class="title-icon"
                       alt=""
+                      v-if="item.id == 2"
                     />
-                    快手
+                    <img
+                      src="../../../assets/img/logo-1.jpg"
+                      class="title-icon"
+                      alt=""
+                      v-else-if="item.id == 1"
+                    />
+                    {{ item.platform_type_name }}
                   </div>
                   <div class="platform-info">
-                    <div class="bind blue">立即绑定</div>
+                    <CheckboxGroup v-model="formInline.platform_account_ids">
+                      <Checkbox :label="item.id">{{
+                        item.platform_type_name
+                      }}</Checkbox>
+                    </CheckboxGroup>
                   </div>
                 </li>
               </ul>
@@ -89,7 +91,11 @@
             <!-- <div class="other-config">
               <div class="other-config-name">以下配置仅针对快手</div>
             </div> -->
-            <FormItem label="视频封面" prop="cover_file_path">
+            <FormItem
+              label="视频封面"
+              prop="cover_file_path"
+              v-if="formInline.platform_account_ids.indexOf(2) != -1"
+            >
               <wy-upload
                 :uploadType="1"
                 type="select"
@@ -110,7 +116,12 @@
             </FormItem>
             <FormItem>
               <Button>取消</Button>
-              <Button style="margin-left: 8px" type="primary">确认</Button>
+              <Button
+                style="margin-left: 8px"
+                type="primary"
+                @click="subPlatformVideo"
+                >确认</Button
+              >
             </FormItem>
           </Form>
         </Col>
@@ -240,6 +251,8 @@ export default class ContentRelease extends Vue {
       }
       .platform-info {
         height: 100px;
+        padding: 10px 10px;
+        box-sizing: border-box;
         .bind {
           line-height: 100px;
           text-align: center;

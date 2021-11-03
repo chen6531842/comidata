@@ -4,6 +4,7 @@ import common from "../common/common";
 import myConfig from "../config/config";
 import store from "../store/index";
 import { objAny } from "../common/common-interface";
+import router from "../router/index";
 // import i18n from "@/config/i18n";
 // declare type Methods =
 //   | "GET"
@@ -197,7 +198,7 @@ export const request = function (
             // } else {
             Vue.prototype.$Notice.error({
               title: "提示",
-              desc: successData.msg,
+              desc: successData.message,
             });
             resolve(successData);
             // }
@@ -205,21 +206,22 @@ export const request = function (
         }
       })
       .catch(async (error: objAny) => {
-        // resolve({
-        //   code: 200,
-        //   payload: {
-        //     token:
-        //       "U8OndzJmTYEXiJQMbLc41kZ2ZsV572D3S7KJjWXBavLHM3agdBdZ80u67h3gA5Sx",
-        //   },
-        // });
-        if (configData && configData.errorCallBack) {
-          configData.errorCallBack();
-        } else {
-          Vue.prototype.$Modal.error({
-            title: "提示",
-            content: error.msg,
+        console.log(error);
+        if (error.code == 401) {
+          router.push("/login");
+          setTimeout(() => {
+            window.location.reload();
           });
-          reject(error);
+        } else {
+          if (configData && configData.errorCallBack) {
+            configData.errorCallBack();
+          } else {
+            Vue.prototype.$Modal.error({
+              title: "提示",
+              content: error.message,
+            });
+            reject(error);
+          }
         }
       });
   });

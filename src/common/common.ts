@@ -4,11 +4,13 @@
  * @Date: 2020-05-21 13:59:26
  * @LastEditors: 陈钊贤
  * @Description:
- * @LastEditTime: 2021-11-01 21:51:48
+ * @LastEditTime: 2021-11-03 19:11:47
  */
 import Vue from "vue";
 import { objAny } from "../common/common-interface";
 import configData from "../config/config";
+import { logOut } from "@/api/api-user";
+import router from "../router/index";
 const common: objAny = {
   /**
    * 存本地数据
@@ -299,6 +301,15 @@ const common: objAny = {
           : document.documentElement.clientHeight;
     }
     return clientHeight;
+  },
+  async logOut(): Promise<void> {
+    const ret = await logOut({});
+    if (ret.code == 200) {
+      router.push("/login");
+      setTimeout(() => {
+        window.location.reload();
+      });
+    }
   },
 };
 

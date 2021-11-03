@@ -10,7 +10,7 @@
     :before-upload="beforeUpload"
     :on-error="error"
     :default-file-list="defaultList"
-    :show-upload-list="false"
+    :show-upload-list="type == 'drag'"
   >
     <slot></slot>
 
@@ -59,7 +59,7 @@ export default class WyUpload extends Vue {
 
   public uploadSuccess(response: objAny, file: objAny): void {
     if (response.code == 200) {
-      // this.defaultList = [file];
+      this.defaultList = [file];
       if (this.uploadList.length > 1) {
         this.uploadList.splice(0, 1);
       }

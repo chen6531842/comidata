@@ -21,12 +21,8 @@
           用此手机号码登录后，即可完成激活，激活后不可修改
         </div>
       </FormItem>
-      <FormItem label="选择角色" prop="role_ids">
-        <Select
-          v-model="formInline.role_ids"
-          multiple
-          placeholder="请选择选择角色"
-        >
+      <FormItem label="选择角色" prop="role_id">
+        <Select v-model="formInline.role_id" placeholder="请选择选择角色">
           <Option
             :value="item.id"
             v-for="(item, index) in roleList"
@@ -121,12 +117,21 @@ export default class PageUserAdd extends Vue {
     id: "",
     full_name: "",
     mobile: "",
+    role_id: "",
     role_ids: [],
     platform_account_ids: [],
   };
   private all = false;
   private rule: objAny = {
     full_name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+    role_id: [
+      {
+        required: true,
+        type: "number",
+        message: "请选择角色",
+        trigger: "change",
+      },
+    ],
     mobile: [{ required: true, validator: regular.phone, trigger: "blur" }],
     role_ids: [
       {
@@ -150,7 +155,7 @@ export default class PageUserAdd extends Vue {
       this.formInline.id = item.id;
       this.formInline.full_name = item.full_name;
       this.formInline.mobile = item.name;
-      this.formInline.role_ids = item.role_ids;
+      this.formInline.role_id = item.role_ids[0] || "";
       this.getUserDetails();
     } else {
       this.title = "新增人员";
@@ -163,7 +168,7 @@ export default class PageUserAdd extends Vue {
     });
     if (ret.code == 200) {
       let data: objAny = ret.payload;
-      this.formInline.platform_account_ids = data.platform_account_ids;
+      this.formInline.platform_account_ids = data.platform_accounts_ids;
     }
   }
   async getAllRole(): Promise<void> {
@@ -192,6 +197,10 @@ export default class PageUserAdd extends Vue {
   async addUser(): Promise<void> {
     this.loading = true;
     let json: objAny = JSON.parse(JSON.stringify(this.formInline));
+    console.log(this.formInline);
+    console.log(json);
+    json.role_ids = [json.role_id];
+    delete json.role_id;
     if (json.id == "") {
       delete json.id;
     }
