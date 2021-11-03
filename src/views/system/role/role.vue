@@ -142,6 +142,7 @@ export default class PageSystemRole extends Vue {
         list-style: none;
         padding-left: 20px;
         border-bottom: 1px solid #e8eaec;
+        cursor: pointer;
       }
       .role-item.active {
         background-color: #f0faff;

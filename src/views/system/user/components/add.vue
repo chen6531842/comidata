@@ -16,7 +16,11 @@
         <Input v-model="formInline.full_name" placeholder="请输入姓名"></Input>
       </FormItem>
       <FormItem label="手机号码" prop="mobile">
-        <Input v-model="formInline.mobile" placeholder="请输入手机号码"></Input>
+        <Input
+          v-model="formInline.mobile"
+          :disabled="itemData.is_active"
+          placeholder="请输入手机号码"
+        ></Input>
         <div class="form-tips">
           用此手机号码登录后，即可完成激活，激活后不可修改
         </div>
@@ -39,6 +43,7 @@
         <Row>
           <Col :span="12" class="select">
             <Input
+              v-model="search"
               prefix="ios-search"
               placeholder="输入要搜索的应用名称或者ID"
             />
@@ -49,14 +54,19 @@
           <Col :span="12" class="select">
             <wy-block-content title="平台账户" :border="true">
               <div class="acc-content">
-                <Checkbox v-model="all">全选</Checkbox>
+                <Checkbox v-model="all" @on-change="allChange">全选</Checkbox>
                 <CheckboxGroup v-model="formInline.platform_account_ids">
-                  <Checkbox
-                    :label="item.id"
-                    v-for="(item, index) in accountList"
-                    :key="index"
-                    >{{ item.nick_name }}{{ item.platform_type_name }}</Checkbox
-                  >
+                  <template v-for="(item, index) in accountList">
+                    <Checkbox
+                      :label="item.id"
+                      :key="index"
+                      v-if="
+                        search == '' ||
+                        item.platform_type_name.indexOf(search) != -1
+                      "
+                      >{{ item.platform_type_name }}</Checkbox
+                    >
+                  </template>
                 </CheckboxGroup>
               </div>
             </wy-block-content>
@@ -65,11 +75,25 @@
             <wy-block-content title="" :border="true">
               <div class="select-box" slot="block-title">
                 <div class="select-box-title">
-                  已选 0 项目 <span class="clear blue">清空</span>
+                  已选 {{ formInline.platform_account_ids.length }} 项目
+                  <span class="clear blue" @click="allChange(false)">清空</span>
                 </div>
               </div>
               <div class="acc-content">
-                <wy-no-data></wy-no-data>
+                <template v-for="(item, index) in accountList">
+                  <div
+                    class="account-item"
+                    :key="index"
+                    v-if="
+                      formInline.platform_account_ids.indexOf(item.id) != -1
+                    "
+                  >
+                    {{ item.platform_type_name }}
+                  </div>
+                </template>
+                <wy-no-data
+                  v-if="formInline.platform_account_ids.length == 0"
+                ></wy-no-data>
               </div>
             </wy-block-content>
           </Col>
@@ -112,7 +136,7 @@ import regular from "@/common/regular";
 export default class PageUserAdd extends Vue {
   private modalShow = false;
   private loading = false;
-
+  private search = "";
   private formInline: objAny = {
     id: "",
     full_name: "",
@@ -121,6 +145,7 @@ export default class PageUserAdd extends Vue {
     role_ids: [],
     platform_account_ids: [],
   };
+  private platform_account_ids: string[] = [];
   private all = false;
   private rule: objAny = {
     full_name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
@@ -146,6 +171,7 @@ export default class PageUserAdd extends Vue {
   private accountList: objAny[] = [];
 
   private title = "新增人员";
+  private itemData: objAny = {};
   public open(item?: objAny): void {
     this.modalShow = true;
     this.getAllRole();
@@ -157,8 +183,10 @@ export default class PageUserAdd extends Vue {
       this.formInline.mobile = item.name;
       this.formInline.role_id = item.role_ids[0] || "";
       this.getUserDetails();
+      this.itemData = item;
     } else {
       this.title = "新增人员";
+      this.itemData = {};
     }
   }
 
@@ -215,6 +243,17 @@ export default class PageUserAdd extends Vue {
   public addRight(): void {
     this.$refs.addModal.open();
   }
+  public allChange(val: boolean): void {
+    if (val) {
+      let platform_account_ids: number[] = [];
+      this.accountList.map((item: objAny) => {
+        platform_account_ids.push(item.id);
+      });
+      this.formInline.platform_account_ids = platform_account_ids;
+    } else {
+      this.formInline.platform_account_ids = [];
+    }
+  }
 }
 </script>
 
@@ -238,6 +277,12 @@ export default class PageUserAdd extends Vue {
       display: block;
       margin-top: 10px;
     }
+  }
+  .account-item {
+    margin-top: 10px;
+  }
+  .account-item:first-child {
+    margin-top: 0;
   }
 }
 </style>
