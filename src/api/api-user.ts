@@ -95,7 +95,7 @@ export const getAllAccounts = (
   config: objAny = {}
 ): Promise<objAny> => {
   config.method = "get";
-  return request("/user/accounts", data, config);
+  return request("/user/platformAccounts", data, config);
 };
 //   用户列表
 export const getUserList = (

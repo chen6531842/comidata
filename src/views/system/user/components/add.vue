@@ -21,8 +21,12 @@
           用此手机号码登录后，即可完成激活，激活后不可修改
         </div>
       </FormItem>
-      <FormItem label="选择角色" prop="city">
-        <Select v-model="formInline.role" placeholder="请选择选择角色">
+      <FormItem label="选择角色" prop="role_ids">
+        <Select
+          v-model="formInline.role_ids"
+          multiple
+          placeholder="请选择选择角色"
+        >
           <Option
             :value="item.id"
             v-for="(item, index) in roleList"
@@ -30,7 +34,9 @@
             >{{ item.name }}</Option
           >
         </Select>
-        <Button type="text" siam="small" @click="addRight">新增角色</Button>
+        <Button type="text" class="blue" siam="small" @click="addRight"
+          >新增角色</Button
+        >
       </FormItem>
       <FormItem label="关联平台账户">
         <!-- <wy-block-content title="关联平台账户"> -->
@@ -48,7 +54,7 @@
             <wy-block-content title="平台账户" :border="true">
               <div class="acc-content">
                 <Checkbox v-model="all">全选</Checkbox>
-                <CheckboxGroup v-model="formInline.platform_accounts_ids">
+                <CheckboxGroup v-model="formInline.platform_account_ids">
                   <Checkbox
                     :label="item.id"
                     v-for="(item, index) in accountList"
@@ -115,15 +121,21 @@ export default class PageUserAdd extends Vue {
     id: "",
     full_name: "",
     mobile: "",
-    role: "",
-    category: [],
-    platform_accounts_ids: [],
+    role_ids: [],
+    platform_account_ids: [],
   };
   private all = false;
   private rule: objAny = {
     full_name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
     mobile: [{ required: true, validator: regular.phone, trigger: "blur" }],
-    role: [{ required: true, message: "请选择角色", trigger: "change" }],
+    role_ids: [
+      {
+        required: true,
+        type: "array",
+        message: "请选择角色",
+        trigger: "change",
+      },
+    ],
   };
   private roleList: objAny[] = [];
   private accountList: objAny[] = [];
@@ -134,11 +146,14 @@ export default class PageUserAdd extends Vue {
     this.getAllRole();
     this.getAllAccounts();
     if (item) {
-      console.log(item);
+      this.title = "修改人员";
       this.formInline.id = item.id;
       this.formInline.full_name = item.full_name;
       this.formInline.mobile = item.name;
+      this.formInline.role_ids = item.role_ids;
       this.getUserDetails();
+    } else {
+      this.title = "新增人员";
     }
   }
 
@@ -148,7 +163,7 @@ export default class PageUserAdd extends Vue {
     });
     if (ret.code == 200) {
       let data: objAny = ret.payload;
-      this.formInline.platform_accounts_ids = data.platform_accounts_ids;
+      this.formInline.platform_account_ids = data.platform_account_ids;
     }
   }
   async getAllRole(): Promise<void> {
@@ -176,7 +191,11 @@ export default class PageUserAdd extends Vue {
   }
   async addUser(): Promise<void> {
     this.loading = true;
-    let ret = await addUser(this.formInline);
+    let json: objAny = JSON.parse(JSON.stringify(this.formInline));
+    if (json.id == "") {
+      delete json.id;
+    }
+    let ret = await addUser(json);
     if (ret.code == 200) {
       this.modalShow = false;
       this.$emit("success");
