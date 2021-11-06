@@ -17,7 +17,7 @@
           class="blue"
           v-else
           size="small"
-          @click="addModalShow"
+          @click="resendClick(item)"
           >重新发送</Button
         >
       </template>
@@ -42,7 +42,11 @@
           @click="updataUser(row)"
           >修改</Button
         >
-        <Button type="text" class="red" size="small" @click="removeVideo(row)"
+        <Button
+          type="text"
+          class="red"
+          size="small"
+          @click="delUserConfirm(row)"
           >删除</Button
         >
       </template>
@@ -63,7 +67,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
-import { getUserList } from "@/api/api-user";
+import { getUserList, delUser } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -124,14 +128,21 @@ export default class PageSystemUser extends Vue {
   ];
   private tableList: objAny[] = [];
 
-  public removeVideo(item: objAny): void {
+  public delUserConfirm(item: objAny): void {
     this.$Modal.confirm({
       title: "提示",
       content: "<p>确定要删除吗？</p>",
       onOk: () => {
-        console.log(item);
+        this.delUser(item.id);
       },
     });
+  }
+  async delUser(id: number): Promise<void> {
+    let ret = await delUser({ id: id });
+    if (ret.code == 200) {
+      this.$Message.success("删除成功");
+      this.getTableList();
+    }
   }
 
   public queryClick(): void {
@@ -167,6 +178,10 @@ export default class PageSystemUser extends Vue {
   }
   public detailsKey(item: objAny): void {
     this.$refs.addModal.open(item);
+  }
+
+  public resendClick(item: objAny): void {
+    console.log(item);
   }
   mounted(): void {
     this.getTableList();

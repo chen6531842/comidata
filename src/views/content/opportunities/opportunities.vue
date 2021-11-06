@@ -63,13 +63,14 @@
     <Table :columns="columns" :data="tableList">
       <template slot-scope="{ row }" slot="userInfo">
         <div class="user-info">
-          <div class="header-img"></div>
+          <div class="header-img">{{ row.a }}</div>
           <div class="name">ada</div>
           <div class="follow">关注用户</div>
         </div>
       </template>
       <template slot-scope="{ row }" slot="userData">
         <div class="user-data">
+          {{ row.a }}
           <p>作品数：59</p>
           <p>关注数：59</p>
           <p>粉丝数：59</p>
@@ -78,6 +79,7 @@
       </template>
       <template slot-scope="{ row }" slot="info">
         <div class="user-data">
+          {{ row.a }}
           <p>性别：女</p>
           <p>年龄：59</p>
           <p>城市：深圳</p>
@@ -87,6 +89,7 @@
       </template>
       <template slot-scope="{ row }" slot="comment">
         <div class="user-data">
+          {{ row.a }}
           <p>评论内容：女</p>
           <p>评论时间：59</p>
           <p class="red">商机词：多少钱</p>
@@ -94,6 +97,7 @@
       </template>
       <template slot-scope="{ row }" slot="contact">
         <div class="user-data">
+          {{ row.a }}
           <a class="blue">扫码联系</a>
           <p>平台：抖音</p>
           <p>签名：给大家一起分享</p>
@@ -101,6 +105,7 @@
       </template>
       <template slot-scope="{ row }" slot="describe">
         <div class="user-data">
+          {{ row.a }}
           <a class="blue">查看视频</a>
           <p>给大家一起分享给大家一起分享给大家一起分享给大家一起分享</p>
           <p class="red">同城视频号：抖音抖音抖音抖音</p>
@@ -109,6 +114,7 @@
       </template>
       <template slot-scope="{ row }" slot="videoData">
         <div class="user-data">
+          {{ row.a }}
           <p>转发数：5</p>
           <p>评论数：5</p>
           <p>点赞数：5</p>
@@ -116,6 +122,7 @@
       </template>
       <template slot-scope="{ row }" slot="handle">
         <div class="user-data">
+          {{ row.a }}
           <p>所属者：--</p>
           <p><Tag color="blue">未处理</Tag></p>
         </div>
@@ -222,7 +229,7 @@ export default class PageOpportunities extends Vue {
       minWidth: 140,
     },
   ];
-  private tableList: objAny[] = [{}];
+  private tableList: objAny[] = [];
 
   public showVideo(item: objAny): void {
     console.log(item);

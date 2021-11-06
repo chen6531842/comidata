@@ -73,6 +73,7 @@ export const addRole = (
 ): Promise<objAny> => {
   return request("/role", data, config);
 };
+
 //   所有的权限信息
 export const getRoleRights = (
   data: objAny = {},
@@ -111,6 +112,14 @@ export const getUserDetails = (
   config: objAny = {}
 ): Promise<objAny> => {
   config.method = "getStr";
+  return request("/user", data, config);
+};
+//   用户删除
+export const delUser = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "delStr";
   return request("/user", data, config);
 };
 //   用户添加、修改
@@ -160,4 +169,20 @@ export const getKsAuth = (
 ): Promise<objAny> => {
   config.method = "get";
   return request("/ks/auth/connectFullUrl", data, config);
+};
+//   授权列表
+export const getAuthList = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/platformAccount", data, config);
+};
+//   授权列表删除
+export const delAuth = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "delStr";
+  return request("/platformAccount", data, config);
 };

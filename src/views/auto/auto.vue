@@ -30,7 +30,7 @@
           @click="updataKey(row)"
           >重新授权</Button
         >
-        <Button type="text" class="red" size="small" @click="removeVideo(row)"
+        <Button type="text" class="red" size="small" @click="delClick(row)"
           >删除</Button
         >
       </template>
@@ -51,7 +51,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
-
+import { getAuthList, delAuth } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -117,16 +117,24 @@ export default class PageAuto extends Vue {
       minWidth: 140,
     },
   ];
-  private tableList: objAny[] = [{}];
+  private loading = false;
+  private tableList: objAny[] = [];
 
-  public removeVideo(item: objAny): void {
+  public delClick(item: objAny): void {
     this.$Modal.confirm({
       title: "提示",
       content: "<p>确定要删除吗？</p>",
       onOk: () => {
-        console.log(item);
+        this.delAuth(item.id);
       },
     });
+  }
+  async delAuth(id: number): Promise<void> {
+    let ret = await delAuth({ id: id });
+    if (ret.code == 200) {
+      this.$Message.success("删除成功");
+      this.getTableList();
+    }
   }
 
   public queryClick(): void {
@@ -142,8 +150,14 @@ export default class PageAuto extends Vue {
     this.getTableList();
   }
 
-  public getTableList(): void {
-    console.log("???");
+  async getTableList(): Promise<void> {
+    this.loading = true;
+    let ret = await getAuthList({});
+    if (ret.code == 200) {
+      this.tableList = ret.payload.data;
+      this.total = ret.payload.total;
+    }
+    this.loading = false;
   }
   $refs!: {
     addModal: HTMLFormElement;
@@ -153,6 +167,9 @@ export default class PageAuto extends Vue {
   }
   public updataKey(item: objAny): void {
     this.$refs.addModal.open(item);
+  }
+  mounted(): void {
+    this.getTableList();
   }
 }
 </script>

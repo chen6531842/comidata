@@ -142,7 +142,7 @@ export default class PageUserAdd extends Vue {
     full_name: "",
     mobile: "",
     role_id: "",
-    role_ids: [],
+    // role_ids: [],
     platform_account_ids: [],
   };
   private platform_account_ids: string[] = [];
@@ -158,14 +158,14 @@ export default class PageUserAdd extends Vue {
       },
     ],
     mobile: [{ required: true, validator: regular.phone, trigger: "blur" }],
-    role_ids: [
-      {
-        required: true,
-        type: "array",
-        message: "请选择角色",
-        trigger: "change",
-      },
-    ],
+    // role_ids: [
+    //   {
+    //     required: true,
+    //     type: "array",
+    //     message: "请选择角色",
+    //     trigger: "change",
+    //   },
+    // ],
   };
   private roleList: objAny[] = [];
   private accountList: objAny[] = [];
@@ -187,6 +187,10 @@ export default class PageUserAdd extends Vue {
     } else {
       this.title = "新增人员";
       this.itemData = {};
+      this.formInline.id = "";
+      this.formInline.full_name = "";
+      this.formInline.mobile = "";
+      this.formInline.role_id = "";
     }
   }
 

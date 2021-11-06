@@ -126,5 +126,8 @@ body,
   padding: 0;
   text-align: center;
   color: #999;
+  a {
+    color: #999;
+  }
 }
 </style>
