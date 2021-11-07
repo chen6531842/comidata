@@ -12,28 +12,35 @@
     <Table :columns="columns" :data="tableList" :loading="loading">
       <template slot-scope="{ row }" slot="is_active">
         <div class="status-dian" v-if="row.is_active">已激活</div>
-        <Button
+        <div class="status-dian" v-else>未激活</div>
+        <!-- <Button
           type="text"
           class="blue"
           v-else
           size="small"
           @click="resendClick(item)"
           >重新发送</Button
-        >
+        > -->
       </template>
       <template slot-scope="{ row }" slot="role_names">
         {{ row.role_names ? row.role_names.join(",") : "" }}
       </template>
 
       <template slot-scope="{ row }" slot="action">
-        <!-- <Button
+        <Button
           class="blue"
           type="text"
           size="small"
           style="margin-right: 5px"
           @click="detailsKey(row)"
+          v-if="
+            !row.is_super_user &&
+            sys.loginData.user &&
+            sys.loginData.user.is_super_user &&
+            row.is_active
+          "
           >更换超级管理员</Button
-        > -->
+        >
         <Button
           class="blue"
           type="text"
@@ -68,6 +75,7 @@ import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
 import { getUserList, delUser, changeSuperUser } from "@/api/api-user";
+import { State } from "vuex-class";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -76,6 +84,7 @@ import { getUserList, delUser, changeSuperUser } from "@/api/api-user";
   },
 })
 export default class PageSystemUser extends Vue {
+  @State("sys") sys!: objAny;
   private formInline: objAny = {
     target: "",
     name: "",
@@ -88,14 +97,14 @@ export default class PageSystemUser extends Vue {
   private targetList: objAny[] = [];
   private sexList: objAny[] = [];
   private columns: objAny[] = [
+    // {
+    //   type: "selection",
+    //   width: 60,
+    //   align: "center",
+    // },
     {
-      type: "selection",
-      width: 60,
-      align: "center",
-    },
-    {
-      title: "full_name",
-      key: "name",
+      title: "姓名",
+      key: "full_name",
       minWidth: 120,
     },
     // {

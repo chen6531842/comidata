@@ -39,7 +39,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
 import blockContent from "@/components/block-content/block-content.vue";
 import noData from "@/components/no-data/no-data.vue";
-import { getKsAuth, getAllAccounts } from "@/api/api-user";
+import { getKsAuth, getDyAuth } from "@/api/api-user";
 import autoIframe from "@/components/auto-iframe/auto-iframe.vue";
 @Component({
   components: {
@@ -58,25 +58,35 @@ export default class Auto extends Vue {
     desc: "",
   };
   private autoList: objAny[] = [
-    // { type: 1, name: "抖音", },
-    // { type: 2, name: "快手" },
+    { type: 1, name: "抖音", platform_type: "douyin" },
+    { type: 2, name: "快手", platform_type: "kuaishou" },
   ];
   private itemData: objAny = {};
+  private iframeShow = false;
 
   private title = "新增授权";
   public open(item?: objAny): void {
     this.modalShow = true;
     this.itemData = item || {};
-    this.getAllAccounts();
+    if (item) {
+      this.title = "重新授权";
+    } else {
+      this.title = "新增授权";
+    }
+    // this.getAllAccounts();
   }
   public autoClick(item: objAny): void {
     if (item.type == 2) {
       this.getKsAuth();
+    } else if (item.type == 1) {
+      this.getDyAuth();
     }
   }
   public autoSuccess(): void {
     console.log("成功");
+    this.iframeShow = false;
   }
+
   $refs!: {
     autoIframe: HTMLFormElement;
   };
@@ -86,15 +96,31 @@ export default class Auto extends Vue {
       redirectUrl: url + this.$config.host + "/auth.html",
     });
     if (ret.code == 200) {
-      this.$refs.autoIframe.open(ret.payload.url);
+      this.iframeShow = true;
+      this.$nextTick(() => {
+        this.$refs.autoIframe.open(ret.payload.url);
+      });
     }
   }
-  async getAllAccounts(): Promise<void> {
-    let ret = await getAllAccounts({});
+  async getDyAuth(): Promise<void> {
+    let url = window.location.origin;
+    let ret = await getDyAuth({
+      redirectUrl: url + this.$config.host + "/auth.html",
+    });
     if (ret.code == 200) {
-      this.autoList = ret.payload;
+      this.iframeShow = true;
+      this.$nextTick(() => {
+        this.$refs.autoIframe.open(ret.payload.url);
+      });
     }
   }
+
+  // async getAllAccounts(): Promise<void> {
+  //   let ret = await getAllAccounts({});
+  //   if (ret.code == 200) {
+  //     this.autoList = ret.payload;
+  //   }
+  // }
 }
 </script>
 

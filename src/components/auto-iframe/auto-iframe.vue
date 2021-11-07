@@ -6,17 +6,27 @@
     :footer-hide="true"
     :width="800"
   >
-    <iframe class="auto-iframe" :src="src" v-if="src != ''"></iframe>
+    <iframe
+      class="auto-iframe"
+      :src="src"
+      v-if="modalShow && src != ''"
+    ></iframe>
   </Modal>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 // import { objAny } from "../../common/common-interface";
 @Component
 export default class NoData extends Vue {
   private modalShow = false;
   private title = "授权";
   private src = "";
+  @Watch("modalShow")
+  getVisible(val: boolean): void {
+    if (!val) {
+      this.$emit("close");
+    }
+  }
 
   public open(src: string): void {
     this.modalShow = true;

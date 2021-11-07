@@ -184,6 +184,14 @@ export const getKsAuth = (
   config.method = "get";
   return request("/ks/auth/connectFullUrl", data, config);
 };
+//   抖音授权
+export const getDyAuth = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/dy/auth/connectFullUrl", data, config);
+};
 //   授权列表
 export const getAuthList = (
   data: objAny = {},

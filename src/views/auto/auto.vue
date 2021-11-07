@@ -17,7 +17,7 @@
         </Form>
       </div>
     </div>
-    <Table :columns="columns" :data="tableList">
+    <Table :columns="columns" :data="tableList" :loading="loading">
       <template slot-scope="{ row }" slot="avatar">
         <a class="blue" :href="row.avatar" target="_blank">
           <img :src="row.avatar" class="avatar-img" alt="" />

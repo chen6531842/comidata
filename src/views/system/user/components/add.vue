@@ -18,14 +18,14 @@
       <FormItem label="手机号码" prop="mobile">
         <Input
           v-model="formInline.mobile"
-          :disabled="itemData.is_active"
+          :disabled="phoneDisabled"
           placeholder="请输入手机号码"
         ></Input>
         <div class="form-tips">
           用此手机号码登录后，即可完成激活，激活后不可修改
         </div>
       </FormItem>
-      <FormItem label="选择角色" prop="role_id">
+      <FormItem label="选择角色" prop="role_id" v-if="!itemData.is_super_user">
         <Select v-model="formInline.role_id" placeholder="请选择选择角色">
           <Option
             :value="item.id"
@@ -38,6 +38,7 @@
           >新增角色</Button
         >
       </FormItem>
+      <FormItem label="角色" prop="role_id" v-else> 超级管理员 </FormItem>
       <FormItem label="关联平台账户">
         <!-- <wy-block-content title="关联平台账户"> -->
         <Row>
@@ -171,6 +172,7 @@ export default class PageUserAdd extends Vue {
   private accountList: objAny[] = [];
 
   private title = "新增人员";
+  private phoneDisabled = false;
   private itemData: objAny = {};
   public open(item?: objAny): void {
     this.modalShow = true;
@@ -183,10 +185,12 @@ export default class PageUserAdd extends Vue {
       this.formInline.mobile = item.name;
       this.formInline.role_id = item.role_ids[0] || "";
       this.getUserDetails();
+      this.phoneDisabled = item.is_active == 1 ? true : false;
       this.itemData = item;
     } else {
       this.title = "新增人员";
       this.itemData = {};
+      this.phoneDisabled = false;
       this.formInline.id = "";
       this.formInline.full_name = "";
       this.formInline.mobile = "";
