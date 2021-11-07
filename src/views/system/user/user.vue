@@ -26,14 +26,14 @@
       </template>
 
       <template slot-scope="{ row }" slot="action">
-        <Button
+        <!-- <Button
           class="blue"
           type="text"
           size="small"
           style="margin-right: 5px"
           @click="detailsKey(row)"
           >更换超级管理员</Button
-        >
+        > -->
         <Button
           class="blue"
           type="text"
@@ -67,7 +67,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
-import { getUserList, delUser } from "@/api/api-user";
+import { getUserList, delUser, changeSuperUser } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -177,7 +177,20 @@ export default class PageSystemUser extends Vue {
     this.$refs.addModal.open(item);
   }
   public detailsKey(item: objAny): void {
-    this.$refs.addModal.open(item);
+    this.$Modal.confirm({
+      title: "提示",
+      content: "<p>确定更换此用户为管理员吗？</p>",
+      onOk: () => {
+        this.changeSuperUser(item.id);
+      },
+    });
+  }
+  async changeSuperUser(id: number): Promise<void> {
+    let ret = await changeSuperUser({ to_user_id: id });
+    if (ret.code == 200) {
+      this.$Message.success("更换成功");
+      this.getTableList();
+    }
   }
 
   public resendClick(item: objAny): void {

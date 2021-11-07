@@ -1,6 +1,7 @@
-// import router from "../../router/index";
+import router from "../../router/index";
 import { objAny } from "../../common/common-interface";
 import common from "../../common/common";
+import recursionRouter from "../../router/add-router";
 const state = {
   isLogin: false,
   winOnresize: false, // 窗口变化
@@ -43,6 +44,18 @@ const mutations = {
   SET_LOGINDATA(state: objAny, data: objAny): void {
     state.loginData = data;
   },
+  /**
+   * 动态添加路由
+   * @param {*} state
+   * @param {object[]} list 后台返回的菜单
+   */
+  SET_ROUTERLIST(state: objAny, data: objAny): void {
+    const routerList: any = recursionRouter(data) // eslint-disable-line
+    //动态添加路由
+    router.addRoutes(routerList);
+    state.routerList = routerList;
+    state.isGetRouter = true;
+  },
 };
 
 const actions = {
@@ -59,6 +72,10 @@ const actions = {
       commit("SET_ISLOGIN", true);
       commit("SET_LOGINDATA", loginData);
       const toUrl = obj.to.fullPath;
+      const isTrue: string = JSON.stringify(loginData.rightTags);
+      const rightTags: objAny =
+        isTrue == "[]" || isTrue == "{}" ? {} : loginData.rightTags;
+      commit("SET_ROUTERLIST", rightTags);
       // const ret = await getPermission({ roleId: loginData.rolePkId });
       // if (ret.status === configData.apiStatus) {
       //   const data: objAny[] = [];

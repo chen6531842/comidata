@@ -18,8 +18,10 @@
       </div>
     </div>
     <Table :columns="columns" :data="tableList">
-      <template slot-scope="{ row }" slot="fans">
-        <a class="blue">10{{ row.a }}</a>
+      <template slot-scope="{ row }" slot="avatar">
+        <a class="blue" :href="row.avatar" target="_blank">
+          <img :src="row.avatar" class="avatar-img" alt="" />
+        </a>
       </template>
       <template slot-scope="{ row }" slot="action">
         <Button
@@ -73,22 +75,23 @@ export default class PageAuto extends Vue {
   private columns: objAny[] = [
     {
       title: "头像",
-      key: "headimg",
+      key: "avatar",
+      slot: "avatar",
       minWidth: 120,
     },
     {
       title: "昵称",
-      key: "name",
+      key: "nick_name",
       minWidth: 120,
     },
     {
       title: "平台",
-      key: "userInfo",
+      key: "platform_type_name",
       minWidth: 120,
     },
     {
       title: "粉丝数",
-      slot: "fans",
+      key: "fan",
       minWidth: 120,
     },
     {
@@ -108,7 +111,7 @@ export default class PageAuto extends Vue {
     },
     {
       title: "授权时间",
-      key: "userInfo",
+      key: "platform_auth_date",
       minWidth: 160,
     },
     {
@@ -179,6 +182,12 @@ export default class PageAuto extends Vue {
   .btn-tips {
     font-size: 14px;
     color: #999;
+  }
+  .avatar-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    vertical-align: middle;
   }
 }
 </style>

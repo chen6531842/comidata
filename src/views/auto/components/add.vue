@@ -7,16 +7,28 @@
     :width="500"
   >
     <ul class="auto-list">
-      <li class="auto-item" v-for="(item, index) in autoList" :key="index">
-        <div class="auto-icon">
-          <img v-if="item.type == 1" src="../../../assets/img/logo-1.jpg" />
-          <img v-if="item.type == 2" src="../../../assets/img/logo-2.jpg" />
-        </div>
-        <div class="auto-name">{{ item.name }}</div>
-        <div class="auto-btn">
-          <Button @click="autoClick(item)">立即授权</Button>
-        </div>
-      </li>
+      <template v-for="(item, index) in autoList">
+        <li
+          class="auto-item"
+          :key="index"
+          v-if="!itemData.id || item.platform_type == itemData.platform_type"
+        >
+          <div class="auto-icon">
+            <img
+              v-if="item.platform_type == 'kuaishou'"
+              src="../../../assets/img/logo-2.jpg"
+            />
+            <img
+              v-if="item.platform_type == 'douyin'"
+              src="../../../assets/img/logo-1.jpg"
+            />
+          </div>
+          <div class="auto-name">{{ item.platform_type_name }}</div>
+          <div class="auto-btn">
+            <Button @click="autoClick(item)">立即授权</Button>
+          </div>
+        </li>
+      </template>
     </ul>
     <wy-auto-iframe ref="autoIframe" @success="autoSuccess"></wy-auto-iframe>
   </Modal>
@@ -27,7 +39,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
 import blockContent from "@/components/block-content/block-content.vue";
 import noData from "@/components/no-data/no-data.vue";
-import { getKsAuth } from "@/api/api-user";
+import { getKsAuth, getAllAccounts } from "@/api/api-user";
 import autoIframe from "@/components/auto-iframe/auto-iframe.vue";
 @Component({
   components: {
@@ -46,13 +58,16 @@ export default class Auto extends Vue {
     desc: "",
   };
   private autoList: objAny[] = [
-    { type: 1, name: "抖音" },
-    { type: 2, name: "快手" },
+    // { type: 1, name: "抖音", },
+    // { type: 2, name: "快手" },
   ];
+  private itemData: objAny = {};
 
   private title = "新增授权";
-  public open(): void {
+  public open(item?: objAny): void {
     this.modalShow = true;
+    this.itemData = item || {};
+    this.getAllAccounts();
   }
   public autoClick(item: objAny): void {
     if (item.type == 2) {
@@ -74,6 +89,12 @@ export default class Auto extends Vue {
       this.$refs.autoIframe.open(ret.payload.url);
     }
   }
+  async getAllAccounts(): Promise<void> {
+    let ret = await getAllAccounts({});
+    if (ret.code == 200) {
+      this.autoList = ret.payload;
+    }
+  }
 }
 </script>
 
@@ -82,6 +103,8 @@ export default class Auto extends Vue {
   .auto-list {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    justify-items: center;
   }
   .auto-item {
     width: 200px;
@@ -91,6 +114,7 @@ export default class Auto extends Vue {
     text-align: center;
     box-sizing: border-box;
     padding-top: 25px;
+    padding-bottom: 25px;
     margin-left: 20px;
     list-style: none;
     .auto-icon {

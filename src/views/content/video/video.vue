@@ -30,8 +30,8 @@
       </Form>
     </div>
     <Table :columns="columns" :data="tableList">
-      <template slot-scope="{ row }" slot="account">
-        <video :src="row.video_url"></video>
+      <template slot-scope="{ row }" slot="video">
+        <video class="video-show" :src="row.cover_url"></video>
       </template>
       <template slot-scope="{ row }" slot="account">
         <div v-for="(item, index) in row.video_publish_accounts" :key="index">
@@ -67,7 +67,7 @@ import { Component, Vue } from "vue-property-decorator";
 import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
-import { getVideoList } from "@/api/api-user";
+import { getVideoList, delVideo } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -108,7 +108,7 @@ export default class PageVideo extends Vue {
     },
     {
       title: "发布时间",
-      key: "age",
+      key: "created_at",
       minWidth: 140,
     },
     {
@@ -120,16 +120,23 @@ export default class PageVideo extends Vue {
   private tableList: objAny[] = [];
 
   public showVideo(item: objAny): void {
-    console.log(item);
+    window.open(item.video_url);
   }
   public removeVideo(item: objAny): void {
     this.$Modal.confirm({
       title: "提示",
       content: "<p>确定要删除吗？</p>",
       onOk: () => {
-        console.log(item);
+        this.delSub(item.id);
       },
     });
+  }
+  async delSub(id: number): Promise<void> {
+    let ret = await delVideo({ id: id });
+    if (ret.code == 200) {
+      this.$Message.success("删除成功");
+      this.getTableList();
+    }
   }
   public queryClick(): void {
     this.formInline.pageIndex = 1;
@@ -158,3 +165,11 @@ export default class PageVideo extends Vue {
   }
 }
 </script>
+<style lang="less">
+.page-video {
+  .video-show {
+    width: 90px;
+    height: 150px;
+  }
+}
+</style>

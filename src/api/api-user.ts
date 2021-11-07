@@ -129,7 +129,13 @@ export const addUser = (
 ): Promise<objAny> => {
   return request("/user", data, config);
 };
-
+//   更换超级管理员
+export const changeSuperUser = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/user/changeSuperUser", data, config);
+};
 //  用户一键发布所有的平台
 export const platformAccounts = (
   data: objAny = {},
@@ -160,6 +166,14 @@ export const getVideoList = (
   config: objAny = {}
 ): Promise<objAny> => {
   config.method = "get";
+  return request("/video", data, config);
+};
+//  删除视频
+export const delVideo = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "delStr";
   return request("/video", data, config);
 };
 //   快手授权
