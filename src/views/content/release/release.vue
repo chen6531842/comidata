@@ -206,6 +206,9 @@ export default class ContentRelease extends Vue {
       this.$Modal.success({
         title: "发布成功",
       });
+      for (let i in this.formInline) {
+        this.formInline[i] = "";
+      }
     }
   }
   public uploadSuccess(data: objAny): void {

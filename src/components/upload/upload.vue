@@ -120,5 +120,9 @@ export default class WyUpload extends Vue {
   display: inline-block;
   vertical-align: top;
   margin-right: 10px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

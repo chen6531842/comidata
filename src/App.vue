@@ -8,9 +8,9 @@
         <Sider :width="240" class="app-sider" hide-trigger v-show="sys.isLogin">
           <wy-menu-list v-if="sys.isLogin"></wy-menu-list>
         </Sider>
-        <Content class="app-content" :class="!sys.isLogin ? 'pd0' : ''"
-          ><router-view
-        /></Content>
+        <Content class="app-content" :class="!sys.isLogin ? 'pd0' : ''">
+          <router-view />
+        </Content>
       </Layout>
       <Footer v-if="sys.isLogin" class="app-footer">
         <a href="https://beian.miit.gov.cn/" target="_blank"
@@ -67,6 +67,7 @@ body,
 }
 .app-Layout {
   height: 100%;
+  overflow: hidden;
 }
 .app-header.ivu-layout-header {
   background-color: #1d1e26;

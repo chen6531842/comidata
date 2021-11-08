@@ -36,9 +36,9 @@
             <img class="img" src="../../assets/img/user.png" alt="" />
           </div>
 
-          <div class="user-flex">
-            <div class="name">123</div>
-            <div class="id">ID: 54555222</div>
+          <div class="user-flex" v-if="sys.loginData && sys.loginData.user">
+            <div class="name">{{ sys.loginData.user.full_name || "--" }}</div>
+            <div class="id">ID: {{ sys.loginData.user.id }}</div>
           </div>
           <div class="v-center">
             <Icon type="md-arrow-dropdown" />
@@ -57,8 +57,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "../../common/common-interface";
 import { logOut } from "@/api/api-user";
+import { State } from "vuex-class";
 @Component
 export default class Header extends Vue {
+  @State("sys") sys!: objAny;
   private languageName = "";
   public out(): void {
     this.$Modal.confirm({

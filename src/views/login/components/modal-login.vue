@@ -487,6 +487,7 @@ export default class LoginModal extends Vue {
     .login-code {
       color: #2f88ff;
       font-size: 14px;
+      cursor: pointer;
     }
   }
   .ivu-form-item {

@@ -31,7 +31,9 @@
     </div>
     <Table :columns="columns" :data="tableList">
       <template slot-scope="{ row }" slot="video">
-        <video class="video-show" :src="row.cover_url"></video>
+        <a :href="row.cover_url" target="_blank">
+          <img class="video-show" :src="row.cover_url" />
+        </a>
       </template>
       <template slot-scope="{ row }" slot="account">
         <div v-for="(item, index) in row.video_publish_accounts" :key="index">
