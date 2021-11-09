@@ -105,12 +105,14 @@ export default class Auto extends Vue {
   async getDyAuth(): Promise<void> {
     let url = window.location.origin;
     let ret = await getDyAuth({
-      redirectUrl: url + this.$config.host + "/auth.html",
+      redirectUrl: url + this.$config.host + "/#/auto",
     });
     if (ret.code == 200) {
       this.iframeShow = true;
       this.$nextTick(() => {
-        this.$refs.autoIframe.open(ret.payload.url);
+        this.$common.save("dyAuto", "1");
+        window.location.href = ret.payload.url;
+        // this.$refs.autoIframe.open(ret.payload.url);
       });
     }
   }

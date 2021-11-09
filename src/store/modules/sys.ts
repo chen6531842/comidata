@@ -69,28 +69,13 @@ const actions = {
     const win: objAny = window;
     if (loginData) {
       commit("SET_ISGETROUTER", true);
-      commit("SET_ISLOGIN", true);
       commit("SET_LOGINDATA", loginData);
       const toUrl = obj.to.fullPath;
       const isTrue: string = JSON.stringify(loginData.rightTags);
       const rightTags: objAny =
         isTrue == "[]" || isTrue == "{}" ? {} : loginData.rightTags;
       commit("SET_ROUTERLIST", rightTags);
-      // const ret = await getPermission({ roleId: loginData.rolePkId });
-      // if (ret.status === configData.apiStatus) {
-      //   const data: objAny[] = [];
-      //   ret.data.map((item: objAny) => {
-      //     if (item.modulePkId == configData.sysModulePkId) {
-      //       data.push(item);
-      //     }
-      //   });
-      //   // 登录进来，首页还没有做的时候
-      //   if (toUrl == "/") {
-      //     toUrl = forMenuChild(data);
-      //   }
-      //   commit("SET_MENULIST", data);
-      //   commit("SET_ROUTERLIST", data);
-      // }
+      commit("SET_ISLOGIN", true);
       obj.next &&
         obj.next({
           path: toUrl,

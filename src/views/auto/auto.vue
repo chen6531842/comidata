@@ -173,6 +173,17 @@ export default class PageAuto extends Vue {
   }
   mounted(): void {
     this.getTableList();
+    let is_success = this.$common.request("is_success");
+    if (this.$common.get("dyAuto") == "1") {
+      if (is_success == "true") {
+        this.$Message.success("授权成功");
+        this.$router.push("/auto");
+      } else if (is_success == "false") {
+        this.$Message.error("授权失败");
+        this.$router.push("/auto");
+      }
+      this.$common.remove("dyAuto");
+    }
   }
 }
 </script>

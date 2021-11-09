@@ -388,7 +388,9 @@ export default class LoginModal extends Vue {
     });
     if (ret.code == 200) {
       this.$common.save("loginData", ret.payload);
-      this.$router.push("/home");
+      this.$router.push("/home").catch(() => {
+        console.log("");
+      });
     }
     this.loading = false;
   }

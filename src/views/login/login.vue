@@ -101,7 +101,6 @@ export default class Login extends Vue {
   }
   public getLanguageName(key: string): void {
     this.$config.languageKey = key;
-    console.log(this.$config.languageList);
     this.languageName = this.$config.languageList.filter(
       (item: objAny) => item.value == key
     )[0].name;
@@ -110,7 +109,6 @@ export default class Login extends Vue {
     this.SET_ISLOGIN(false);
     this.$nextTick(() => {
       this.winHeight = common.getClientHeight();
-      console.log(this.winHeight);
     });
     this.getLanguageName(this.$config.languageKey);
   }

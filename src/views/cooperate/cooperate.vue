@@ -2,7 +2,7 @@
   <wy-sys-content title="接入授权" class="page-cooperate">
     <Table :columns="columns" :data="tableList">
       <template slot-scope="{ row }" slot="tag">
-        <Tag color="orange">orange</Tag>
+        <Tag color="orange">orange{{ row.a }}</Tag>
       </template>
       <template slot-scope="{ row }" slot="action">
         <!-- <Button

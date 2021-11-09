@@ -103,10 +103,11 @@ export default class PageSystemUser extends Vue {
   public getTableList(): void {
     console.log("???");
   }
-
+  $refs!: {
+    queryModal: HTMLFormElement; //写法1 - 推荐
+  };
   public queryModalShow(): void {
-    let queryModal: any = this.$refs.queryModal;
-    queryModal.open();
+    this.$refs.queryModal.open();
   }
 }
 </script>

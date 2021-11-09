@@ -6,7 +6,7 @@
       </Header>
       <Layout>
         <Sider :width="240" class="app-sider" hide-trigger v-show="sys.isLogin">
-          <wy-menu-list v-if="sys.isLogin"></wy-menu-list>
+          <wy-menu-list ref="menuList" v-if="sys.isLogin"></wy-menu-list>
         </Sider>
         <Content class="app-content" :class="!sys.isLogin ? 'pd0' : ''">
           <router-view />
@@ -33,6 +33,13 @@ export default {
       menuId: "",
       isCollapse: false,
     };
+  },
+  watch: {
+    "$route.path": function (val) {
+      if (this.$refs.menuList && val != "/login") {
+        this.$refs.menuList.getActive(val);
+      }
+    },
   },
   computed: {
     ...mapState(["sys"]),
