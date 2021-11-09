@@ -1,7 +1,9 @@
 <template>
   <div class="sys-content">
     <div class="sys-content-title">{{ title }}</div>
-    <div class="sys-content-div"><slot></slot></div>
+    <div class="sys-content-div">
+      <div class="sys-content-div-child"><slot></slot></div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -16,11 +18,11 @@ export default class SysContent extends Vue {
 .sys-content {
   // padding: 0 10px 10px 10px;
   box-sizing: border-box;
-  // height: 100%;
-  // display: flex;
-  // flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   .sys-content-title {
-    margin: -16px -16px 0 -16px;
+    // margin: -16px -16px 0 -16px;
     font-weight: bold;
     position: relative;
     // padding: 10px 0 10px 15px;
@@ -44,9 +46,13 @@ export default class SysContent extends Vue {
   .sys-content-div {
     flex: 1;
     padding: 16px;
-    margin-top: 16px;
-    background-color: #fff;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+
+    overflow: auto;
+    .sys-content-div-child {
+      background-color: #fff;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+      padding: 16px;
+    }
   }
 }
 </style>

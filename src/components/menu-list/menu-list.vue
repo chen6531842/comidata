@@ -1,36 +1,38 @@
 <template>
-  <Menu
-    :accordion="true"
-    :active-name="activeName"
-    :open-names="openNames"
-    :theme="theme2"
-    width="auto"
-    ref="side_menu"
-    @on-select="menuChange"
-  >
-    <template v-for="(item, index) in menuList">
-      <MenuItem
-        :name="item.id"
-        :key="index"
-        v-if="!item.children || item.children.length == 0"
-      >
-        <Icon type="md-document" />
-        {{ item.name }}
-      </MenuItem>
-      <Submenu :name="item.id" v-else :key="index">
-        <template slot="title">
-          <Icon type="ios-paper" />
-          {{ item.name }}
-        </template>
+  <div class="">
+    <Menu
+      :accordion="true"
+      :active-name="activeName"
+      :open-names="openNames"
+      :theme="theme2"
+      width="auto"
+      ref="side_menu"
+      @on-select="menuChange"
+    >
+      <template v-for="(item, index) in menuList">
         <MenuItem
-          :name="child.id"
-          v-for="(child, i) in item.children"
-          :key="index + '-' + i"
-          >{{ child.name }}</MenuItem
+          :name="item.id"
+          :key="index"
+          v-if="!item.children || item.children.length == 0"
         >
-      </Submenu>
-    </template>
-  </Menu>
+          <Icon type="md-document" />
+          {{ item.name }}
+        </MenuItem>
+        <Submenu :name="item.id" v-else :key="index">
+          <template slot="title">
+            <Icon type="ios-paper" />
+            {{ item.name }}
+          </template>
+          <MenuItem
+            :name="child.id"
+            v-for="(child, i) in item.children"
+            :key="index + '-' + i"
+            >{{ child.name }}</MenuItem
+          >
+        </Submenu>
+      </template>
+    </Menu>
+  </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

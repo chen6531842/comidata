@@ -1,24 +1,22 @@
 <template>
-  <div id="app">
-    <Layout class="app-Layout">
-      <Header class="app-header" v-show="sys.isLogin">
-        <wy-header v-if="sys.isLogin"></wy-header>
-      </Header>
-      <Layout>
-        <Sider :width="240" class="app-sider" hide-trigger v-show="sys.isLogin">
-          <wy-menu-list ref="menuList" v-if="sys.isLogin"></wy-menu-list>
-        </Sider>
-        <Content class="app-content" :class="!sys.isLogin ? 'pd0' : ''">
-          <router-view />
-        </Content>
-      </Layout>
-      <Footer v-if="sys.isLogin" class="app-footer">
-        <a href="https://beian.miit.gov.cn/" target="_blank"
-          >©2021 COMDATA 粤ICP备2021126334号 版权所有 震撼者科技深圳有限公司</a
-        ></Footer
-      >
+  <Layout id="app" class="app-Layout">
+    <Header class="app-header" v-show="sys.isLogin">
+      <wy-header v-if="sys.isLogin"></wy-header>
+    </Header>
+    <Layout class="app-Layout-content">
+      <Sider :width="240" class="app-sider" hide-trigger v-show="sys.isLogin">
+        <wy-menu-list ref="menuList" v-if="sys.isLogin"></wy-menu-list>
+      </Sider>
+      <Content class="app-content" :class="!sys.isLogin ? 'pd0' : ''">
+        <router-view />
+      </Content>
     </Layout>
-  </div>
+    <Footer v-if="sys.isLogin" class="app-footer">
+      <a href="https://beian.miit.gov.cn/" target="_blank"
+        >©2021 COMDATA 粤ICP备2021126334号 版权所有 震撼者科技深圳有限公司</a
+      ></Footer
+    >
+  </Layout>
 </template>
 <script>
 import menuList from "./components/menu-list/menu-list.vue";
@@ -61,7 +59,9 @@ export default {
 <style lang="less">
 @import "./style/var.less";
 html,
-body,
+body {
+  height: 100%;
+}
 #app {
   height: 100%;
 }
@@ -85,10 +85,13 @@ body,
 }
 .app-content.ivu-layout-content {
   background-color: #f8f9fa;
-  padding: @interval;
+  // padding: @interval;
 }
 .app-content.ivu-layout-content.pd0 {
   padding: 0;
+}
+.app-Layout-content {
+  overflow: hidden;
 }
 .blue,
 .ivu-btn-text.blue,
