@@ -153,6 +153,28 @@ export const uploadFile = (
   config.method = "formData";
   return request("/video/upload", data, config);
 };
+//  分片上传--  准备上传
+export const startUpload = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/video/startUpload", data, config);
+};
+//  片上传--  上传文件
+export const shardUploadFile = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "formData";
+  return request("/video/multipartUpload", data, config);
+};
+//  分片上传--  完成上传
+export const multipartComplete = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/video/multipartComplete", data, config);
+};
 //  一键发布视频
 export const subPlatformVideo = (
   data: objAny = {},
