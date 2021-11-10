@@ -57,7 +57,7 @@ export default class WyUpload extends Vue {
   private data!: objAny;
   @State("sys") sys!: objAny;
 
-  private shardSize: number = 0.7 * 1024 * 1024; //以2MB为一个分片
+  private shardSize: number = 2 * 1024 * 1024; //以2MB为一个分片
   // let shardSize:number = 50 * 1024;    //以50KB为一个分片
 
   private headers: objAny = {};
@@ -182,10 +182,10 @@ export default class WyUpload extends Vue {
     let shardSize = param.shardSize;
 
     let fileReader: objAny = new FileReader();
-    let blobSlice =
-      File.prototype.slice ||
-      File.prototype.mozSlice ||
-      File.prototype.webkitSlice;
+    let blobSlice = File.prototype.slice;
+    // File.prototype.slice ||
+    // File.prototype.mozSlice ||
+    // File.prototype.webkitSlice;
     let start = shardIndex * shardSize;
     let end = start + shardSize >= file.size ? file.size : start + shardSize;
     console.log(start);
@@ -221,7 +221,7 @@ export default class WyUpload extends Vue {
       }
     };
   }
-  ab2hex(buffer) {
+  ab2hex(buffer: any) {
     var hexArr = Array.prototype.map.call(
       new Uint8Array(buffer),
       function (bit) {
