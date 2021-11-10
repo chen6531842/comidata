@@ -115,7 +115,7 @@ export default class WyUpload extends Vue {
     if (ret.code == 200) {
       let upload_token = ret.payload.upload_token;
       let shardSize = this.shardSize;
-      let shardIndex = 1; //分片索引，1表示第1个分片
+      let shardIndex = 0; //分片索引，1表示第1个分片
       let size = file.size;
       let shardTotal = Math.ceil(size / shardSize); //总片数
 
@@ -128,7 +128,7 @@ export default class WyUpload extends Vue {
         suffix: suffix, // 后缀名
         upload_token: upload_token,
       };
-      this.recursionUpload(param, file);
+      this.upgradeFiles(param, file);
     }
   }
 
