@@ -174,6 +174,9 @@ export const request = function (
     if (configData && configData.timeout) {
       options.timeout = configData.timeout;
     }
+    if (configData && configData.onUploadProgress) {
+      options.onUploadProgress = configData.onUploadProgress;
+    }
     axios(options)
       .then(async (result) => {
         // TODO 逻辑处理

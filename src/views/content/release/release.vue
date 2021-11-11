@@ -101,17 +101,6 @@
                 type="select"
                 @success="uploadImgSuccess"
               >
-                <!-- <div
-                  style="
-                    width: 58px;
-                    height: 58px;
-                    line-height: 58px;
-                    border: 1px dashed #dcdee2;
-                    text-align: center;
-                  "
-                >
-                  <Icon type="ios-camera" size="20"></Icon>
-                </div> -->
               </wy-upload>
             </FormItem>
             <FormItem>
@@ -119,7 +108,8 @@
               <Button
                 style="margin-left: 8px"
                 type="primary"
-                @click="subPlatformVideo"
+                @click="handleSubmit"
+                :loading="loading"
                 >确认</Button
               >
             </FormItem>
@@ -183,6 +173,7 @@ export default class ContentRelease extends Vue {
     ],
   };
   private accountsList: objAny[] = [];
+  private loading = false;
 
   async getAllAccounts(): Promise<void> {
     let ret = await getAllAccounts({});
@@ -201,6 +192,7 @@ export default class ContentRelease extends Vue {
     });
   }
   async subPlatformVideo(): Promise<void> {
+    this.loading = true;
     let ret = await subPlatformVideo(this.formInline);
     if (ret.code == 200) {
       this.$Modal.success({
@@ -210,6 +202,7 @@ export default class ContentRelease extends Vue {
         this.formInline[i] = "";
       }
     }
+    this.loading = false;
   }
   public uploadSuccess(data: objAny): void {
     this.formInline.video_file_path = data.file_path;

@@ -1,39 +1,45 @@
 <template>
-  <Upload
-    ref="upload"
-    :type="type"
-    :action="action"
-    :headers="headers"
-    name="file"
-    :data="uploadData"
-    :on-success="uploadSuccess"
-    :before-upload="beforeUpload"
-    :on-error="error"
-    :default-file-list="defaultList"
-    :show-upload-list="type == 'drag'"
-  >
-    <slot></slot>
-
-    <template v-if="type == 'select'">
-      <div class="img-box" v-for="(item, index) in uploadList" :key="index">
-        <template v-if="item.status === 'finished'">
-          <img :src="item.url" />
-        </template>
-        <template v-else>
-          <Progress
-            v-if="item.showProgress"
-            :percent="item.percentage"
-            hide-info
-          ></Progress>
-        </template>
-      </div>
-      <div class="img-box">
-        <Icon type="ios-camera" size="20"></Icon>
-      </div>
+  <div class="upload-box">
+    <Upload
+      ref="upload"
+      :type="type"
+      :action="action"
+      :headers="headers"
+      name="file"
+      :data="uploadData"
+      :on-success="uploadSuccess"
+      :before-upload="beforeUpload"
+      :on-error="error"
+      :default-file-list="defaultList"
+      :show-upload-list="type == 'drag'"
+      :accept="accept"
+    >
+      <slot></slot>
+      <template v-if="type == 'select'">
+        <div class="img-box" v-for="(item, index) in uploadList" :key="index">
+          <template v-if="item.status === 'finished'">
+            <img :src="item.url" />
+          </template>
+          <template v-else>
+            <Progress
+              v-if="item.showProgress"
+              :percent="item.percentage"
+              hide-info
+            ></Progress>
+          </template>
+        </div>
+        <div class="img-box">
+          <Icon type="ios-camera" size="20"></Icon>
+        </div>
+      </template>
+    </Upload>
+    <template v-if="type != 'select'">
+      <Progress v-if="percentShow" :percent="percent"></Progress>
+      <a target="_blank" :href="$config.imgShow + videoUrl" class="blue">{{
+        videoName
+      }}</a>
     </template>
-
-    <!--:format="format" <div class="Upload-text">点击或者拖拽上传视频</div> -->
-  </Upload>
+  </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -65,6 +71,13 @@ export default class WyUpload extends Vue {
   private defaultList: objAny[] = [];
   private uploadList: objAny[] = [];
   private format: string[] = [];
+  private percent = 0;
+  private percentShow = false;
+  private shardTotal = 0; // 文件总片数
+  private shardIndex = 0; // 当前片数
+  private videoUrl = "";
+  private videoName = "";
+  private accept = "";
 
   public uploadSuccess(response: objAny, file: objAny): void {
     if (response.code == 200) {
@@ -99,8 +112,12 @@ export default class WyUpload extends Vue {
       this.uploadType == 1 ? this.$config.imgType : this.$config.videoType;
     if (videoType.indexOf(name) != -1) {
       // return true;
-      this.uploadFile(file, name);
-      return false;
+      if (this.uploadType == 2) {
+        this.uploadFile(file, name);
+        return false;
+      } else {
+        return true;
+      }
     } else {
       this.$Message.error(
         "请上传" + this.$config.videoType.join(",") + "格式文件"
@@ -109,7 +126,6 @@ export default class WyUpload extends Vue {
     }
   }
 
-  // 文件分片
   async uploadFile(file: objAny, suffix: string): Promise<void> {
     let ret = await startUpload({});
     if (ret.code == 200) {
@@ -118,7 +134,8 @@ export default class WyUpload extends Vue {
       let shardIndex = 0; //分片索引，1表示第1个分片
       let size = file.size;
       let shardTotal = Math.ceil(size / shardSize); //总片数
-
+      this.shardTotal = shardTotal;
+      this.shardIndex = shardIndex;
       let param = {
         shardIndex: shardIndex, // 分片的 index
         shardSize: shardSize, // 分片的 大小
@@ -129,51 +146,53 @@ export default class WyUpload extends Vue {
         upload_token: upload_token,
       };
       this.upgradeFiles(param, file);
+      this.videoName = file.name;
     }
   }
+  // // 文件分片
+  // async recursionUpload(param: objAny, file: objAny): Promise<void> {
+  //   let shardIndex = param.shardIndex;
+  //   let shardTotal = param.shardTotal;
+  //   let shardSize = param.shardSize;
 
-  async recursionUpload(param: objAny, file: objAny): Promise<void> {
-    let shardIndex = param.shardIndex;
-    let shardTotal = param.shardTotal;
-    let shardSize = param.shardSize;
+  //   let fileShard: objAny = this.getFileShard(shardIndex, shardSize, file); // 当前要传的分片
 
-    let fileShard: objAny = this.getFileShard(shardIndex, shardSize, file); // 当前要传的分片
+  //   let paramData: objAny = {
+  //     fragment_id: shardIndex - 1,
+  //     upload_token: param.upload_token,
+  //     file: fileShard,
+  //   };
+  //   let ret = await shardUploadFile(paramData);
+  //   if (ret.code == 200) {
+  //     if (shardIndex < shardTotal) {
+  //       console.log("下一份片开始。。。。。。");
+  //       param.shardIndex = param.shardIndex + 1;
+  //       this.recursionUpload(param, file);
+  //     } else {
+  //       let retUpload = await multipartComplete({
+  //         upload_token: param.upload_token,
+  //       });
+  //       if (retUpload.code == 200) {
+  //         this.$Message.success("上传成功");
+  //         this.$emit("success", retUpload.payload);
+  //       }
+  //     }
+  //   }
+  // }
 
-    let paramData: objAny = {
-      fragment_id: shardIndex - 1,
-      upload_token: param.upload_token,
-      file: fileShard,
-    };
-    let ret = await shardUploadFile(paramData);
-    if (ret.code == 200) {
-      if (shardIndex < shardTotal) {
-        console.log("下一份片开始。。。。。。");
-        param.shardIndex = param.shardIndex + 1;
-        this.recursionUpload(param, file);
-      } else {
-        let retUpload = await multipartComplete({
-          upload_token: param.upload_token,
-        });
-        if (retUpload.code == 200) {
-          this.$Message.success("上传成功");
-          this.$emit("success", retUpload.payload);
-        }
-      }
-    }
-  }
-  public getFileShard(
-    shardIndex: number,
-    shardSize: number,
-    file: objAny
-  ): objAny {
-    let start = (shardIndex - 1) * shardSize;
-    let end = Math.min(file.size, start + shardSize);
-    let fileShard = file.slice(start, end);
-    console.log(start);
-    console.log(end);
-    console.log(fileShard);
-    return fileShard;
-  }
+  // public getFileShard(
+  //   shardIndex: number,
+  //   shardSize: number,
+  //   file: objAny
+  // ): objAny {
+  //   let start = (shardIndex - 1) * shardSize;
+  //   let end = Math.min(file.size, start + shardSize);
+  //   let fileShard = file.slice(start, end);
+  //   console.log(start);
+  //   console.log(end);
+  //   console.log(fileShard);
+  //   return fileShard;
+  // }
 
   //文件二进制分片
   async upgradeFiles(param: objAny, file: objAny): Promise<void> {
@@ -188,55 +207,53 @@ export default class WyUpload extends Vue {
     // File.prototype.webkitSlice;
     let start = shardIndex * shardSize;
     let end = start + shardSize >= file.size ? file.size : start + shardSize;
-    console.log(start);
-    console.log(end);
     fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
 
     fileReader.onload = async (e: objAny) => {
       let content = e.target.result;
       let un8 = new Uint8Array(content);
-      console.log(un8);
-      // console.log(this.ab2hex(un8));
-      // console.log(new Blob([un8], { type: "video/mp4" }));
       let paramData: objAny = {
         fragment_id: shardIndex,
         upload_token: param.upload_token,
         file: new Blob([un8]),
       };
-      let ret = await shardUploadFile(paramData);
+      let ret = await shardUploadFile(paramData, {
+        onUploadProgress: this.onUploadProgress,
+      });
       if (ret.code == 200) {
         if (shardIndex < shardTotal - 1) {
-          console.log("下一份片开始。。。。。。");
+          // console.log("下一份片开始。。。。。。");
           param.shardIndex = param.shardIndex + 1;
+          this.shardIndex = param.shardIndex;
           this.upgradeFiles(param, file);
         } else {
           let retUpload = await multipartComplete({
             upload_token: param.upload_token,
           });
           if (retUpload.code == 200) {
-            this.$Message.success("上传成功");
+            // this.$Message.success("上传成功");
             this.$emit("success", retUpload.payload);
+            this.videoUrl = retUpload.payload.file_path;
           }
         }
       }
     };
   }
-  ab2hex(buffer: any) {
-    var hexArr = Array.prototype.map.call(
-      new Uint8Array(buffer),
-      function (bit) {
-        return ("00" + bit.toString(16)).slice(-2);
+  public onUploadProgress(progressEvent: objAny): void {
+    if (progressEvent.lengthComputable) {
+      // let uploaded = ((this.shardIndex + 1) / this.shardTotal) * 100; // 第N片的百分比
+      let total = this.shardTotal * 100;
+      let t = this.shardIndex * 100; // 已上传的
+      var complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0; // 当前上传的
+      let percent: number = ((t + complete) / total) * 100;
+
+      this.percent = parseInt(percent.toFixed(0));
+      this.percentShow = true;
+      if (this.percent >= 100) {
+        this.percentShow = false;
+        this.percent = 0; // 重新置0
       }
-    );
-    return hexArr.join("");
-  }
-  public loadNext(
-    shardIndex: number,
-    shardSize: number,
-    file: objAny,
-    fileReader: objAny
-  ): objAny {
-    return fileReader;
+    }
   }
 
   $refs!: {
@@ -248,7 +265,10 @@ export default class WyUpload extends Vue {
     this.format =
       this.uploadType == 1 ? this.$config.imgType : this.$config.videoType;
     this.headers.Authorization = this.sys.loginData.token;
-
+    let accept = this.format.map((item: string) => {
+      return this.uploadType == 1 ? "image/" + item : "video/" + item;
+    });
+    this.accept = accept.join(",");
     this.uploadList = this.$refs.upload.fileList;
   }
 }
