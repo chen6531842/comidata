@@ -241,7 +241,6 @@ export default class WyUpload extends Vue {
   }
   public onUploadProgress(progressEvent: objAny): void {
     if (progressEvent.lengthComputable) {
-      // let uploaded = ((this.shardIndex + 1) / this.shardTotal) * 100; // 第N片的百分比
       let total = this.shardTotal * 100;
       let t = this.shardIndex * 100; // 已上传的
       var complete = ((progressEvent.loaded / progressEvent.total) * 100) | 0; // 当前上传的
