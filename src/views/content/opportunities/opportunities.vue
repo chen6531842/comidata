@@ -3,38 +3,36 @@
     <div class="form-box">
       <div class="form-flex">
         <Button type="primary" style="margin-right: 20px">分配子管理员</Button>
-        <Button type="error">批量删除</Button>
+        <Button type="error" @click="allDel" :disabled="selectList.length == 0"
+          >批量删除</Button
+        >
       </div>
       <Form ref="formInline" :model="formInline" inline>
         <FormItem label="评论时段" :label-width="80">
-          <Select
-            v-model="formInline.target"
-            style="width: 180px"
-            placeholder="请选择搜索项"
-          >
-            <Option
-              :value="item.value"
-              v-for="(item, index) in targetList"
-              :key="index"
-              >{{ item.name }}</Option
-            >
-          </Select>
+          <DatePicker
+            @on-change="timeChange"
+            type="daterange"
+            show-week-numbers
+            placement="bottom-end"
+            placeholder="请选择时间"
+            style="width: 200px"
+          ></DatePicker>
         </FormItem>
         <FormItem label="性别" :label-width="40">
           <Select
-            v-model="formInline.sex"
+            v-model="formInline.gender"
             style="width: 120px"
             placeholder="请选择搜索项"
           >
             <Option
               :value="item.value"
-              v-for="(item, index) in sexList"
+              v-for="(item, index) in genderList"
               :key="index"
-              >{{ item.name }}</Option
+              >{{ item.label }}</Option
             >
           </Select>
         </FormItem>
-        <FormItem label="">
+        <!-- <FormItem label="">
           <Select
             v-model="formInline.sex"
             style="width: 180px"
@@ -42,16 +40,16 @@
           >
             <Option
               :value="item.value"
-              v-for="(item, index) in sexList"
+              v-for="(item, index) in genderList"
               :key="index"
               >{{ item.name }}</Option
             >
           </Select>
-        </FormItem>
+        </FormItem> -->
         <FormItem label="">
           <Input
             style="width: 240px"
-            v-model="formInline.name"
+            v-model="formInline.keyword"
             placeholder="请输入关键字"
           ></Input>
         </FormItem>
@@ -60,64 +58,70 @@
         </FormItem>
       </Form>
     </div>
-    <Table :columns="columns" :data="tableList">
+    <Table
+      :columns="columns"
+      :data="tableList"
+      :loading="loading"
+      @on-select="tableSelect"
+    >
       <template slot-scope="{ row }" slot="userInfo">
         <div class="user-info">
-          <div class="header-img">{{ row.a }}</div>
-          <div class="name">ada</div>
-          <div class="follow">关注用户</div>
+          <div class="header-img">
+            <img :src="row.avatar" alt="" />
+          </div>
+          <div class="name">{{ row.nickname }}</div>
+          <!-- <div class="follow">关注用户</div> -->
         </div>
       </template>
       <template slot-scope="{ row }" slot="userData">
         <div class="user-data">
           {{ row.a }}
-          <p>作品数：59</p>
+          <!-- <p>作品数：59</p>
           <p>关注数：59</p>
           <p>粉丝数：59</p>
-          <p>获赞数：59</p>
+          <p>获赞数：59</p> -->
         </div>
       </template>
       <template slot-scope="{ row }" slot="info">
         <div class="user-data">
-          {{ row.a }}
-          <p>性别：女</p>
-          <p>年龄：59</p>
-          <p>城市：深圳</p>
-          <p>来源：账号监控</p>
-          <p>获取时间：2020-01-01</p>
+          <p>性别：{{ row.genderZh }}</p>
+          <!-- <p>年龄：59</p> -->
+          <p>城市：{{ row.country }}{{ row.province }}{{ row.city }}</p>
+          <!-- <p>来源：账号监控</p> -->
+          <!-- <p>获取时间：{{row.created_at}}</p> -->
         </div>
       </template>
       <template slot-scope="{ row }" slot="comment">
         <div class="user-data">
           {{ row.a }}
-          <p>评论内容：女</p>
-          <p>评论时间：59</p>
-          <p class="red">商机词：多少钱</p>
+          <p>评论内容：{{ row.comment }}</p>
+          <p>评论时间：{{ row.create_time }}</p>
+          <!-- <p class="red">商机词：多少钱</p> -->
         </div>
       </template>
       <template slot-scope="{ row }" slot="contact">
         <div class="user-data">
-          {{ row.a }}
-          <a class="blue">扫码联系</a>
+          {{ row.a || "" }}
+          <!-- <a class="blue">扫码联系</a>
           <p>平台：抖音</p>
-          <p>签名：给大家一起分享</p>
+          <p>签名：给大家一起分享</p> -->
         </div>
       </template>
       <template slot-scope="{ row }" slot="describe">
         <div class="user-data">
           {{ row.a }}
-          <a class="blue">查看视频</a>
-          <p>给大家一起分享给大家一起分享给大家一起分享给大家一起分享</p>
-          <p class="red">同城视频号：抖音抖音抖音抖音</p>
-          <p>监控时间：2020-01-01 10:00:00</p>
+          <a class="blue" :href="row.video_url" target="_blank">查看视频</a>
+          <p>{{ row.video_description }}</p>
+          <!-- <p class="red">同城视频号：抖音抖音抖音抖音</p> -->
+          <p>监控时间：{{ row.created_at }}</p>
         </div>
       </template>
       <template slot-scope="{ row }" slot="videoData">
         <div class="user-data">
           {{ row.a }}
-          <p>转发数：5</p>
-          <p>评论数：5</p>
-          <p>点赞数：5</p>
+          <p>转发数：{{ row.forward_count }}</p>
+          <p>评论数：{{ row.comment_count }}</p>
+          <p>点赞数：{{ row.digg_count }}</p>
         </div>
       </template>
       <template slot-scope="{ row }" slot="handle">
@@ -133,7 +137,7 @@
           type="text"
           size="small"
           style="margin-right: 5px"
-          @click="showVideo(row)"
+          @click="sendMessage(row)"
           >处理数据</Button
         >
         <Button type="text" class="red" size="small" @click="removeVideo(row)"
@@ -147,6 +151,7 @@
       :total="total"
       :index="formInline.pageIndex"
     ></wy-list-page>
+    <wy-send-message ref="sendMessage"> </wy-send-message>
   </wy-sys-content>
 </template>
 
@@ -155,23 +160,33 @@ import { Component, Vue } from "vue-property-decorator";
 import sysContent from "../../../components/sys-content/sys-content.vue";
 import listPage from "../../../components/list-page/list-page.vue";
 import { objAny } from "../../../common/common-interface";
+import { getCommentList, delComment } from "@/api/api-user";
+import sendMessage from "./components/sendMessage.vue";
 @Component({
   components: {
     "wy-sys-content": sysContent,
     "wy-list-page": listPage,
+    "wy-send-message": sendMessage,
   },
 })
 export default class PageOpportunities extends Vue {
   private formInline: objAny = {
-    target: "",
-    name: "",
-    sex: "",
+    keyword: "",
+    gender: "",
     pageIndex: 1,
     pageSize: 10,
+    startTime: "",
+    endTime: "",
   };
+  private loading = false;
   private total = 0;
-  private targetList: objAny[] = [];
-  private sexList: objAny[] = [];
+
+  private selectList: objAny[] = [];
+  private genderList: objAny[] = [
+    { label: "全部", value: "" },
+    { label: "男", value: "1" },
+    { label: "女", value: "2" },
+  ];
   private columns: objAny[] = [
     {
       type: "selection",
@@ -229,21 +244,23 @@ export default class PageOpportunities extends Vue {
       minWidth: 140,
     },
   ];
-  private tableList: objAny[] = [];
-
-  public showVideo(item: objAny): void {
-    console.log(item);
-  }
+  private tableList: objAny[] = [{}];
   public removeVideo(item: objAny): void {
     this.$Modal.confirm({
       title: "提示",
       content: "<p>确定要删除吗？</p>",
       onOk: () => {
-        console.log(item);
+        this.delSub(item.id);
       },
     });
   }
-
+  async delSub(id: string): Promise<void> {
+    let ret = await delComment({ id: id });
+    if (ret.code == 200) {
+      this.$Message.success("删除成功");
+      this.getTableList();
+    }
+  }
   public queryClick(): void {
     this.formInline.pageIndex = 1;
     this.getTableList();
@@ -257,8 +274,44 @@ export default class PageOpportunities extends Vue {
     this.getTableList();
   }
 
-  public getTableList(): void {
-    console.log("???");
+  async getTableList(): Promise<void> {
+    this.loading = true;
+    let ret = await getCommentList({});
+    if (ret.code == 200) {
+      this.tableList = ret.payload.data;
+      this.total = ret.payload.total;
+    }
+    this.loading = false;
+    this.selectList = [];
+  }
+  public timeChange(time: string[]): void {
+    console.log(time);
+    this.formInline.startTime = time[0];
+    this.formInline.endTime = time[1];
+  }
+  public tableSelect(list: objAny[]): void {
+    this.selectList = list;
+  }
+  public allDel(): void {
+    let ids = this.selectList.map((item: objAny) => {
+      return item.id;
+    });
+    this.$Modal.confirm({
+      title: "提示",
+      content: "<p>确定要删除吗？</p>",
+      onOk: () => {
+        this.delSub(ids.join(","));
+      },
+    });
+  }
+  $refs!: {
+    sendMessage: HTMLFormElement;
+  };
+  public sendMessage(item: objAny): void {
+    this.$refs.sendMessage.open(item);
+  }
+  created(): void {
+    this.getTableList();
   }
 }
 </script>

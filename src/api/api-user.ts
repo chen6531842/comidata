@@ -230,3 +230,26 @@ export const delAuth = (
   config.method = "delStr";
   return request("/platformAccount", data, config);
 };
+//   发现商机列表
+export const getCommentList = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/comment", data, config);
+};
+//   删除商机
+export const delComment = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "delStr";
+  return request("/comment", data, config);
+};
+//   商机 -- 发私信
+export const sendCommentMessage = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/comment/sendMessage", data, config);
+};
