@@ -23,6 +23,12 @@
           <img :src="row.avatar" class="avatar-img" alt="" />
         </a>
       </template>
+      <template slot-scope="{ row }" slot="time">
+        {{ row.platform_auth_date }}
+        <span v-if="row.is_platform_auth_expired == 1" class="red"
+          >(已过期)</span
+        >
+      </template>
       <template slot-scope="{ row }" slot="action">
         <Button
           class="blue"
@@ -30,6 +36,7 @@
           size="small"
           style="margin-right: 5px"
           @click="updataKey(row)"
+          v-if="row.is_platform_auth_expired == 1"
           >重新授权</Button
         >
         <Button type="text" class="red" size="small" @click="delClick(row)"
@@ -43,7 +50,8 @@
       :total="total"
       :index="formInline.pageIndex"
     ></wy-list-page>
-    <wy-add-modal ref="addModal"></wy-add-modal>
+    }
+    <wy-add-modal ref="addModal" @success="getTableList"></wy-add-modal>
   </wy-sys-content>
 </template>
 
@@ -112,6 +120,7 @@ export default class PageAuto extends Vue {
     {
       title: "授权时间",
       key: "platform_auth_date",
+      slot: "time",
       minWidth: 160,
     },
     {

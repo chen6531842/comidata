@@ -54,7 +54,7 @@
           ></Input>
         </FormItem>
         <FormItem label="">
-          <Button type="primary">搜索</Button>
+          <Button type="primary" @click="queryClick">搜索</Button>
         </FormItem>
       </Form>
     </div>

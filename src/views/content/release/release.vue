@@ -73,7 +73,10 @@
                     {{ item.platform_type_name }}
                   </div>
                   <div class="platform-info">
-                    <CheckboxGroup v-model="formInline.platform_account_ids">
+                    <CheckboxGroup
+                      v-model="formInline.platform_account_ids"
+                      @on-change="platformChange"
+                    >
                       <Checkbox :label="item.id">{{
                         item.platform_type_name
                       }}</Checkbox>
@@ -91,11 +94,7 @@
             <!-- <div class="other-config">
               <div class="other-config-name">以下配置仅针对快手</div>
             </div> -->
-            <FormItem
-              label="视频封面"
-              prop="cover_file_path"
-              v-if="formInline.platform_account_ids.indexOf(2) != -1"
-            >
+            <FormItem label="视频封面" prop="cover_file_path" v-if="isKuaishou">
               <wy-upload
                 :uploadType="1"
                 type="select"
@@ -143,6 +142,7 @@ export default class ContentRelease extends Vue {
     cover_file_path: "",
     video_file_path: "",
   };
+  private isKuaishou = false;
   private ruleValidate: objAny = {
     title: [{ required: true, message: "请输入标题", trigger: "blur" }],
     publish_method: [
@@ -198,9 +198,10 @@ export default class ContentRelease extends Vue {
       this.$Modal.success({
         title: "发布成功",
       });
-      for (let i in this.formInline) {
-        this.formInline[i] = "";
-      }
+      // for (let i in this.formInline) {
+      //   this.formInline[i] = "";
+      // }
+      this.$router.push("/content/video");
     }
     this.loading = false;
   }
@@ -209,6 +210,16 @@ export default class ContentRelease extends Vue {
   }
   public uploadImgSuccess(data: objAny): void {
     this.formInline.cover_file_path = data.file_path;
+  }
+  public platformChange(accIds: number[]): void {
+    console.log(accIds);
+    let isKuaishou = false;
+    this.accountsList.map((item: objAny) => {
+      if (accIds.indexOf(item.id) != -1 && item.platform_type == "kuaishou") {
+        isKuaishou = true;
+      }
+    });
+    this.isKuaishou = isKuaishou;
   }
 
   mounted(): void {

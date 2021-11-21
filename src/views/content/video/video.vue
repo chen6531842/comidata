@@ -1,7 +1,9 @@
 <template>
   <wy-sys-content title="视频列表" class="page-video">
     <div class="form-box">
-      <div class="form-flex"><Button type="error">批量删除</Button></div>
+      <div class="form-flex">
+        <Button type="error" @click="allDel">批量删除</Button>
+      </div>
       <Form ref="formInline" :model="formInline" inline>
         <FormItem label="">
           <Select
@@ -20,18 +22,23 @@
         <FormItem label="">
           <Input
             style="width: 240px"
-            v-model="formInline.name"
+            v-model="formInline.keyword"
             placeholder="请输入关键字"
           ></Input>
         </FormItem>
         <FormItem label="">
-          <Button type="primary">搜索</Button>
+          <Button type="primary" @click="queryClick">搜索</Button>
         </FormItem>
       </Form>
     </div>
-    <Table :columns="columns" :data="tableList">
+    <Table
+      :columns="columns"
+      :data="tableList"
+      :loading="loading"
+      @on-select="tableSelect"
+    >
       <template slot-scope="{ row }" slot="video">
-        <a :href="row.cover_url" target="_blank">
+        <a :href="row.video_url" target="_blank">
           <img class="video-show" :src="row.cover_url" />
         </a>
       </template>
@@ -52,7 +59,9 @@
           @click="showVideo(row)"
           >查看视频</Button
         >
-        <Button type="text" size="small" @click="removeVideo(row)">删除</Button>
+        <Button type="text" class="red" size="small" @click="removeVideo(row)"
+          >删除</Button
+        >
       </template>
     </Table>
     <wy-list-page
@@ -79,10 +88,11 @@ import { getVideoList, delVideo } from "@/api/api-user";
 export default class PageVideo extends Vue {
   private formInline: objAny = {
     target: "",
-    name: "",
+    keyword: "",
     pageIndex: 1,
     pageSize: 10,
   };
+  private loading = false;
   private total = 0;
   private targetList: objAny[] = [];
   private columns: objAny[] = [
@@ -120,6 +130,7 @@ export default class PageVideo extends Vue {
     },
   ];
   private tableList: objAny[] = [];
+  private selectList: objAny[] = [];
 
   public showVideo(item: objAny): void {
     window.open(item.video_url);
@@ -133,7 +144,7 @@ export default class PageVideo extends Vue {
       },
     });
   }
-  async delSub(id: number): Promise<void> {
+  async delSub(id: string): Promise<void> {
     let ret = await delVideo({ id: id });
     if (ret.code == 200) {
       this.$Message.success("删除成功");
@@ -154,13 +165,29 @@ export default class PageVideo extends Vue {
   }
 
   async getTableList(): Promise<void> {
-    let ret = await getVideoList({
-      index: 1,
-    });
+    this.loading = true;
+    let ret = await getVideoList(this.formInline);
     if (ret.code == 200) {
       this.tableList = ret.payload.data;
       this.total = ret.payload.total;
     }
+    this.loading = false;
+    this.selectList = [];
+  }
+  public tableSelect(list: objAny[]): void {
+    this.selectList = list;
+  }
+  public allDel(): void {
+    let ids = this.selectList.map((item: objAny) => {
+      return item.id;
+    });
+    this.$Modal.confirm({
+      title: "提示",
+      content: "<p>确定要删除吗？</p>",
+      onOk: () => {
+        this.delSub(ids.join(","));
+      },
+    });
   }
   mounted(): void {
     this.getTableList();

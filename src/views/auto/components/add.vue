@@ -85,6 +85,7 @@ export default class Auto extends Vue {
   public autoSuccess(): void {
     console.log("成功");
     this.iframeShow = false;
+    this.$emit("success");
   }
 
   $refs!: {
