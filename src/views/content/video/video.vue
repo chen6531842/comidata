@@ -39,7 +39,8 @@
     >
       <template slot-scope="{ row }" slot="video">
         <a :href="row.video_url" target="_blank">
-          <img class="video-show" :src="row.cover_url" />
+          <img class="video-show" :src="row.cover_url" v-if="row.cover_url" />
+          <span v-else>暂无封面图</span>
         </a>
       </template>
       <template slot-scope="{ row }" slot="account">
@@ -78,7 +79,7 @@ import { Component, Vue } from "vue-property-decorator";
 import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
-import { getVideoList, delVideo } from "@/api/api-user";
+import { getVideoList, delVideo, delAllVideo } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -144,8 +145,15 @@ export default class PageVideo extends Vue {
       },
     });
   }
-  async delSub(id: string): Promise<void> {
+  async delSub(id: number): Promise<void> {
     let ret = await delVideo({ id: id });
+    if (ret.code == 200) {
+      this.$Message.success("删除成功");
+      this.getTableList();
+    }
+  }
+  async delAllVideo(ids: number[]): Promise<void> {
+    let ret = await delAllVideo({ ids: ids });
     if (ret.code == 200) {
       this.$Message.success("删除成功");
       this.getTableList();
@@ -185,7 +193,7 @@ export default class PageVideo extends Vue {
       title: "提示",
       content: "<p>确定要删除吗？</p>",
       onOk: () => {
-        this.delSub(ids.join(","));
+        this.delAllVideo(ids);
       },
     });
   }

@@ -24,7 +24,10 @@
       </FormItem>
       <FormItem style="margin-top: 20px" class="text-right">
         <Button type="primary" @click="subData">提交</Button>
-        <Button style="margin-left: 8px" @click="modalShow = false"
+        <Button
+          style="margin-left: 8px"
+          :loading="loading"
+          @click="modalShow = false"
           >取消</Button
         >
       </FormItem>
@@ -45,6 +48,7 @@ export default class PageOpportunitiesKeyAdd extends Vue {
     content: "",
     id: "",
   };
+  private loading = false;
   private rule: objAny = {
     content: [{ required: true, message: "请输入发送内容", trigger: "blur" }],
   };
@@ -66,12 +70,13 @@ export default class PageOpportunitiesKeyAdd extends Vue {
     });
   }
   async subData(): Promise<void> {
-    console.log("?");
+    this.loading = true;
     let ret = await sendCommentMessage(this.formInline);
     if (ret.code == 200) {
       this.$Message.success("发送成功");
       this.$emit("success");
     }
+    this.loading = false;
   }
 }
 </script>

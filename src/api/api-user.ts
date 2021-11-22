@@ -198,6 +198,14 @@ export const delVideo = (
   config.method = "delStr";
   return request("/video", data, config);
 };
+//  删除多个视频
+export const delAllVideo = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "delStr";
+  return request("/batchDestroy", data, config);
+};
 //   快手授权
 export const getKsAuth = (
   data: objAny = {},
@@ -252,4 +260,36 @@ export const sendCommentMessage = (
   config: objAny = {}
 ): Promise<objAny> => {
   return request("/comment/sendMessage", data, config);
+};
+//   消息 -- 列表
+export const getUserMessageList = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/userMessage", data, config);
+};
+
+//   消息 -- 设置消息已读
+export const setUserMessageRead = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/userCenter/isReaded", data, config);
+};
+//   消息 -- 详情
+export const getUserMessageDetails = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "getStr";
+  return request("/userCenter", data, config);
+};
+//   消息 -- 是否读取状态
+export const getUserMessageIsReadStatuses = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/userMessage/isReadStatuses", data, config);
 };

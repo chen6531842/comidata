@@ -5,15 +5,16 @@
     :footer-hide="true"
     :width="800"
   >
-    <div class="message-title">测试一波</div>
-    <div class="message-time">2020-10-10</div>
-    <div class="message-content">内容内容内容内容内容内容内容内容</div>
+    <div class="message-title">{{ itemData.title }}</div>
+    <div class="message-time">{{ itemData.created_at }}</div>
+    <div class="message-content">{{ itemData.content }}</div>
   </Modal>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
+import { setUserMessageRead } from "@/api/api-user";
 @Component({
   components: {},
 })
@@ -24,6 +25,11 @@ export default class PageMessageAdd extends Vue {
   public open(item: objAny): void {
     this.modalShow = true;
     this.itemData = item;
+    this.read();
+  }
+
+  async read(): Promise<void> {
+    await setUserMessageRead({ id: this.itemData.id });
   }
 }
 </script>

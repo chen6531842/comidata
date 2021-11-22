@@ -20,7 +20,7 @@
           </CheckboxGroup>
         </FormItem>
         <FormItem prop="name">
-          <div class="form-label">行业类别</div>
+          <div class="form-label">关键词</div>
           <Row>
             <Col :span="10">
               <Input

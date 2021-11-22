@@ -1,5 +1,5 @@
 <template>
-  <wy-sys-content title="视频列表" class="page-opportunities">
+  <wy-sys-content title="发现商机" class="page-opportunities">
     <div class="form-box">
       <div class="form-flex">
         <Button type="primary" style="margin-right: 20px">分配子管理员</Button>
@@ -75,7 +75,7 @@
       </template>
       <template slot-scope="{ row }" slot="userData">
         <div class="user-data">
-          {{ row.a }}
+          {{ row.a || "" }}
           <!-- <p>作品数：59</p>
           <p>关注数：59</p>
           <p>粉丝数：59</p>
@@ -107,6 +107,20 @@
           <p>签名：给大家一起分享</p> -->
         </div>
       </template>
+      <template slot-scope="{ row }" slot="video">
+        <div class="user-data">
+          <a class="blue" :href="row.video_url" target="_blank">
+            <img
+              class="video-img"
+              v-if="row.video_cover_url"
+              :src="row.video_cover_url"
+              alt=""
+            />
+            <span v-else>暂无封面图</span></a
+          >
+        </div>
+      </template>
+
       <template slot-scope="{ row }" slot="describe">
         <div class="user-data">
           {{ row.a }}
@@ -196,7 +210,7 @@ export default class PageOpportunities extends Vue {
     {
       title: "用户信息",
       slot: "userInfo",
-      minWidth: 120,
+      minWidth: 80,
     },
     {
       title: "用户数据",
@@ -220,13 +234,13 @@ export default class PageOpportunities extends Vue {
     },
     {
       title: "视频",
-      key: "name",
+      slot: "video",
       minWidth: 120,
     },
     {
       title: "描述",
       slot: "describe",
-      minWidth: 160,
+      minWidth: 200,
     },
     {
       title: "视频数据",
@@ -326,12 +340,20 @@ export default class PageOpportunities extends Vue {
       display: inline-block;
       vertical-align: top;
       background-color: #f5f5f5;
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
     .follow {
       color: #2d8cf0;
       display: inline-block;
       vertical-align: top;
     }
+  }
+  .video-img {
+    width: 90px;
+    height: 150px;
   }
   .user-data {
     line-height: 22px;

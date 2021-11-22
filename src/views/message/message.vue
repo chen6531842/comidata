@@ -20,17 +20,19 @@
         </Form>
       </div>
     </div>
-    <Table :columns="columns" :data="tableList">
+    <Table :columns="columns" :data="tableList" @on-select="tableSelect">
       <template slot-scope="{ row }" slot="content">
-        <div class="content-box unread" @click="queryModalShow(row)">
+        <div
+          class="content-box"
+          :class="row.is_read == 1 ? 'unread' : ''"
+          @click="queryModalShow(row)"
+        >
           <div class="content-title">
-            <Tag color="blue">标题</Tag>
-            <span class="title-text"
-              >我是标题我是标题我是标题我是标题我是标题</span
-            >
+            <Tag color="blue">{{ row.message_type_zh }}</Tag>
+            <span class="title-text">{{ row.title }}</span>
           </div>
           <div class="content-text">
-            我是内容我是内容我是内容我是内容我是内容
+            {{ row.content }}
           </div>
         </div>
       </template>
@@ -51,6 +53,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import queryModal from "./components/query.vue";
+import { getUserMessageList } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -65,27 +68,32 @@ export default class PageSystemUser extends Vue {
     pageSize: 10,
   };
   private total = 0;
+  private loading = false;
   private targetList: objAny[] = [];
   private sexList: objAny[] = [];
   private columns: objAny[] = [
-    {
-      type: "selection",
-      width: 60,
-      align: "center",
-    },
+    // {
+    //   type: "selection",
+    //   width: 60,
+    //   align: "center",
+    // },
     {
       title: "消息内容",
       slot: "content",
-      minWidth: 180,
+      minWidth: 240,
     },
     {
       title: "发布时间",
-      key: "userData",
-      width: 180,
+      key: "created_at",
+      minWidth: 180,
     },
   ];
-  private tableList: objAny[] = [{}];
-  private statusList: objAny[] = [];
+  private tableList: objAny[] = [];
+  private statusList: objAny[] = [
+    { name: "未读", value: 1 },
+    { name: "已读", value: 2 },
+  ];
+  private selectList: objAny[] = [];
 
   public queryClick(): void {
     this.formInline.pageIndex = 1;
@@ -99,15 +107,28 @@ export default class PageSystemUser extends Vue {
     this.formInline.pageSize = val;
     this.getTableList();
   }
-
-  public getTableList(): void {
-    console.log("???");
+  public tableSelect(list: objAny[]): void {
+    this.selectList = list;
+  }
+  async getTableList(): Promise<void> {
+    this.loading = true;
+    let ret = await getUserMessageList({});
+    if (ret.code == 200) {
+      this.tableList = ret.payload.data;
+      this.total = ret.payload.total || 0;
+    }
+    this.selectList = [];
+    this.loading = false;
   }
   $refs!: {
     queryModal: HTMLFormElement; //写法1 - 推荐
   };
-  public queryModalShow(): void {
-    this.$refs.queryModal.open();
+  public queryModalShow(item: objAny): void {
+    this.$refs.queryModal.open(item);
+  }
+
+  mounted(): void {
+    this.getTableList();
   }
 }
 </script>
@@ -136,6 +157,11 @@ export default class PageSystemUser extends Vue {
   .title-text {
     margin-top: 5px;
     color: #999;
+  }
+  .content-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>
