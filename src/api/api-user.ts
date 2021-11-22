@@ -293,3 +293,58 @@ export const getUserMessageIsReadStatuses = (
   config.method = "get";
   return request("/userMessage/isReadStatuses", data, config);
 };
+
+//   商机关键字 -- 所有行业类别
+export const getIndustryCategories = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/businessKeyword/industryCategories", data, config);
+};
+//   商机关键字 -- 所有平台
+export const getPlatformAccounts = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/businessKeyword/platformAccounts", data, config);
+};
+//   商机关键字 -- 新增/编辑
+export const addBusinessKeyword = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/businessKeyword", data, config);
+};
+//   商机关键字 -- 复制
+export const copyBusinessKeyword = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  return request("/businessKeyword/copy", data, config);
+};
+//   商机关键字 -- 列表
+export const getBusinessKeyword = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/businessKeyword", data, config);
+};
+//   商机关键字 -- 详情
+export const getBusinessKeywordDetails = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "getStr";
+  return request("/businessKeyword", data, config);
+};
+//   商机关键字 -- 删除
+export const delBusinessKeyword = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "delStr";
+  return request("/businessKeyword", data, config);
+};

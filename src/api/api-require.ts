@@ -125,7 +125,11 @@ export const request = function (
       params = {};
       method = "GET";
     } else if (configData.method === "postStr") {
-      url = url + "?" + common.parseParam(params);
+      let srt = "";
+      for (const i in params) {
+        srt = srt + "/" + params[i];
+      }
+      url = url + srt;
       params = {};
       method = "POST";
     } else if (configData.method === "getDel") {

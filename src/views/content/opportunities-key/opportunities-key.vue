@@ -9,12 +9,24 @@
         </Form>
       </div>
     </div>
-    <Table :columns="columns" :data="tableList">
+    <Table :columns="columns" :data="tableList" :loading="loading">
+      <template slot-scope="{ row }" slot="industry">
+        {{ row.industry_category_names.join(",") }}
+      </template>
+      <template slot-scope="{ row }" slot="account">
+        <div v-if="row.platform_account_nick_names.douyin">
+          抖音: {{ row.platform_account_nick_names.douyin.join(",") }}
+        </div>
+        <div v-if="row.platform_account_nick_names.kuaishou">
+          快手: {{ row.platform_account_nick_names.kuaishou.join(",") }}
+        </div>
+      </template>
+
       <template slot-scope="{ row }" slot="time">
         <a class="blue" style="margin-right: 20px" @click="queryModalShow(row)"
           >查看</a
         >
-        {{ row.time }}2010-10-010
+        {{ row.updated_at }}
       </template>
 
       <template slot-scope="{ row }" slot="action">
@@ -54,7 +66,7 @@
       :index="formInline.pageIndex"
     ></wy-list-page>
     <wy-query-modal ref="queryModal"></wy-query-modal>
-    <wy-add-modal ref="addModal"></wy-add-modal>
+    <wy-add-modal ref="addModal" @successs="getTableList"></wy-add-modal>
   </wy-sys-content>
 </template>
 
@@ -65,6 +77,11 @@ import listPage from "../../../components/list-page/list-page.vue";
 import { objAny } from "../../../common/common-interface";
 import queryModal from "./components/query.vue";
 import addModal from "./components/add.vue";
+import {
+  getBusinessKeyword,
+  delBusinessKeyword,
+  copyBusinessKeyword,
+} from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -82,17 +99,23 @@ export default class PageOpportunitiesKey extends Vue {
     pageSize: 10,
   };
   private total = 0;
+  private loading = false;
   private targetList: objAny[] = [];
   private sexList: objAny[] = [];
   private columns: objAny[] = [
     {
       title: "行业",
-      key: "userInfo",
+      slot: "industry",
+      minWidth: 120,
+    },
+    {
+      title: "关键词",
+      key: "name",
       minWidth: 120,
     },
     {
       title: "关联平台账户",
-      key: "userData",
+      key: "account",
       minWidth: 120,
     },
     {
@@ -118,9 +141,16 @@ export default class PageOpportunitiesKey extends Vue {
       title: "提示",
       content: "<p>确定要删除吗？</p>",
       onOk: () => {
-        console.log(item);
+        this.delSub(item.id);
       },
     });
+  }
+  async delSub(id: string): Promise<void> {
+    let ret = await delBusinessKeyword({ id: id });
+    if (ret.code == 200) {
+      this.$Message.success("删除成功");
+      this.getTableList();
+    }
   }
 
   public queryClick(): void {
@@ -136,8 +166,14 @@ export default class PageOpportunitiesKey extends Vue {
     this.getTableList();
   }
 
-  public getTableList(): void {
-    console.log("???");
+  async getTableList(): Promise<void> {
+    this.loading = true;
+    let ret = await getBusinessKeyword(this.formInline);
+    if (ret.code == 200) {
+      this.tableList = ret.payload.data;
+      this.total = ret.payload.total;
+    }
+    this.loading = false;
   }
   $refs!: {
     queryModal: HTMLFormElement;
@@ -155,8 +191,15 @@ export default class PageOpportunitiesKey extends Vue {
   public detailsKey(item: objAny): void {
     this.$refs.addModal.open(item);
   }
-  public copy(item: objAny): void {
-    this.$Message.success(item);
+  async copy(item: objAny): Promise<void> {
+    let ret = await copyBusinessKeyword({ id: item.id });
+    if (ret.code == 200) {
+      this.$Message.success("复制成功");
+      this.getTableList();
+    }
+  }
+  mounted(): void {
+    this.getTableList();
   }
 }
 </script>
