@@ -73,8 +73,8 @@ export default class PageSystemRole extends Vue {
     target: "",
     name: "",
     sex: "",
-    pageIndex: 1,
-    pageSize: 10,
+    page: 1,
+    per_page: 10,
   };
   private selectId = "";
   private roleData: objAny = {};

@@ -198,6 +198,7 @@ export default class PageOpportunitiesKeyAdd extends Vue {
   private categoryList: objAny[] = [];
   private accountList: objAny[] = [];
   private itemData: objAny = {};
+  private isDetails = false;
 
   private title = "新增关键字";
   public open(item?: objAny): void {
@@ -207,9 +208,27 @@ export default class PageOpportunitiesKeyAdd extends Vue {
     this.getPlatformAccounts();
     if (item) {
       this.itemData = item;
-      this.getBusinessKeywordDetails();
+      this.formInline.industry_category_tags = item.industry_category_names.map(
+        (item: objAny) => {
+          return item.tag;
+        }
+      );
+      let platform_account_ids: number[] = [];
+      for (let i in item.platform_account_nick_names) {
+        let list: objAny[] = item.platform_account_nick_names[i];
+        console.log(list);
+        list.map((child: objAny) => {
+          platform_account_ids.push(child.id);
+        });
+      }
+      this.formInline.platform_account_ids = platform_account_ids;
+      this.formInline.name = item.name.split(",");
     } else {
       this.itemData = {};
+      this.formInline.platform_account_ids = [];
+      this.formInline.industry_category_tags = [];
+      this.formInline.name = [];
+      this.formInline.inputName = "";
     }
   }
 
@@ -239,7 +258,7 @@ export default class PageOpportunitiesKeyAdd extends Vue {
       platform_account_ids: this.formInline.platform_account_ids,
     };
     if (this.itemData.id) {
-      json.id = this.itemData.itemData;
+      json.id = this.itemData.id;
     }
 
     let ret = await addBusinessKeyword(json);

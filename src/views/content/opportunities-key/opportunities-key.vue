@@ -11,15 +11,25 @@
     </div>
     <Table :columns="columns" :data="tableList" :loading="loading">
       <template slot-scope="{ row }" slot="industry">
-        {{ row.industry_category_names.join(",") }}
+        <span v-for="(item, index) in row.industry_category_names" :key="index"
+          >{{ item.name
+          }}<template v-if="index < row.industry_category_names.length - 1"
+            >，</template
+          ></span
+        >
       </template>
       <template slot-scope="{ row }" slot="account">
-        <div v-if="row.platform_account_nick_names.douyin">
-          抖音: {{ row.platform_account_nick_names.douyin.join(",") }}
-        </div>
-        <div v-if="row.platform_account_nick_names.kuaishou">
-          快手: {{ row.platform_account_nick_names.kuaishou.join(",") }}
-        </div>
+        <template v-if="row.platform_account_nick_names">
+          <div
+            v-for="(item, index) in row.platform_account_nick_names"
+            :key="index"
+          >
+            <div v-for="(child, i) in item" :key="index + '-' + i">
+              {{ index == "douyin" ? "抖音" : "快手" }}:
+              <span>{{ child.name }} </span>
+            </div>
+          </div>
+        </template>
       </template>
 
       <template slot-scope="{ row }" slot="time">
@@ -63,10 +73,11 @@
       @change="tableChange"
       @size-change="tableSizeChange"
       :total="total"
-      :index="formInline.pageIndex"
+      :index="formInline.page"
     ></wy-list-page>
     <wy-query-modal ref="queryModal"></wy-query-modal>
     <wy-add-modal ref="addModal" @successs="getTableList"></wy-add-modal>
+    <wy-details-modal ref="detailsModal"></wy-details-modal>
   </wy-sys-content>
 </template>
 
@@ -77,6 +88,7 @@ import listPage from "../../../components/list-page/list-page.vue";
 import { objAny } from "../../../common/common-interface";
 import queryModal from "./components/query.vue";
 import addModal from "./components/add.vue";
+import detailsModal from "./components/details.vue";
 import {
   getBusinessKeyword,
   delBusinessKeyword,
@@ -88,6 +100,7 @@ import {
     "wy-list-page": listPage,
     "wy-query-modal": queryModal,
     "wy-add-modal": addModal,
+    "wy-details-modal": detailsModal,
   },
 })
 export default class PageOpportunitiesKey extends Vue {
@@ -95,8 +108,8 @@ export default class PageOpportunitiesKey extends Vue {
     target: "",
     name: "",
     sex: "",
-    pageIndex: 1,
-    pageSize: 10,
+    page: 1,
+    per_page: 10,
   };
   private total = 0;
   private loading = false;
@@ -115,7 +128,7 @@ export default class PageOpportunitiesKey extends Vue {
     },
     {
       title: "关联平台账户",
-      key: "account",
+      slot: "account",
       minWidth: 120,
     },
     {
@@ -154,15 +167,15 @@ export default class PageOpportunitiesKey extends Vue {
   }
 
   public queryClick(): void {
-    this.formInline.pageIndex = 1;
+    this.formInline.page = 1;
     this.getTableList();
   }
   public tableChange(val: number): void {
-    this.formInline.pageIndex = val;
+    this.formInline.page = val;
     this.getTableList();
   }
   public tableSizeChange(val: number): void {
-    this.formInline.pageSize = val;
+    this.formInline.per_page = val;
     this.getTableList();
   }
 
@@ -178,6 +191,7 @@ export default class PageOpportunitiesKey extends Vue {
   $refs!: {
     queryModal: HTMLFormElement;
     addModal: HTMLFormElement;
+    detailsModal: HTMLFormElement;
   };
   public queryModalShow(item: objAny): void {
     this.$refs.queryModal.open(item);
@@ -189,7 +203,7 @@ export default class PageOpportunitiesKey extends Vue {
     this.$refs.addModal.open(item);
   }
   public detailsKey(item: objAny): void {
-    this.$refs.addModal.open(item);
+    this.$refs.detailsModal.open(item);
   }
   async copy(item: objAny): Promise<void> {
     let ret = await copyBusinessKeyword({ id: item.id });

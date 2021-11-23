@@ -3,33 +3,17 @@
     <div class="relation-acc">
       关联账户 <span class="small">共 {{ total }} 个</span>
     </div>
-    <template
-      v-if="
-        itemData.platform_account_nick_names &&
-        itemData.platform_account_nick_names.douyin
-      "
-    >
-      <div
-        class="relation-acc"
-        :key="index"
-        v-for="(item, index) in itemData.platform_account_nick_names.douyin"
-      >
-        抖音({{ item }})
-      </div>
-    </template>
-    <template
-      v-if="
-        itemData.platform_account_nick_names &&
-        itemData.platform_account_nick_names.kuaishou
-      "
-    >
-      <div
-        class="relation-acc"
-        :key="index"
-        v-for="(item, index) in itemData.platform_account_nick_names.kuaishou"
-      >
-        快手({{ item }})
-      </div>
+    <template v-if="itemData.platform_account_nick_names">
+      <template v-for="(item, index) in itemData.platform_account_nick_names">
+        <div
+          class="relation-acc"
+          v-for="(child, i) in item"
+          :key="index + '-' + i"
+        >
+          {{ index == "douyin" ? "抖音" : "快手" }}:
+          <span>{{ child.name }} </span>
+        </div>
+      </template>
     </template>
   </Modal>
 </template>

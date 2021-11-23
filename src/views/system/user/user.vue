@@ -62,7 +62,7 @@
       @change="tableChange"
       @size-change="tableSizeChange"
       :total="total"
-      :index="formInline.pageIndex"
+      :index="formInline.page"
     ></wy-list-page>
     <wy-add-modal ref="addModal" @success="getTableList"></wy-add-modal>
   </wy-sys-content>
@@ -89,8 +89,8 @@ export default class PageSystemUser extends Vue {
     target: "",
     name: "",
     sex: "",
-    pageIndex: 1,
-    pageSize: 10,
+    page: 1,
+    per_page: 10,
   };
   private loading = false;
   private total = 0;
@@ -155,15 +155,15 @@ export default class PageSystemUser extends Vue {
   }
 
   public queryClick(): void {
-    this.formInline.pageIndex = 1;
+    this.formInline.page = 1;
     this.getTableList();
   }
   public tableChange(val: number): void {
-    this.formInline.pageIndex = val;
+    this.formInline.page = val;
     this.getTableList();
   }
   public tableSizeChange(val: number): void {
-    this.formInline.pageSize = val;
+    this.formInline.per_page = val;
     this.getTableList();
   }
 

@@ -69,7 +69,7 @@
       @change="tableChange"
       @size-change="tableSizeChange"
       :total="total"
-      :index="formInline.pageIndex"
+      :index="formInline.page"
     ></wy-list-page>
   </wy-sys-content>
 </template>
@@ -90,8 +90,8 @@ export default class PageVideo extends Vue {
   private formInline: objAny = {
     target: "",
     keyword: "",
-    pageIndex: 1,
-    pageSize: 10,
+    page: 1,
+    per_page: 10,
   };
   private loading = false;
   private total = 0;
@@ -160,15 +160,15 @@ export default class PageVideo extends Vue {
     }
   }
   public queryClick(): void {
-    this.formInline.pageIndex = 1;
+    this.formInline.page = 1;
     this.getTableList();
   }
   public tableChange(val: number): void {
-    this.formInline.pageIndex = val;
+    this.formInline.page = val;
     this.getTableList();
   }
   public tableSizeChange(val: number): void {
-    this.formInline.pageSize = val;
+    this.formInline.per_page = val;
     this.getTableList();
   }
 
