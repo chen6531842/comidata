@@ -263,7 +263,7 @@ export default class PageOpportunitiesKeyAdd extends Vue {
 
     let ret = await addBusinessKeyword(json);
     if (ret.code == 200) {
-      this.$Message.success("添操作成功");
+      this.$Message.success("操作成功");
       this.modalShow = false;
       this.$emit("successs");
     }
@@ -294,7 +294,7 @@ export default class PageOpportunitiesKeyAdd extends Vue {
       }
     });
   }
-  public allChange(val: boolean) {
+  public allChange(val: boolean): void {
     if (val) {
       this.formInline.platform_account_ids = this.accountList.map(
         (item: objAny) => {
