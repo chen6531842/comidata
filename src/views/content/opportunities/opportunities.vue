@@ -93,10 +93,13 @@
       </template>
       <template slot-scope="{ row }" slot="comment">
         <div class="user-data">
-          {{ row.a }}
-          <p>评论内容：{{ row.comment }}</p>
+          <p>评论内容：{{ row.content }}</p>
           <p>评论时间：{{ row.create_time }}</p>
-          <!-- <p class="red">商机词：多少钱</p> -->
+          <p class="red">
+            商机词：{{
+              row.business_keywords ? row.business_keywords.join(",") : ""
+            }}
+          </p>
         </div>
       </template>
       <template slot-scope="{ row }" slot="contact">
