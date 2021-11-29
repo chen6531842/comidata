@@ -50,7 +50,6 @@
       :total="total"
       :index="formInline.page"
     ></wy-list-page>
-    }
     <wy-add-modal ref="addModal" @success="getTableList"></wy-add-modal>
   </wy-sys-content>
 </template>

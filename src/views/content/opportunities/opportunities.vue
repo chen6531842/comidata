@@ -191,7 +191,7 @@ export default class PageOpportunities extends Vue {
     keyword: "",
     gender: "",
     page: 1,
-    pageSize: 10,
+    per_page: 10,
     startTime: "",
     endTime: "",
   };
@@ -287,7 +287,7 @@ export default class PageOpportunities extends Vue {
     this.getTableList();
   }
   public tableSizeChange(val: number): void {
-    this.formInline.pageSize = val;
+    this.formInline.per_page = val;
     this.getTableList();
   }
 

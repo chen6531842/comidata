@@ -348,3 +348,20 @@ export const delBusinessKeyword = (
   config.method = "delStr";
   return request("/businessKeyword", data, config);
 };
+//   星图达人 -- 列表
+export const getHotStar = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/hotStar", data, config);
+};
+
+//   商机关键字 -- 删除
+export const delHotStar = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "delStr";
+  return request("/hotStar", data, config);
+};
