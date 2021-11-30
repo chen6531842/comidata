@@ -2,7 +2,9 @@
   <wy-sys-content title="视频列表" class="page-video">
     <div class="form-box">
       <div class="form-flex">
-        <Button type="error" @click="allDel">批量删除</Button>
+        <Button type="error" @click="allDel" :disabled="selectList.length == 0"
+          >批量删除</Button
+        >
       </div>
       <Form ref="formInline" :model="formInline" inline>
         <FormItem label="">

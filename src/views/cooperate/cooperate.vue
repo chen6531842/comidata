@@ -3,7 +3,7 @@
     <Table :columns="columns" :data="tableList" :loading="loading">
       <template slot-scope="{ row }" slot="account">
         <div>{{ row.nick_name }}</div>
-        <div>id: {{ row.unique_id }}</div>
+        <div>抖音id: {{ row.unique_id }}</div>
       </template>
       <template slot-scope="{ row }" slot="tag">
         <Tag color="orange" v-for="(item, index) in row.tags" :key="index">{{
@@ -63,11 +63,11 @@ export default class PageCooperate extends Vue {
       minWidth: 120,
     },
 
-    {
-      title: "操作",
-      slot: "action",
-      minWidth: 80,
-    },
+    // {
+    //   title: "操作",
+    //   slot: "action",
+    //   minWidth: 80,
+    // },
   ];
   private tableList: objAny[] = [{}];
 

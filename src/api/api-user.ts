@@ -203,8 +203,8 @@ export const delAllVideo = (
   data: objAny = {},
   config: objAny = {}
 ): Promise<objAny> => {
-  config.method = "delStr";
-  return request("/batchDestroy", data, config);
+  config.method = "del";
+  return request("/video/batchDestroy", data, config);
 };
 //   快手授权
 export const getKsAuth = (
@@ -221,6 +221,14 @@ export const getDyAuth = (
 ): Promise<objAny> => {
   config.method = "get";
   return request("/dy/auth/connectFullUrl", data, config);
+};
+//   授权列表 -- 同步数据
+export const getAuthListSync = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/platformAccount/sync", data, config);
 };
 //   授权列表
 export const getAuthList = (

@@ -7,7 +7,9 @@
             <Button type="primary" @click="addModalShow">新增授权</Button>
           </FormItem>
           <FormItem prop="name">
-            <Button type="success" @click="addModalShow">同步数据</Button>
+            <Button type="success" @click="syncClick" :loading="loadingBtn"
+              >同步数据</Button
+            >
           </FormItem>
           <FormItem prop="name">
             <div class="btn-tips">
@@ -60,7 +62,7 @@ import sysContent from "@/components/sys-content/sys-content.vue";
 import listPage from "@/components/list-page/list-page.vue";
 import { objAny } from "@/common/common-interface";
 import addModal from "./components/add.vue";
-import { getAuthList, delAuth } from "@/api/api-user";
+import { getAuthList, delAuth, getAuthListSync } from "@/api/api-user";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -103,17 +105,17 @@ export default class PageAuto extends Vue {
     },
     {
       title: "发布量",
-      key: "userInfo",
+      key: "published_count",
       minWidth: 120,
     },
     {
       title: "播放量",
-      key: "userInfo",
+      key: "play_count",
       minWidth: 120,
     },
     {
       title: "评论量",
-      key: "userInfo",
+      key: "comment_count",
       minWidth: 120,
     },
     {
@@ -129,6 +131,7 @@ export default class PageAuto extends Vue {
     },
   ];
   private loading = false;
+  private loadingBtn = false;
   private tableList: objAny[] = [];
 
   public delClick(item: objAny): void {
@@ -179,6 +182,15 @@ export default class PageAuto extends Vue {
   public updataKey(item: objAny): void {
     this.$refs.addModal.open(item);
   }
+  async syncClick(): Promise<void> {
+    this.loadingBtn = true;
+    let ret = await getAuthListSync({});
+    if (ret.code == 200) {
+      this.$Message.success("同步成功");
+    }
+    this.loadingBtn = false;
+  }
+
   mounted(): void {
     this.getTableList();
     let is_success = this.$common.request("is_success");

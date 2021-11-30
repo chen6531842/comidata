@@ -261,7 +261,7 @@ export default class PageOpportunities extends Vue {
       minWidth: 140,
     },
   ];
-  private tableList: objAny[] = [{}];
+  private tableList: objAny[] = [];
   public removeVideo(item: objAny): void {
     this.$Modal.confirm({
       title: "提示",
