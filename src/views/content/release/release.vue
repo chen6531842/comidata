@@ -54,33 +54,38 @@
               <ul class="platform-ul">
                 <li
                   class="platform-item"
-                  v-for="(item, index) in accountsList"
+                  v-for="(item, index) in accountsObj"
                   :key="index"
                 >
                   <div class="platform-title">
                     <img
-                      src="../../../assets/img/logo-2.jpg"
-                      class="title-icon"
-                      alt=""
-                      v-if="item.id == 2"
-                    />
-                    <img
                       src="../../../assets/img/logo-1.jpg"
                       class="title-icon"
                       alt=""
-                      v-else-if="item.id == 1"
+                      v-if="index == 'douyin'"
                     />
-                    {{ item.platform_type_name }}
+                    <img
+                      src="../../../assets/img/logo-2.jpg"
+                      class="title-icon"
+                      alt=""
+                      v-else-if="index == 'kuaishou'"
+                    />
+                    {{ index == "douyin" ? "抖音" : "快手" }}
                   </div>
-                  <div class="platform-info">
+                  <div class="platform-info" v-if="item.length > 0">
                     <CheckboxGroup
+                      v-for="(acc, i) in item"
+                      :key="i"
                       v-model="formInline.platform_account_ids"
                       @on-change="platformChange"
                     >
-                      <Checkbox :label="item.id">{{
-                        item.platform_type_name
-                      }}</Checkbox>
+                      <Checkbox :label="acc.id">{{ acc.nick_name }}</Checkbox>
                     </CheckboxGroup>
+                  </div>
+                  <div class="platform-info" v-else>
+                    <div class="bind blue" @click="bingClick(index)">
+                      立即绑定
+                    </div>
                   </div>
                 </li>
               </ul>
@@ -114,7 +119,32 @@
             </FormItem>
           </Form>
         </Col>
-        <Col :span="12"></Col>
+        <Col :span="12">
+          <div class="phone-video v-center">
+            <!-- <video class="video video-js vjs-big-play-centered" controls  preload="auto" data-setup="{}">
+              <source src="https://comidata.com/storage/upload_videos/6c6cd6eb76bffb0389c9172d310fbdb4.mp4"></source>
+            </video> -->
+            <video id="myvideo" class="video video-js vjs-big-play-centered" controls  preload="auto" data-setup="{}">
+              <source src="https://comidata.com/storage/upload_videos/6c6cd6eb76bffb0389c9172d310fbdb4.mp4"></source>
+            </video>
+            <!-- <wy-no-data v-else></wy-no-data> -->
+            <!-- <video width="320" height="240">
+              <source src="/video/1.mp4" type="video/mp4" />
+              您的浏览器不支持 HTML5 video 标签。
+            </video> -->
+            <!-- <video
+              class="video video-js vjs-big-play-centered"
+              controls
+              preload="auto"
+              data-setup="{}"
+             
+            >
+              <source :src="full_file_path" type="video/mp4" />
+              您的浏览器不支持 HTML5 video 标签。
+            </video> -->
+            
+          </div>
+        </Col>
       </Row>
     </div>
   </wy-sys-content>
@@ -124,24 +154,28 @@
 import { Component, Vue } from "vue-property-decorator";
 import sysContent from "@/components/sys-content/sys-content.vue";
 import { objAny } from "@/common/common-interface";
-import { subPlatformVideo, getAllAccounts } from "@/api/api-user";
+import { subPlatformVideo, platformAccounts } from "@/api/api-user";
 import upload from "@/components/upload/upload.vue";
+import noData from "@/components/no-data/no-data.vue";
+import { videoCss, videoJS } from "@/common/add-js";
 @Component({
   components: {
     "wy-sys-content": sysContent,
     "wy-upload": upload,
+    "wy-no-data": noData,
   },
 })
 export default class ContentRelease extends Vue {
   private formInline: objAny = {
     title: "",
     description: "",
-    publish_method: 1,
+    publish_method: "1",
     planed_publish_date: "",
     platform_account_ids: [],
     cover_file_path: "",
     video_file_path: "",
   };
+  private full_file_path = "";
   private isKuaishou = false;
   private ruleValidate: objAny = {
     title: [{ required: true, message: "请输入标题", trigger: "blur" }],
@@ -173,12 +207,17 @@ export default class ContentRelease extends Vue {
     ],
   };
   private accountsList: objAny[] = [];
+  private accountsObj: objAny = {
+    douyin: [],
+    kuaishou: [],
+  };
   private loading = false;
+  private player:objAny = {};
 
-  async getAllAccounts(): Promise<void> {
-    let ret = await getAllAccounts({});
+  async platformAccounts(): Promise<void> {
+    let ret = await platformAccounts({});
     if (ret.code == 200) {
-      this.accountsList = ret.payload;
+      this.accountsObj = Object.assign(this.accountsObj, ret.payload);
     }
   }
   $refs!: {
@@ -198,32 +237,56 @@ export default class ContentRelease extends Vue {
       this.$Modal.success({
         title: "发布成功",
       });
-      // for (let i in this.formInline) {
-      //   this.formInline[i] = "";
-      // }
       this.$router.push("/content/video");
     }
     this.loading = false;
   }
   public uploadSuccess(data: objAny): void {
     this.formInline.video_file_path = data.file_path;
+    this.full_file_path = data.full_file_path;
+    this.videoPay();
+  }
+  public videoPay(): void {
+    this.$nextTick(() => {
+      this.player.src(this.full_file_path);
+      this.player.load(this.full_file_path);
+      this.player.play()
+      // console.log(player);
+    })
   }
   public uploadImgSuccess(data: objAny): void {
+    console.log(data);
     this.formInline.cover_file_path = data.file_path;
   }
   public platformChange(accIds: number[]): void {
-    console.log(accIds);
     let isKuaishou = false;
-    this.accountsList.map((item: objAny) => {
-      if (accIds.indexOf(item.id) != -1 && item.platform_type == "kuaishou") {
-        isKuaishou = true;
-      }
-    });
+    for (let i in this.accountsObj) {
+      let list: objAny = this.accountsObj[i];
+      list.map((item: objAny) => {
+        if (accIds.indexOf(item.id) != -1 && i == "kuaishou") {
+          isKuaishou = true;
+        }
+      });
+    }
     this.isKuaishou = isKuaishou;
   }
+  public bingClick(key: string) {
+    this.$router.push("/auto?key=" + key);
+  }
 
+  created(): void {
+    // this.initVodeo();
+  }
   mounted(): void {
-    this.getAllAccounts();
+    this.platformAccounts();
+    this.$nextTick(()=>{
+      let win:objAny = window;
+      this.player = win.videojs("myvideo");
+        this.player.on('ended', function() {//播放结束
+            console.log("播放结束");
+            // this.play()
+        });
+    })
   }
 }
 </script>
@@ -261,8 +324,9 @@ export default class ContentRelease extends Vue {
         padding: 10px 10px;
         box-sizing: border-box;
         .bind {
-          line-height: 100px;
+          line-height: 80px;
           text-align: center;
+          cursor: pointer;
         }
       }
     }
@@ -275,6 +339,20 @@ export default class ContentRelease extends Vue {
     .other-config-name {
       display: inline-block;
       position: relative;
+    }
+  }
+  .phone-video {
+    width: 227px;
+    height: 535px;
+    border-radius: 20px;
+    margin-left: 100px;
+    background-color: #333333;
+    .video {
+      width: 100%;
+      height: 100%;
+    }
+    .no-data-components {
+      width: 100%;
     }
   }
 }

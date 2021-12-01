@@ -204,6 +204,9 @@ export default class PageAuto extends Vue {
       }
       this.$common.remove("dyAuto");
     }
+    if (this.$route.query.key) {
+      this.addModalShow();
+    }
   }
 }
 </script>
