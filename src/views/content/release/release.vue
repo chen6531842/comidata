@@ -120,29 +120,16 @@
           </Form>
         </Col>
         <Col :span="12">
-          <div class="phone-video v-center">
-            <!-- <video class="video video-js vjs-big-play-centered" controls  preload="auto" data-setup="{}">
-              <source src="https://comidata.com/storage/upload_videos/6c6cd6eb76bffb0389c9172d310fbdb4.mp4"></source>
-            </video> -->
-            <video id="myvideo" class="video video-js vjs-big-play-centered" controls  preload="auto" data-setup="{}">
-              <source src="https://comidata.com/storage/upload_videos/6c6cd6eb76bffb0389c9172d310fbdb4.mp4"></source>
-            </video>
-            <!-- <wy-no-data v-else></wy-no-data> -->
-            <!-- <video width="320" height="240">
-              <source src="/video/1.mp4" type="video/mp4" />
-              您的浏览器不支持 HTML5 video 标签。
-            </video> -->
-            <!-- <video
+          <div class="phone-video v-center" v-show="full_file_path != ''">
+            <video
+              id="myVideo"
               class="video video-js vjs-big-play-centered"
               controls
-              preload="auto"
-              data-setup="{}"
-             
-            >
-              <source :src="full_file_path" type="video/mp4" />
-              您的浏览器不支持 HTML5 video 标签。
-            </video> -->
-            
+              preload="none"
+            ></video>
+          </div>
+          <div class="phone-video v-center" v-show="full_file_path == ''">
+            <wy-no-data></wy-no-data>
           </div>
         </Col>
       </Row>
@@ -157,7 +144,7 @@ import { objAny } from "@/common/common-interface";
 import { subPlatformVideo, platformAccounts } from "@/api/api-user";
 import upload from "@/components/upload/upload.vue";
 import noData from "@/components/no-data/no-data.vue";
-import { videoCss, videoJS } from "@/common/add-js";
+// import { videoCss, videoJS } from "@/common/add-js";
 @Component({
   components: {
     "wy-sys-content": sysContent,
@@ -212,7 +199,7 @@ export default class ContentRelease extends Vue {
     kuaishou: [],
   };
   private loading = false;
-  private player:objAny = {};
+  private player: objAny = {};
 
   async platformAccounts(): Promise<void> {
     let ret = await platformAccounts({});
@@ -250,9 +237,9 @@ export default class ContentRelease extends Vue {
     this.$nextTick(() => {
       this.player.src(this.full_file_path);
       this.player.load(this.full_file_path);
-      this.player.play()
+      this.player.play();
       // console.log(player);
-    })
+    });
   }
   public uploadImgSuccess(data: objAny): void {
     console.log(data);
@@ -270,7 +257,7 @@ export default class ContentRelease extends Vue {
     }
     this.isKuaishou = isKuaishou;
   }
-  public bingClick(key: string) {
+  public bingClick(key: string): void {
     this.$router.push("/auto?key=" + key);
   }
 
@@ -279,14 +266,24 @@ export default class ContentRelease extends Vue {
   }
   mounted(): void {
     this.platformAccounts();
-    this.$nextTick(()=>{
-      let win:objAny = window;
-      this.player = win.videojs("myvideo");
-        this.player.on('ended', function() {//播放结束
-            console.log("播放结束");
-            // this.play()
-        });
-    })
+    this.$nextTick(() => {
+      // let win: objAny = window;
+      this.player = this.$video(document.getElementById("myVideo"), {
+        //确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
+        controls: true,
+        //自动播放属性,muted:静音播放
+        autoplay: false,
+        //建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+        preload: "auto",
+        //设置视频播放器的显示宽度（以像素为单位）
+        // width: "800px",
+        //设置视频播放器的显示高度（以像素为单位）
+        // height: "400px",
+        controlBar: {
+          playToggle: true,
+        },
+      });
+    });
   }
 }
 </script>
@@ -342,11 +339,12 @@ export default class ContentRelease extends Vue {
     }
   }
   .phone-video {
-    width: 227px;
-    height: 535px;
+    width: 300px;
+    height: 533px;
     border-radius: 20px;
     margin-left: 100px;
     background-color: #333333;
+    overflow: hidden;
     .video {
       width: 100%;
       height: 100%;
