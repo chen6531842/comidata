@@ -55,26 +55,53 @@ export default class ChanceData extends Vue {
   private targetList: objAny[] = [];
   private time: string[] = [];
   private myChart: objAny = {};
+  private echartData: objAny[] = [];
 
   $refs!: {
     chanceEchart: HTMLFormElement;
   };
+  async getEchartData(): Promise<void> {
+    // let ret = await getChanceData(this.formInline);
+    var ret = {
+      code: 200,
+      payload: [
+        {
+          name: "2021-11-10",
+          value: 200,
+        },
+        {
+          name: "2021-11-11",
+          value: 100,
+        },
+        {
+          name: "2021-11-12",
+          value: 260,
+        },
+        {
+          name: "2021-11-13",
+          value: 300,
+        },
+      ],
+    };
+    if (ret.code == 200) {
+      this.echartData = ret.payload;
+      this.echartShow();
+    }
+  }
   public echartShow(): void {
+    let time: string[] = [];
+    let data: number[] = [];
+    this.echartData.map((item: objAny) => {
+      time.push(item.name);
+      data.push(item.value);
+    });
     let option: objAny = {
       tooltip: {
         trigger: "axis",
       },
       xAxis: {
         type: "category",
-        data: [
-          "2020-10-01",
-          "2020-10-02",
-          "2020-10-03",
-          "2020-10-04",
-          "2020-10-05",
-          "2020-10-06",
-          "2020-10-07",
-        ],
+        data: time,
       },
       yAxis: {
         type: "value",
@@ -82,7 +109,7 @@ export default class ChanceData extends Vue {
       series: [
         {
           name: "商机数量",
-          data: [150, 230, 224, 218, 135, 147, 260],
+          data: data,
           type: "line",
         },
       ],
@@ -93,7 +120,7 @@ export default class ChanceData extends Vue {
 
   mounted(): void {
     this.$nextTick(() => {
-      this.echartShow();
+      this.getEchartData();
     });
   }
 }
