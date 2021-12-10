@@ -2,7 +2,7 @@
   <wy-sys-content title="发现商机" class="page-opportunities">
     <div class="form-box">
       <div class="form-flex">
-        <Button type="primary" style="margin-right: 20px">分配子管理员</Button>
+        <!-- <Button type="primary" style="margin-right: 20px">分配子管理员</Button> -->
         <Button type="error" @click="allDel" :disabled="selectList.length == 0"
           >批量删除</Button
         >

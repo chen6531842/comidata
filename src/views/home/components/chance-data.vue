@@ -12,9 +12,10 @@
               placement="bottom-end"
               placeholder="请选择时间"
               style="width: 200px"
+              @on-change="timeChange"
             ></DatePicker>
           </FormItem>
-          <FormItem label="指标" :label-width="50">
+          <!-- <FormItem label="指标" :label-width="50">
             <Select
               v-model="formInline.target"
               style="width: 180px"
@@ -30,7 +31,7 @@
           </FormItem>
           <FormItem :label-width="0">
             <Checkbox v-model="formInline.checkbox">对比</Checkbox>
-          </FormItem>
+          </FormItem> -->
         </Form>
       </div>
     </div>
@@ -42,6 +43,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "../../../common/common-interface";
 import * as echarts from "echarts";
+import { getHomeData } from "@/api/api-user";
 @Component({
   components: {},
 })
@@ -49,8 +51,8 @@ export default class ChanceData extends Vue {
   private formInline: objAny = {
     target: "",
     checkbox: false,
-    startTime: "",
-    endTime: "",
+    startDate: "",
+    endDate: "",
   };
   private targetList: objAny[] = [];
   private time: string[] = [];
@@ -60,31 +62,15 @@ export default class ChanceData extends Vue {
   $refs!: {
     chanceEchart: HTMLFormElement;
   };
+  public timeChange(time: string[]) {
+    this.formInline.startDate = time[0];
+    this.formInline.endDate = time[1];
+    this.getEchartData();
+  }
   async getEchartData(): Promise<void> {
-    // let ret = await getChanceData(this.formInline);
-    var ret = {
-      code: 200,
-      payload: [
-        {
-          name: "2021-11-10",
-          value: 200,
-        },
-        {
-          name: "2021-11-11",
-          value: 100,
-        },
-        {
-          name: "2021-11-12",
-          value: 260,
-        },
-        {
-          name: "2021-11-13",
-          value: 300,
-        },
-      ],
-    };
+    let ret = await getHomeData(this.formInline);
     if (ret.code == 200) {
-      this.echartData = ret.payload;
+      this.echartData = ret.payload.business;
       this.echartShow();
     }
   }

@@ -373,3 +373,11 @@ export const delHotStar = (
   config.method = "delStr";
   return request("/hotStar", data, config);
 };
+//   首页数据
+export const getHomeData = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/home", data, config);
+};

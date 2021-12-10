@@ -59,6 +59,7 @@ export default class Home extends Vue {}
 <style lang="less">
 @import "../../style/var.less";
 .page-home {
+  padding: 16px;
   .section-box {
     background-color: #fff;
     border-radius: 4px;
