@@ -34,7 +34,7 @@
     <div class="login-content-box">
       <div class="login-content-box-1">
         <div class="login-content">
-          <h1 class="title">COMIDATA 全网领先的视频管理系统</h1>
+          <h1 class="title">COMIDATA 互联网视频平台管理系统</h1>
           <h5 class="small-title">一体化账号管理 全方位数据服务</h5>
           <div class="btn-box">
             <Button size="large" type="primary" @click="openLogin">登录</Button>

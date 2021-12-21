@@ -70,7 +70,20 @@
                       alt=""
                       v-else-if="index == 'kuaishou'"
                     />
-                    {{ index == "douyin" ? "抖音" : "快手" }}
+                    <img
+                      src="../../../assets/img/bilibili-logo.jpg"
+                      class="title-icon"
+                      alt=""
+                      v-else-if="index == 'bilibili'"
+                    />
+                    <img
+                      src="../../../assets/img/xigua-logo.jpg"
+                      class="title-icon"
+                      alt=""
+                      v-else-if="index == 'xigua'"
+                    />
+                    {{ $config.videoSys[index] }}
+                    <!-- {{ index == "douyin" ? "抖音" : "快手" }} -->
                   </div>
                   <div class="platform-info" v-if="item.length > 0">
                     <CheckboxGroup
@@ -197,6 +210,8 @@ export default class ContentRelease extends Vue {
   private accountsObj: objAny = {
     douyin: [],
     kuaishou: [],
+    xigua: [],
+    bilibili: [],
   };
   private loading = false;
   private player: objAny = {};
@@ -272,9 +287,11 @@ export default class ContentRelease extends Vue {
         //确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
         controls: true,
         //自动播放属性,muted:静音播放
-        autoplay: false,
+        autoplay: true,
         //建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
         preload: "auto",
+        // fluid: true, // 自适应宽高
+        loop: true, //是否循环播放
         //设置视频播放器的显示宽度（以像素为单位）
         // width: "800px",
         //设置视频播放器的显示高度（以像素为单位）

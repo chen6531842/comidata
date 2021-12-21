@@ -4,7 +4,7 @@
     class="auto-add"
     :title="title"
     :footer-hide="true"
-    :width="500"
+    :width="920"
   >
     <ul class="auto-list">
       <template v-for="(item, index) in autoList">
@@ -22,10 +22,27 @@
               v-if="item.platform_type == 'douyin'"
               src="../../../assets/img/logo-1.jpg"
             />
+            <img
+              src="../../../assets/img/bilibili-logo.jpg"
+              class="title-icon"
+              alt=""
+              v-else-if="item.platform_type == 'bilibili'"
+            />
+            <img
+              src="../../../assets/img/xigua-logo.jpg"
+              class="title-icon"
+              alt=""
+              v-else-if="item.platform_type == 'xigua'"
+            />
           </div>
           <div class="auto-name">{{ item.platform_type_name }}</div>
           <div class="auto-btn">
-            <Button @click="autoClick(item)">立即授权</Button>
+            <Button
+              :class="item.disabled ? '' : 'btn-border'"
+              @click="autoClick(item)"
+              :disabled="item.disabled"
+              >{{ item.disabled ? "开发中" : "立即授权" }}</Button
+            >
           </div>
         </li>
       </template>
@@ -58,8 +75,10 @@ export default class Auto extends Vue {
     desc: "",
   };
   private autoList: objAny[] = [
-    { type: 1, name: "抖音", platform_type: "douyin" },
-    { type: 2, name: "快手", platform_type: "kuaishou" },
+    { type: 1, name: "抖音", platform_type: "douyin", disabled: false },
+    { type: 2, name: "快手", platform_type: "kuaishou", disabled: false },
+    { type: 3, name: "西瓜", platform_type: "xigua", disabled: true },
+    { type: 4, name: "哔哩哔哩", platform_type: "bilibili", disabled: true },
   ];
   private itemData: objAny = {};
   private iframeShow = false;
@@ -165,7 +184,7 @@ export default class Auto extends Vue {
     }
     .auto-btn {
       margin-top: 20px;
-      .ivu-btn {
+      .ivu-btn.btn-border {
         color: #2d8cf0;
         border-color: #2d8cf0;
       }
