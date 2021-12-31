@@ -62,7 +62,7 @@ export default class ChanceData extends Vue {
   $refs!: {
     chanceEchart: HTMLFormElement;
   };
-  public timeChange(time: string[]) {
+  public timeChange(time: string[]): void {
     this.formInline.startDate = time[0];
     this.formInline.endDate = time[1];
     this.getEchartData();
