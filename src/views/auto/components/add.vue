@@ -56,7 +56,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
 import blockContent from "@/components/block-content/block-content.vue";
 import noData from "@/components/no-data/no-data.vue";
-import { getKsAuth, getDyAuth } from "@/api/api-user";
+import { getKsAuth, getDyAuth, getDyXiguaAuth } from "@/api/api-user";
 import autoIframe from "@/components/auto-iframe/auto-iframe.vue";
 @Component({
   components: {
@@ -77,11 +77,11 @@ export default class Auto extends Vue {
   private autoList: objAny[] = [
     { type: 1, name: "抖音", platform_type: "douyin", disabled: false },
     { type: 2, name: "快手", platform_type: "kuaishou", disabled: false },
-    { type: 3, name: "西瓜", platform_type: "xigua", disabled: true },
+    { type: 3, name: "西瓜", platform_type: "xigua", disabled: false },
     { type: 4, name: "哔哩哔哩", platform_type: "bilibili", disabled: true },
   ];
   private itemData: objAny = {};
-  private iframeShow = false;
+  // private iframeShow = false;
 
   private title = "新增授权";
   public open(item?: objAny): void {
@@ -99,11 +99,13 @@ export default class Auto extends Vue {
       this.getKsAuth();
     } else if (item.type == 1) {
       this.getDyAuth();
+    } else if (item.type == 3) {
+      this.getDyXiguaAuth();
     }
   }
   public autoSuccess(): void {
     console.log("成功");
-    this.iframeShow = false;
+    // this.iframeShow = false;
     this.$emit("success");
   }
 
@@ -116,7 +118,7 @@ export default class Auto extends Vue {
       redirectUrl: url + this.$config.host + "/auth.html",
     });
     if (ret.code == 200) {
-      this.iframeShow = true;
+      // this.iframeShow = true;
       this.$nextTick(() => {
         this.$refs.autoIframe.open(ret.payload.url);
       });
@@ -128,11 +130,23 @@ export default class Auto extends Vue {
       redirectUrl: url + this.$config.host + "/#/auto",
     });
     if (ret.code == 200) {
-      this.iframeShow = true;
+      // this.iframeShow = true;
       this.$nextTick(() => {
         this.$common.save("dyAuto", "1");
         window.location.href = ret.payload.url;
-        // this.$refs.autoIframe.open(ret.payload.url);
+      });
+    }
+  }
+  async getDyXiguaAuth(): Promise<void> {
+    let url = window.location.origin;
+    let ret = await getDyXiguaAuth({
+      redirectUrl: url + this.$config.host + "/#/auto",
+    });
+    if (ret.code == 200) {
+      // this.iframeShow = true;
+      this.$nextTick(() => {
+        this.$common.save("dyAuto", "1");
+        window.location.href = ret.payload.url;
       });
     }
   }

@@ -381,3 +381,11 @@ export const getHomeData = (
   config.method = "get";
   return request("/home", data, config);
 };
+//   西瓜授权
+export const getDyXiguaAuth = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/dy/auth/connectXiguaFullUrl", data, config);
+};
