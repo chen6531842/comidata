@@ -13,7 +13,7 @@
             ref="formValidate"
             :model="formInline"
             :rules="ruleValidate"
-            :label-width="80"
+            :label-width="140"
           >
             <FormItem label="视频标题" prop="title">
               <Input
@@ -357,7 +357,7 @@ export default class ContentRelease extends Vue {
 .page-release {
   .release-form-content {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: auto;
   }
   .platform-ul {
