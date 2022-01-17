@@ -180,7 +180,9 @@ export default class PageAuto extends Vue {
     this.$refs.addModal.open();
   }
   public updataKey(item: objAny): void {
-    this.$refs.addModal.open(item);
+    // this.$refs.addModal.open(item);
+
+    this.$refs.addModal.autoClick(item);
   }
   async syncClick(): Promise<void> {
     this.loadingBtn = true;

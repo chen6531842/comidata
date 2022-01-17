@@ -56,7 +56,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { objAny } from "@/common/common-interface";
 import blockContent from "@/components/block-content/block-content.vue";
 import noData from "@/components/no-data/no-data.vue";
-import { getKsAuth, getDyAuth, getDyXiguaAuth } from "@/api/api-user";
+import {
+  getKsAuth,
+  getDyAuth,
+  getDyXiguaAuth,
+  getBilibiliAuto,
+} from "@/api/api-user";
 import autoIframe from "@/components/auto-iframe/auto-iframe.vue";
 @Component({
   components: {
@@ -78,7 +83,7 @@ export default class Auto extends Vue {
     { type: 1, name: "抖音", platform_type: "douyin", disabled: false },
     { type: 2, name: "快手", platform_type: "kuaishou", disabled: false },
     { type: 3, name: "西瓜", platform_type: "xigua", disabled: false },
-    { type: 4, name: "哔哩哔哩", platform_type: "bilibili", disabled: true },
+    { type: 4, name: "哔哩哔哩", platform_type: "bilibili", disabled: false },
   ];
   private itemData: objAny = {};
   // private iframeShow = false;
@@ -95,12 +100,14 @@ export default class Auto extends Vue {
     // this.getAllAccounts();
   }
   public autoClick(item: objAny): void {
-    if (item.type == 2) {
+    if (item.platform_type == "kuaishou") {
       this.getKsAuth();
-    } else if (item.type == 1) {
+    } else if (item.platform_type == "douyin") {
       this.getDyAuth();
-    } else if (item.type == 3) {
+    } else if (item.platform_type == "xigua") {
       this.getDyXiguaAuth();
+    } else if (item.platform_type == "bilibili") {
+      this.getBilibiliAuto();
     }
   }
   public autoSuccess(): void {
@@ -144,6 +151,18 @@ export default class Auto extends Vue {
     });
     if (ret.code == 200) {
       // this.iframeShow = true;
+      this.$nextTick(() => {
+        this.$common.save("dyAuto", "1");
+        window.location.href = ret.payload.url;
+      });
+    }
+  }
+  async getBilibiliAuto(): Promise<void> {
+    let url = window.location.origin;
+    let ret = await getBilibiliAuto({
+      redirectUrl: url + this.$config.host + "/#/auto",
+    });
+    if (ret.code == 200) {
       this.$nextTick(() => {
         this.$common.save("dyAuto", "1");
         window.location.href = ret.payload.url;

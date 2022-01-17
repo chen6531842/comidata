@@ -389,3 +389,19 @@ export const getDyXiguaAuth = (
   config.method = "get";
   return request("/dy/auth/connectXiguaFullUrl", data, config);
 };
+//   bilibili 所有的分区
+export const getBilibiliTypes = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/video/bilibiliTypes", data, config);
+};
+//  bilibili授权
+export const getBilibiliAuto = (
+  data: objAny = {},
+  config: objAny = {}
+): Promise<objAny> => {
+  config.method = "get";
+  return request("/bilibili/auth/connectFullUrl", data, config);
+};

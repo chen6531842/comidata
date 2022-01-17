@@ -120,6 +120,15 @@
               >
               </wy-upload>
             </FormItem>
+            <FormItem label="哔哩哔哩分区" prop="tid" v-if="isBiBi">
+              <Cascader :data="tidList" v-model="formInline.tid"></Cascader>
+            </FormItem>
+            <FormItem label="哔哩哔哩视频标签" prop="tag" v-if="isBiBi">
+              <Input
+                v-model="formInline.tag"
+                placeholder="请填写视频备注"
+              ></Input>
+            </FormItem>
             <FormItem>
               <Button>取消</Button>
               <Button
@@ -154,7 +163,11 @@
 import { Component, Vue } from "vue-property-decorator";
 import sysContent from "@/components/sys-content/sys-content.vue";
 import { objAny } from "@/common/common-interface";
-import { subPlatformVideo, platformAccounts } from "@/api/api-user";
+import {
+  subPlatformVideo,
+  platformAccounts,
+  getBilibiliTypes,
+} from "@/api/api-user";
 import upload from "@/components/upload/upload.vue";
 import noData from "@/components/no-data/no-data.vue";
 // import { videoCss, videoJS } from "@/common/add-js";
@@ -174,9 +187,12 @@ export default class ContentRelease extends Vue {
     platform_account_ids: [],
     cover_file_path: "",
     video_file_path: "",
+    tid: "",
+    tag: "",
   };
   private full_file_path = "";
   private isKuaishou = false;
+  private isBiBi = false;
   private ruleValidate: objAny = {
     title: [{ required: true, message: "请输入标题", trigger: "blur" }],
     publish_method: [
@@ -205,7 +221,18 @@ export default class ContentRelease extends Vue {
         trigger: "change",
       },
     ],
+    tag: [{ required: true, message: "请输入标签", trigger: "blur" }],
+    tid: [
+      {
+        required: true,
+        type: "array",
+        min: 1,
+        message: "请选择分区",
+        trigger: "change",
+      },
+    ],
   };
+  private tidList: objAny[] = [];
   private accountsList: objAny[] = [];
   private accountsObj: objAny = {
     douyin: [],
@@ -234,7 +261,9 @@ export default class ContentRelease extends Vue {
   }
   async subPlatformVideo(): Promise<void> {
     this.loading = true;
-    let ret = await subPlatformVideo(this.formInline);
+    let json = JSON.parse(JSON.stringify(this.formInline));
+    json.tid = this.formInline.tid[1];
+    let ret = await subPlatformVideo(json);
     if (ret.code == 200) {
       this.$Modal.success({
         title: "发布成功",
@@ -243,6 +272,21 @@ export default class ContentRelease extends Vue {
     }
     this.loading = false;
   }
+  async getBilibiliTypes(): Promise<void> {
+    let ret = await getBilibiliTypes({});
+    if (ret.code == 200) {
+      ret.payload.map((item: objAny) => {
+        item.label = item.bili_name;
+        item.value = item.bili_id;
+        item.children.map((child: objAny) => {
+          child.label = child.bili_name;
+          child.value = child.bili_id;
+        });
+      });
+      this.tidList = ret.payload;
+    }
+  }
+
   public uploadSuccess(data: objAny): void {
     this.formInline.video_file_path = data.file_path;
     this.full_file_path = data.full_file_path;
@@ -262,15 +306,19 @@ export default class ContentRelease extends Vue {
   }
   public platformChange(accIds: number[]): void {
     let isKuaishou = false;
+    let isBiBi = false;
     for (let i in this.accountsObj) {
       let list: objAny = this.accountsObj[i];
       list.map((item: objAny) => {
         if (accIds.indexOf(item.id) != -1 && i == "kuaishou") {
           isKuaishou = true;
+        } else if (accIds.indexOf(item.id) != -1 && i == "bilibili") {
+          isBiBi = true;
         }
       });
     }
     this.isKuaishou = isKuaishou;
+    this.isBiBi = isBiBi;
   }
   public bingClick(key: string): void {
     this.$router.push("/auto?key=" + key);
@@ -281,6 +329,7 @@ export default class ContentRelease extends Vue {
   }
   mounted(): void {
     this.platformAccounts();
+    this.getBilibiliTypes();
     this.$nextTick(() => {
       // let win: objAny = window;
       this.player = this.$video(document.getElementById("myVideo"), {
