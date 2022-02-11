@@ -83,23 +83,36 @@
                       v-else-if="index == 'xigua'"
                     />
                     {{ $config.videoSys[index] }}
+
                     <!-- {{ index == "douyin" ? "抖音" : "快手" }} -->
                   </div>
-                  <div class="platform-info" v-if="item.length > 0">
-                    <CheckboxGroup
-                      v-for="(acc, i) in item"
-                      :key="i"
-                      v-model="formInline.platform_account_ids"
-                      @on-change="platformChange"
+                  <div
+                    class="platform-info"
+                    v-if="accountsExpired[index] && item.length > 0"
+                  >
+                    <span @click="bingClick(index)" class="expired-time"
+                      >已过期，请重新授权</span
                     >
-                      <Checkbox :label="acc.id">{{ acc.nick_name }}</Checkbox>
-                    </CheckboxGroup>
                   </div>
-                  <div class="platform-info" v-else>
-                    <div class="bind blue" @click="bingClick(index)">
-                      立即绑定
+                  <template v-else>
+                    <div class="platform-info" v-if="item.length > 0">
+                      <CheckboxGroup
+                        v-for="(acc, i) in item"
+                        :key="i"
+                        v-model="formInline.platform_account_ids"
+                        @on-change="platformChange"
+                      >
+                        <Checkbox :label="acc.id">{{
+                          acc.nick_name || "--"
+                        }}</Checkbox>
+                      </CheckboxGroup>
                     </div>
-                  </div>
+                    <div class="platform-info" v-else>
+                      <div class="bind blue" @click="bingClick(index)">
+                        立即绑定
+                      </div>
+                    </div>
+                  </template>
                 </li>
               </ul>
               <div class="form-tips">一次可以发布到多个平台</div>
@@ -167,6 +180,7 @@ import {
   subPlatformVideo,
   platformAccounts,
   getBilibiliTypes,
+  getAuthList,
 } from "@/api/api-user";
 import upload from "@/components/upload/upload.vue";
 import noData from "@/components/no-data/no-data.vue";
@@ -194,7 +208,24 @@ export default class ContentRelease extends Vue {
   private isKuaishou = false;
   private isBiBi = false;
   private ruleValidate: objAny = {
-    title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+    title: [
+      { required: true, message: "请输入标题", trigger: "blur" },
+      {
+        type: "string",
+        max: 30,
+        message: "标题不得超过30个字符",
+        trigger: "blur",
+      },
+    ],
+    description: [
+      { required: true, message: "请输入视频备注", trigger: "blur" },
+      {
+        type: "string",
+        max: 100,
+        message: "标题不得超过100个字符",
+        trigger: "blur",
+      },
+    ],
     publish_method: [
       { required: true, message: "请选择发布方式", trigger: "change" },
     ],
@@ -240,9 +271,23 @@ export default class ContentRelease extends Vue {
     xigua: [],
     bilibili: [],
   };
+  private accountsExpired: objAny = {};
   private loading = false;
   private player: objAny = {};
 
+  async getTableList(): Promise<void> {
+    this.loading = true;
+    let ret = await getAuthList({});
+    if (ret.code == 200) {
+      let autoList = ret.payload.data;
+      autoList.map((item: objAny) => {
+        if (item.is_platform_auth_expired == 1) {
+          this.accountsExpired[item.platform_type] = true;
+        }
+      });
+    }
+    this.loading = false;
+  }
   async platformAccounts(): Promise<void> {
     let ret = await platformAccounts({});
     if (ret.code == 200) {
@@ -330,6 +375,7 @@ export default class ContentRelease extends Vue {
   mounted(): void {
     this.platformAccounts();
     this.getBilibiliTypes();
+    this.getTableList();
     this.$nextTick(() => {
       // let win: objAny = window;
       this.player = this.$video(document.getElementById("myVideo"), {
@@ -418,6 +464,10 @@ export default class ContentRelease extends Vue {
     .no-data-components {
       width: 100%;
     }
+  }
+  .expired-time {
+    color: #ed4014;
+    cursor: pointer;
   }
 }
 </style>

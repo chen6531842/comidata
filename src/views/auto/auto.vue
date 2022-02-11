@@ -122,7 +122,7 @@ export default class PageAuto extends Vue {
       title: "授权时间",
       key: "platform_auth_date",
       slot: "time",
-      minWidth: 160,
+      minWidth: 180,
     },
     {
       title: "操作",
@@ -207,7 +207,10 @@ export default class PageAuto extends Vue {
       this.$common.remove("dyAuto");
     }
     if (this.$route.query.key) {
-      this.addModalShow();
+      // this.addModalShow();
+      this.$refs.addModal.autoClick({
+        platform_type: this.$route.query.key,
+      });
     }
   }
 }

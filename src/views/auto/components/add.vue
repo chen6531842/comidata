@@ -140,7 +140,7 @@ export default class Auto extends Vue {
       // this.iframeShow = true;
       this.$nextTick(() => {
         this.$common.save("dyAuto", "1");
-        window.location.href = ret.payload.url;
+        window.open(ret.payload.url);
       });
     }
   }
@@ -153,7 +153,7 @@ export default class Auto extends Vue {
       // this.iframeShow = true;
       this.$nextTick(() => {
         this.$common.save("dyAuto", "1");
-        window.location.href = ret.payload.url;
+        window.open(ret.payload.url);
       });
     }
   }
@@ -165,7 +165,7 @@ export default class Auto extends Vue {
     if (ret.code == 200) {
       this.$nextTick(() => {
         this.$common.save("dyAuto", "1");
-        window.location.href = ret.payload.url;
+        window.open(ret.payload.url);
       });
     }
   }
