@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <Menu
-      :accordion="true"
+      :accordion="false"
       :active-name="activeName"
       :open-names="openNames"
       :theme="theme2"
@@ -113,8 +113,8 @@ export default class MenuList extends Vue {
       this.openNames = [this.activeName.split("-")[0]];
       this.$nextTick(() => {
         if (this.$refs.side_menu) {
-          this.$refs.side_menu.updateOpened();
-          this.$refs.side_menu.updateActiveName();
+          // this.$refs.side_menu.updateOpened();
+          // this.$refs.side_menu.updateActiveName();
         }
       });
     }

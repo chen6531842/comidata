@@ -49,7 +49,10 @@
         <div v-for="(item, index) in row.video_publish_accounts" :key="index">
           {{ index }}:
           <span v-for="(child, i) in item" :key="index + '-' + i"
-            >{{ child.nick_name }}({{ child.status_name }})</span
+            >{{ child.nick_name }}(<span :class="'status-' + child.status">{{
+              child.status_name
+            }}</span
+            >)</span
           >
         </div>
       </template>
@@ -209,6 +212,15 @@ export default class PageVideo extends Vue {
   .video-show {
     width: 90px;
     height: 150px;
+  }
+  .status-1 {
+    color: #00e600;
+  }
+  .status-2 {
+    color: #f7e300;
+  }
+  .status-3 {
+    color: #f20022;
   }
 }
 </style>
